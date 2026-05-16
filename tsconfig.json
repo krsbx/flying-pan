@@ -25,6 +25,15 @@
     // Some stricter flags (disabled by default)
     "noUnusedLocals": false,
     "noUnusedParameters": false,
-    "noPropertyAccessFromIndexSignature": false
+    "noPropertyAccessFromIndexSignature": false,
+
+    "paths": {
+      "@/*": ["./src/*"],
+      "@cstruct": ["./src/utility/cstruct/index.ts"],
+      "@cwstring": ["./src/utility/cwstring.ts"],
+      "@basestruct": ["./src/utility/base-struct.ts"],
+      "@constant": ["./src/utility/constant.ts"],
+      "@utility/*": ["./src/utility/*"],
+    },
   }
 }
