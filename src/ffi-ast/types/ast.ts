@@ -1,18 +1,18 @@
-import type { DeclarationKind } from '../utility';
+import type { DeclarationKind, CDeclarationKind } from '../utility';
 
 export interface ClangNode {
-  kind: string;
-  name?: string;
+  kind: (string & {}) | CDeclarationKind;
+  name: string | null;
   loc: {
-    offset?: number;
-    line?: number;
-    col?: number;
-    file?: string;
+    offset: number | null;
+    line: number | null;
+    col: number | null;
+    file: string | null;
   };
-  type?: { qualType: string };
-  isImplicit?: boolean;
-  completeDefinition?: boolean;
-  inner?: ClangNode[];
+  type: { qualType: string } | null;
+  isImplicit: boolean | null;
+  completeDefinition: boolean | null;
+  inner: ClangNode[] | null;
 }
 
 export interface CASTNode {
@@ -96,6 +96,6 @@ export interface CVarDecl extends CASTNode {
 
 export interface CHeaderDecl {
   kind: typeof DeclarationKind.HEADER;
-  name: string;
+  filename: string;
   declarations: CASTNode[];
 }

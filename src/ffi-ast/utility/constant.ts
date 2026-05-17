@@ -1,3 +1,14 @@
+export const CDeclarationKind = {
+  FUNCTION_DECL: 'FunctionDecl',
+  TYPEDEF_DECL: 'TypedefDecl',
+  RECORD_DECL: 'RecordDecl',
+  ENUM_DECL: 'EnumDecl',
+  VAR_DECL: 'VarDecl',
+} as const;
+
+export type CDeclarationKind =
+  (typeof CDeclarationKind)[keyof typeof CDeclarationKind];
+
 export const DeclarationKind = {
   FUNCTION: 'FUNCTION',
   STRUCT: 'STRUCT',

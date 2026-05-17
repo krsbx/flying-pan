@@ -1,1 +1,1 @@
-export { DeclarationKind } from './constant';
+export { DeclarationKind, CDeclarationKind } from './constant';
