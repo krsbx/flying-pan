@@ -20,6 +20,7 @@ import {
   parseCTypeFromString,
   parseFunctionPointerParams,
   parseParams,
+  parseReturnTypeFromQualType,
 } from './utility';
 
 interface ParseOptions {
@@ -101,7 +102,7 @@ export class ClangNodeParser {
     if (!node.name) return null;
 
     const qualType = node.type?.qualType ?? '';
-    const returnType = parseCTypeFromString(qualType);
+    const returnType = parseReturnTypeFromQualType(qualType);
     const params = parseParams(node.inner ?? []);
     const loc = extractNodeLocation(node);
     const doc = extractDoc(node.inner);
@@ -174,7 +175,7 @@ export class ClangNodeParser {
 
     if (node.inner) {
       for (const child of node.inner) {
-        if (child.kind === CDeclarationKind.FUNCTION_DECL && child.name) {
+        if (child.kind === CDeclarationKind.FIELD_DECL && child.name) {
           const type = parseCTypeFromString(child.type?.qualType ?? '');
 
           const field: CStructField = {

@@ -41,7 +41,7 @@ function findTopLevelParent(s: string): number {
     }
   }
 
-  return depth;
+  return -1;
 }
 
 export function parseReturnTypeFromQualType(qualType: string): CType {

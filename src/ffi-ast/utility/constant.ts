@@ -11,6 +11,7 @@ export const CDeclarationKind = {
   UNARY_OPERATOR: 'UnaryOperator',
   DECL_REF_EXPR: 'DeclRefExpr',
   ENUM_CONSTANT_DECL: 'EnumConstantDecl',
+  FIELD_DECL: 'FieldDecl',
   PARM_VAL_DECL: 'ParmVarDecl',
 } as const;
 
