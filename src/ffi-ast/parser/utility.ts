@@ -65,6 +65,24 @@ export function parseParams(inner: ClangNode[]): CFunctionParam[] {
     }));
 }
 
+export function parseFunctionPointerParams(qualType: string) {
+  const paramsMatch = qualType.match(/\*\)\s*\((.+)\)/);
+  const params: CFunctionParam[] = [];
+
+  if (!paramsMatch) return params;
+
+  const paramTypes = splitTopLevelCommas(paramsMatch[1]!);
+
+  for (const pt of paramTypes) {
+    params.push({
+      type: parseCTypeFromString(pt.trim()),
+      name: '',
+    });
+  }
+
+  return params;
+}
+
 export function splitTopLevelCommas(s: string): string[] {
   const parts: string[] = [];
   let depth = 0;
@@ -121,4 +139,15 @@ export function extractDoc(inner: ClangNode[] | null): string | null {
   }
 
   return null;
+}
+
+export function extractNodeLocation(node: ClangNode) {
+  return {
+    line: node.loc?.line ?? 0,
+    column: node.loc?.col ?? 0,
+  };
+}
+
+export function isFunctionPointerType(qualType: string): boolean {
+  return /\(\*\)/.test(qualType) || /\(\*\s*\w*\s*\)\s*\(/.test(qualType);
 }

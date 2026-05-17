@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import type {
   CStructField,
   CASTNode,
@@ -11,9 +10,17 @@ import type {
   CUnionDecl,
   CVarDecl,
   CEnumConstant,
+  CFunctionPointerDecl,
 } from '../types/ast';
 import { CDeclarationKind, DeclarationKind } from '../utility';
-import { extractDoc, parseCTypeFromString, parseParams } from './utility';
+import {
+  extractDoc,
+  extractNodeLocation,
+  isFunctionPointerType,
+  parseCTypeFromString,
+  parseFunctionPointerParams,
+  parseParams,
+} from './utility';
 
 interface ParseOptions {
   /** Only include declarations whose names match this prefix (e.g. "GLFW") */
@@ -96,6 +103,7 @@ export class ClangNodeParser {
     const qualType = node.type?.qualType ?? '';
     const returnType = parseCTypeFromString(qualType);
     const params = parseParams(node.inner ?? []);
+    const loc = extractNodeLocation(node);
     const doc = extractDoc(node.inner);
 
     return {
@@ -103,16 +111,54 @@ export class ClangNodeParser {
       name: node.name,
       returnType,
       params,
-      loc: {
-        line: node.loc?.line ?? 0,
-        column: node.loc?.col ?? 0,
-      },
+      loc,
       doc,
     };
   }
 
-  private static parseTypedefDecl(node: ClangNode): CTypedefDecl {
-    throw new Error('Not implemented!');
+  private static parseFunctionPointerTypedef(
+    node: ClangNode,
+    qualType: string
+  ): CFunctionPointerDecl | null {
+    if (!node.name) return null;
+
+    const ptrMatch = qualType.match(/^(.+?)\s*\(\*/);
+
+    if (!ptrMatch) return null;
+
+    const returnType = parseCTypeFromString(ptrMatch[1]!.trim());
+    const params = parseFunctionPointerParams(qualType);
+    const loc = extractNodeLocation(node);
+
+    return {
+      kind: DeclarationKind.FUNCTION_POINTER,
+      name: node.name,
+      returnType,
+      params,
+      loc,
+      doc: null,
+    };
+  }
+
+  private static parseTypedefDecl(
+    node: ClangNode
+  ): CTypedefDecl | CFunctionPointerDecl | null {
+    if (!node.name) return null;
+
+    const qualType = node.type?.qualType ?? '';
+    const loc = extractNodeLocation(node);
+
+    if (isFunctionPointerType(qualType)) {
+      return this.parseFunctionPointerTypedef(node, qualType);
+    }
+
+    return {
+      kind: DeclarationKind.TYPEDEF,
+      name: node.name,
+      underlyingType: parseCTypeFromString(qualType),
+      loc,
+      doc: null,
+    };
   }
 
   private static parseRecordDecl(
@@ -121,6 +167,7 @@ export class ClangNodeParser {
     if (!node.name) return null;
 
     const isOpaque = !node.completeDefinition;
+    const loc = extractNodeLocation(node);
     const doc = extractDoc(node.inner);
 
     const fields: CStructField[] = [];
@@ -153,10 +200,7 @@ export class ClangNodeParser {
       name: node.name,
       fields,
       isOpaque,
-      loc: {
-        line: node.loc?.line ?? 0,
-        column: node.loc?.col ?? 0,
-      },
+      loc,
       doc,
     };
   }
@@ -164,6 +208,7 @@ export class ClangNodeParser {
   private static parseEnumDecl(node: ClangNode): CEnumDecl {
     const name = node.name || '';
     const isOpaque = !node.completeDefinition;
+    const loc = extractNodeLocation(node);
     const constants: CEnumConstant[] = [];
 
     if (node.inner) {
@@ -182,10 +227,7 @@ export class ClangNodeParser {
       name,
       constants,
       isOpaque,
-      loc: {
-        line: node.loc?.line ?? 0,
-        column: node.loc?.col ?? 0,
-      },
+      loc,
       doc: null,
     };
   }
@@ -216,14 +258,13 @@ export class ClangNodeParser {
   private static parseVarDecl(node: ClangNode): CVarDecl | null {
     if (!node.name) return null;
 
+    const loc = extractNodeLocation(node);
+
     return {
       kind: DeclarationKind.VAR,
       name: node.name,
       type: parseCTypeFromString(node.type?.qualType ?? ''),
-      loc: {
-        line: node.loc?.line ?? 0,
-        column: node.loc?.col ?? 0,
-      },
+      loc,
       doc: null,
     };
   }
