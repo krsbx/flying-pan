@@ -63,7 +63,7 @@ export class ClangNodeParser {
     return {
       filename: '',
       kind: DeclarationKind.HEADER,
-      declarations: [],
+      declarations,
     };
   }
 
