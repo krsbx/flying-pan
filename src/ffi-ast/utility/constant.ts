@@ -4,6 +4,14 @@ export const CDeclarationKind = {
   RECORD_DECL: 'RecordDecl',
   ENUM_DECL: 'EnumDecl',
   VAR_DECL: 'VarDecl',
+  FULL_COMMENT: 'FullComment',
+  TEXT_COMMENT: 'TextComment',
+  PARAGRAPH_COMMENT: 'ParagraphComment',
+  INTEGER_LITERAL: 'IntegerLiteral',
+  UNARY_OPERATOR: 'UnaryOperator',
+  DECL_REF_EXPR: 'DeclRefExpr',
+  ENUM_CONSTANT_DECL: 'EnumConstantDecl',
+  PARM_VAL_DECL: 'ParmVarDecl',
 } as const;
 
 export type CDeclarationKind =
