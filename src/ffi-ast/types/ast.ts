@@ -1,5 +1,20 @@
 import type { DeclarationKind } from '../utility';
 
+export interface ClangNode {
+  kind: string;
+  name?: string;
+  loc: {
+    offset?: number;
+    line?: number;
+    col?: number;
+    file?: string;
+  };
+  type?: { qualType: string };
+  isImplicit?: boolean;
+  completeDefinition?: boolean;
+  inner?: ClangNode[];
+}
+
 export interface CASTNode {
   kind: string;
   loc: {
