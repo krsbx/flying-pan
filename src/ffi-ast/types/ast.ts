@@ -8,11 +8,16 @@ export interface ClangNode {
     line: number | null;
     col: number | null;
     file: string | null;
-  };
+  } | null;
   type: { qualType: string } | null;
   isImplicit: boolean | null;
   completeDefinition: boolean | null;
+  tagUsed: string | null;
+  isBitField: boolean | null;
+  bitWidth: number | null;
   inner: ClangNode[] | null;
+  text: string | null;
+  value: string | null;
 }
 
 export interface CASTNode {
