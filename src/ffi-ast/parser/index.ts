@@ -31,18 +31,24 @@ interface ParseOptions {
 }
 
 export class ClangNodeParser {
-  public readonly path: string;
+  public readonly path: string | null;
+  public readonly json: unknown | null;
 
-  public constructor(path: string) {
-    this.path = path;
+  public constructor(path: string);
+  public constructor(json: unknown);
+  public constructor(args: string | unknown) {
+    this.path = typeof args === 'string' ? args : null;
+    this.json = typeof args === 'object' ? args : null;
   }
 
   public async parse(options: ParseOptions = {}): Promise<CHeaderDecl> {
     const Parser = ClangNodeParser;
-    const root: ClangNode = await Bun.file(this.path).json();
+    const root: ClangNode | null = this.path
+      ? await Bun.file(this.path).json()
+      : this.json;
     const declarations: CASTNode[] = [];
 
-    const inner = root.inner ?? [];
+    const inner = root?.inner ?? [];
 
     for (const node of inner) {
       if (node.isImplicit) continue;
