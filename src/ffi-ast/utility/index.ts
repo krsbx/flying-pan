@@ -1,0 +1,1 @@
+export { DeclarationKind } from './constant';
