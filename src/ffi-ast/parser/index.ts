@@ -1,3 +1,4 @@
+import { basename } from 'node:path';
 import type { CASTNode, CHeaderDecl, ClangNode } from '../types/ast';
 import { CDeclarationKind, DeclarationKind } from '../utility';
 import {
@@ -53,7 +54,7 @@ export class ClangNodeParser {
     }
 
     return {
-      filename: '',
+      filename: this.path ? basename(this.path) : '',
       kind: DeclarationKind.HEADER,
       declarations,
     };

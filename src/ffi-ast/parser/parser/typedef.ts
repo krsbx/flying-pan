@@ -7,7 +7,7 @@ import { DeclarationKind } from '@/ffi-ast/utility';
 import {
   extractNodeLocation,
   isFunctionPointerType,
-  parseCTypeFromString,
+  parseCTypeDeclFromString,
   parseFunctionPointerParams,
 } from '../utility';
 
@@ -21,7 +21,7 @@ function parseFunctionPointerTypedef(
 
   if (!ptrMatch) return null;
 
-  const returnType = parseCTypeFromString(ptrMatch[1]!.trim());
+  const returnType = parseCTypeDeclFromString(ptrMatch[1]!.trim());
   const params = parseFunctionPointerParams(qualType);
   const loc = extractNodeLocation(node);
 
@@ -50,7 +50,7 @@ export function parseTypedefDecl(
   return {
     kind: DeclarationKind.TYPEDEF,
     name: node.name,
-    underlyingType: parseCTypeFromString(qualType),
+    underlyingType: parseCTypeDeclFromString(qualType),
     loc,
     doc: null,
   };

@@ -1,4 +1,4 @@
-import type { DeclarationKind, CDeclarationKind } from '../utility';
+import type { CDeclarationKind, DeclarationKind } from '../utility';
 
 export interface ClangNode {
   kind: (string & {}) | CDeclarationKind;
@@ -29,7 +29,7 @@ export interface CASTNode {
   doc: string | null;
 }
 
-export interface CType {
+export interface CTypeDecl {
   name: string;
   isConst: boolean;
   pointerDepth: number;
@@ -37,19 +37,19 @@ export interface CType {
 }
 
 export interface CFunctionParam {
-  type: CType;
+  type: CTypeDecl;
   name: string;
 }
 
 export interface CFunctionDecl extends CASTNode {
   kind: typeof DeclarationKind.FUNCTION;
-  returnType: CType;
+  returnType: CTypeDecl;
   name: string;
   params: CFunctionParam[];
 }
 
 export interface CStructField {
-  type: CType;
+  type: CTypeDecl;
   name: string;
   bitWidth: number | null;
 }
@@ -71,14 +71,14 @@ export interface CUnionDecl extends CASTNode {
 export interface CFunctionPointerDecl extends CASTNode {
   kind: typeof DeclarationKind.FUNCTION_POINTER;
   name: string;
-  returnType: CType;
+  returnType: CTypeDecl;
   params: CFunctionParam[];
 }
 
 export interface CTypedefDecl extends CASTNode {
   kind: typeof DeclarationKind.TYPEDEF;
   name: string;
-  underlyingType: CType | CFunctionPointerDecl;
+  underlyingType: CTypeDecl | CFunctionPointerDecl;
 }
 
 export interface CEnumConstant {
@@ -96,7 +96,7 @@ export interface CEnumDecl extends CASTNode {
 export interface CVarDecl extends CASTNode {
   kind: typeof DeclarationKind.VAR;
   name: string;
-  type: CType;
+  type: CTypeDecl;
 }
 
 export interface CHeaderDecl {

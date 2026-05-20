@@ -8,7 +8,7 @@ import { CDeclarationKind, DeclarationKind } from '@/ffi-ast/utility';
 import {
   extractDoc,
   extractNodeLocation,
-  parseCTypeFromString,
+  parseCTypeDeclFromString,
 } from '../utility';
 
 export function parseRecordDecl(
@@ -25,7 +25,7 @@ export function parseRecordDecl(
   if (node.inner) {
     for (const child of node.inner) {
       if (child.kind === CDeclarationKind.FIELD_DECL && child.name) {
-        const type = parseCTypeFromString(child.type?.qualType ?? '');
+        const type = parseCTypeDeclFromString(child.type?.qualType ?? '');
 
         const field: CStructField = {
           type,

@@ -1,7 +1,7 @@
-import type { CFunctionParam, ClangNode, CType } from '../types/ast';
+import type { CFunctionParam, ClangNode, CTypeDecl } from '../types/ast';
 import { CDeclarationKind } from '../utility';
 
-export function parseCTypeFromString(qualType: string): CType {
+export function parseCTypeDeclFromString(qualType: string): CTypeDecl {
   let name = qualType.trim();
 
   let arraySize: number | null = null;
@@ -44,23 +44,23 @@ function findTopLevelParent(s: string): number {
   return -1;
 }
 
-export function parseReturnTypeFromQualType(qualType: string): CType {
+export function parseReturnTypeFromQualType(qualType: string): CTypeDecl {
   const parenIdx = findTopLevelParent(qualType);
 
   if (parenIdx === -1) {
-    return parseCTypeFromString(qualType.trim());
+    return parseCTypeDeclFromString(qualType.trim());
   }
 
   const returnStr = qualType.slice(0, parenIdx).trim();
 
-  return parseCTypeFromString(returnStr);
+  return parseCTypeDeclFromString(returnStr);
 }
 
 export function parseParams(inner: ClangNode[]): CFunctionParam[] {
   return inner
     .filter((n) => n.kind === CDeclarationKind.PARM_VAL_DECL)
     .map((node) => ({
-      type: parseCTypeFromString(node.type?.qualType ?? ''),
+      type: parseCTypeDeclFromString(node.type?.qualType ?? ''),
       name: node.name ?? '',
     }));
 }
@@ -75,7 +75,7 @@ export function parseFunctionPointerParams(qualType: string) {
 
   for (const pt of paramTypes) {
     params.push({
-      type: parseCTypeFromString(pt.trim()),
+      type: parseCTypeDeclFromString(pt.trim()),
       name: '',
     });
   }

@@ -1,3 +1,4 @@
+export { generateCode, type CodegenConfig } from './codegen';
 export { ClangNodeParser } from './parser';
 export type {
   CASTNode,
@@ -10,7 +11,7 @@ export type {
   ClangNode,
   CStructDecl,
   CStructField,
-  CType,
+  CTypeDecl,
   CTypedefDecl,
   CUnionDecl,
   CVarDecl,
