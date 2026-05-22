@@ -12,3 +12,9 @@ export interface DataViewMethodInfo {
   setter: `set${DataViewDataType}`;
   size: number;
 }
+
+export interface FFISymbolDef {
+  name: string;
+  returns: string;
+  args: string[];
+}
