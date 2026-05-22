@@ -77,3 +77,18 @@ export function cTypeToViewMethod(cType: CTypeDecl): DataViewMethodInfo | null {
 
   return null;
 }
+
+export function primitiveSize(name: string): number {
+  return PrimitiveMap[name as CType]?.size ?? CStruct.BYTE_SIZE.ptr;
+}
+
+export function cTypeSize(cType: CTypeDecl) {
+  if (cType.pointerDepth > 0) return CStruct.BYTE_SIZE.ptr;
+  if (cType.arraySize !== null) {
+    const elementSize = primitiveSize(cType.name);
+
+    return cType.arraySize * elementSize;
+  }
+
+  return primitiveSize(cType.name);
+}
