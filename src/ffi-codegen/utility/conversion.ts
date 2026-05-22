@@ -1,7 +1,7 @@
 import type { CTypeDecl } from '@/ffi-ast';
 import { CStruct } from '@/utility/cstruct';
-import { FFIType, type FFITypeOrString } from 'bun:ffi';
-import type { DataViewMethodInfo } from '../types';
+import type { FFITypeStringToType } from 'bun:ffi';
+import type { DataViewMethodInfo } from '../types/codegen';
 import {
   CType,
   CTypeToFFIType,
@@ -15,7 +15,7 @@ export function cTypeToTsType(cType: CTypeDecl): TypeScriptType {
 
   if (cType.pointerDepth > 0) {
     if (cType.pointerDepth === 1 && cType.isConst && baseName === CType.CHAR) {
-      return TypeScriptType.STRING;
+      return TypeScriptType.CSTRING;
     }
 
     return TypeScriptType.POINTER;
@@ -34,22 +34,22 @@ export function cTypeToTsType(cType: CTypeDecl): TypeScriptType {
   return primitive?.tsType ?? TypeScriptType.POINTER;
 }
 
-export function cTypeToFFI(cType: CTypeDecl): FFITypeOrString {
+export function cTypeToFFI(cType: CTypeDecl): keyof FFITypeStringToType {
   const baseName = normalizeTypeName(cType.name);
 
   if (cType.pointerDepth > 0) {
     if (cType.pointerDepth === 1 && cType.isConst && baseName === CType.CHAR) {
-      return FFIType.cstring;
+      return 'cstring';
     }
 
-    return FFIType.cstring;
+    return 'cstring';
   }
 
   if (cType.arraySize !== null) {
-    return FFIType.ptr;
+    return 'ptr';
   }
 
-  return CTypeToFFIType[cType.name as CType] ?? FFIType.ptr;
+  return CTypeToFFIType[cType.name as CType] ?? 'ptr';
 }
 
 export function cTypeToViewMethod(cType: CTypeDecl): DataViewMethodInfo | null {

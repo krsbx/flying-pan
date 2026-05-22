@@ -1,6 +1,6 @@
 import { CStruct } from '@/utility/cstruct';
-import { FFIType, type FFITypeOrString } from 'bun:ffi';
-import type { DataViewDataType } from '../types';
+import type { FFITypeStringToType } from 'bun:ffi';
+import type { DataViewDataType } from '../types/codegen';
 
 export const DataViewPrefix = {
   i32: 'Int32',
@@ -25,7 +25,8 @@ export const TypeScriptType = {
   BOOLEAN: 'boolean',
   VOID: 'void',
   NEVER: 'never',
-  POINTER: 'pointer',
+  POINTER: 'Pointer',
+  CSTRING: 'CString',
 } as const;
 
 export type TypeScriptType =
@@ -52,22 +53,22 @@ export const CType = {
 export type CType = (typeof CType)[keyof typeof CType];
 
 export const CTypeToFFIType = {
-  [CType.INT]: FFIType.i32,
-  [CType.UINT]: FFIType.u32,
-  [CType.SHORT]: FFIType.i16,
-  [CType.USHORT]: FFIType.u16,
-  [CType.CHAR]: FFIType.i8,
-  [CType.UCHAR]: FFIType.u8,
-  [CType.FLOAT]: FFIType.f32,
-  [CType.DOUBLE]: FFIType.f64,
-  [CType.LONG_LONG]: FFIType.i64,
-  [CType.ULONG_LONG]: FFIType.u64,
-  [CType.LONG]: FFIType.i32,
-  [CType.ULONG]: FFIType.u32,
-  [CType.LONG_DOUBLE]: FFIType.f64,
-  [CType.SIZE_T]: FFIType.u64,
-  [CType.VOID]: FFIType.void,
-} satisfies Record<CType, FFITypeOrString>;
+  [CType.INT]: 'i32',
+  [CType.UINT]: 'u32',
+  [CType.SHORT]: 'i16',
+  [CType.USHORT]: 'u16',
+  [CType.CHAR]: 'i8',
+  [CType.UCHAR]: 'u8',
+  [CType.FLOAT]: 'f32',
+  [CType.DOUBLE]: 'f64',
+  [CType.LONG_LONG]: 'i64',
+  [CType.ULONG_LONG]: 'u64',
+  [CType.LONG]: 'i32',
+  [CType.ULONG]: 'u32',
+  [CType.LONG_DOUBLE]: 'f64',
+  [CType.SIZE_T]: 'u64',
+  [CType.VOID]: 'void',
+} satisfies Record<CType, keyof FFITypeStringToType>;
 
 export const PrimitiveMap = {
   [CType.INT]: {

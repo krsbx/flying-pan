@@ -1,4 +1,4 @@
-import type { CEnumDecl } from '../ffi-ast';
+import type { CEnumDecl } from '../../ffi-ast';
 
 export function generateEnumCode(decl: CEnumDecl): string {
   if (decl.constants.length === 0) return '';
