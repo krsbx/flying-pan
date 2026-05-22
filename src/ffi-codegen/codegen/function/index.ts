@@ -1,8 +1,8 @@
 import type { CFunctionDecl } from '@/ffi-ast';
-import type { FFISymbolDef } from '../types/codegen';
-import { CType, TypeScriptType } from '../utility/constant';
-import { cTypeToFFI } from '../utility/conversion';
-import { resolveParamType, resolveReturnType } from '../utility/helper';
+import type { FFISymbolDef } from '../../types/codegen';
+import { CType, TypeScriptType } from '../../utility/constant';
+import { cTypeToFFI } from '../../utility/conversion';
+import { resolveParamType, resolveReturnType } from './helper';
 
 export function generateFFIDefinition(decl: CFunctionDecl): FFISymbolDef {
   return {

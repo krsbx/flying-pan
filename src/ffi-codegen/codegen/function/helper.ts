@@ -1,0 +1,46 @@
+import type { CTypeDecl } from '@/ffi-ast';
+import { CType, TypeScriptType } from '@/ffi-codegen/utility/constant';
+import { cTypeToTsType } from '@/ffi-codegen/utility/conversion';
+import { normalizeTypeName } from '@/ffi-codegen/utility/helper';
+
+export function resolveReturnType(options: {
+  cType: CTypeDecl;
+  enumNames: Set<string>;
+}): string {
+  const baseName = normalizeTypeName(options.cType.name);
+
+  if (
+    options.cType.pointerDepth === 1 &&
+    options.cType.isConst &&
+    baseName === CType.CHAR
+  ) {
+    return TypeScriptType.CSTRING;
+  }
+
+  if (options.cType.pointerDepth > 0 || options.cType.arraySize !== null) {
+    return cTypeToTsType(options.cType);
+  }
+
+  if (options.enumNames.has(baseName)) {
+    return baseName;
+  }
+
+  return cTypeToTsType(options.cType);
+}
+
+export function resolveParamType(options: {
+  cType: CTypeDecl;
+  enumNames: Set<string>;
+}): string {
+  const baseName = normalizeTypeName(options.cType.name);
+
+  if (options.cType.pointerDepth > 0 || options.cType.arraySize !== null) {
+    return cTypeToTsType(options.cType);
+  }
+
+  if (options.enumNames.has(baseName)) {
+    return baseName;
+  }
+
+  return cTypeToTsType(options.cType);
+}
