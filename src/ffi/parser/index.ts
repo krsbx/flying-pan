@@ -40,6 +40,10 @@ export class ClangNodeParser {
       if (node.isImplicit) continue;
       if (!node.loc?.line) continue;
 
+      // Skip inline and static functions — not exported from shared libraries
+      if (node.inline) continue;
+      if (node.storageClass === 'static') continue;
+
       if (options.sourceFile) {
         const file = node.loc?.file ?? null;
         const includedFrom = node.loc?.includedFrom?.file ?? null;

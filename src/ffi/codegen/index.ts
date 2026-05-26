@@ -249,7 +249,7 @@ export class FFICodeGenerator {
     if (parts.ffiSymbols.length > 0) {
       const entries = parts.ffiSymbols.map((def) => {
         const comment = `  // ${def.name}`;
-        const args = `\n    args: [${def.args.map((a) => `FFIType.${a}`)}]`;
+        const args = `\n    args: [${def.args.map((a) => `FFIType.${a}`).join(', ')}]`;
         const returns = `\n    returns: FFIType.${def.returns}`;
 
         return `${comment}\n  ${def.name}: {${args},${returns},\n  },`;

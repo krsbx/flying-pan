@@ -21,6 +21,8 @@ export interface ClangNode {
     qualType: string;
   } | null;
   isImplicit: boolean | null;
+  inline: boolean | null;
+  storageClass: string | null;
   completeDefinition: boolean | null;
   tagUsed: string | null;
   isBitField: boolean | null;
