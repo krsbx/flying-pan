@@ -1,10 +1,11 @@
-import type {
-  ClangNode,
-  CStructDecl,
-  CStructField,
-  CUnionDecl,
-} from '@/ffi-ast/types/ast';
-import { CDeclarationKind, DeclarationKind } from '@/ffi-ast/utility';
+import {
+  type ClangNode,
+  type CStructDecl,
+  type CStructField,
+  type CUnionDecl,
+  CDeclarationKind,
+  DeclarationKind,
+} from '../../ast';
 import {
   extractDoc,
   extractNodeLocation,

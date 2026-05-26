@@ -1,5 +1,4 @@
-import type { ClangNode, CVarDecl } from '@/ffi-ast/types/ast';
-import { DeclarationKind } from '@/ffi-ast/utility';
+import { type ClangNode, type CVarDecl, DeclarationKind } from '../../ast';
 import { extractNodeLocation, parseCTypeDeclFromString } from '../utility';
 
 export function parseVarDecl(node: ClangNode): CVarDecl | null {

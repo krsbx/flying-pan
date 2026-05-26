@@ -1,5 +1,10 @@
-import type { CEnumConstant, CEnumDecl, ClangNode } from '@/ffi-ast/types/ast';
-import { CDeclarationKind, DeclarationKind } from '@/ffi-ast/utility';
+import {
+  type CEnumConstant,
+  type CEnumDecl,
+  type ClangNode,
+  CDeclarationKind,
+  DeclarationKind,
+} from '../../ast';
 import { extractNodeLocation } from '../utility';
 
 function parseEnumValue(node: ClangNode): number {

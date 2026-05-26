@@ -1,6 +1,6 @@
-import type { CFunctionPointerDecl } from '@/ffi-ast';
-import { cTypeToTsType } from '@/ffi-codegen/utility/conversion';
+import type { CFunctionPointerDecl } from '../../ast';
 import type { CodeGenResult } from '../types';
+import { cTypeToTsType } from '../utility';
 
 export function generateCallbackCode(
   decl: CFunctionPointerDecl

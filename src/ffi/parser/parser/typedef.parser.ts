@@ -1,9 +1,9 @@
-import type {
-  CFunctionPointerDecl,
-  ClangNode,
-  CTypedefDecl,
-} from '@/ffi-ast/types/ast';
-import { DeclarationKind } from '@/ffi-ast/utility';
+import {
+  type CFunctionPointerDecl,
+  type ClangNode,
+  type CTypedefDecl,
+  DeclarationKind,
+} from '../../ast';
 import {
   extractNodeLocation,
   isFunctionPointerType,

@@ -1,5 +1,4 @@
-import type { CFunctionDecl, ClangNode } from '@/ffi-ast/types/ast';
-import { DeclarationKind } from '@/ffi-ast/utility';
+import { type CFunctionDecl, type ClangNode, DeclarationKind } from '../../ast';
 import {
   extractDoc,
   extractNodeLocation,
