@@ -9,7 +9,10 @@ export interface ClangNode {
     col: number | null;
     file: string | null;
   } | null;
-  type: { qualType: string } | null;
+  type: {
+    desugaredQualType: string | null;
+    qualType: string;
+  } | null;
   isImplicit: boolean | null;
   completeDefinition: boolean | null;
   tagUsed: string | null;

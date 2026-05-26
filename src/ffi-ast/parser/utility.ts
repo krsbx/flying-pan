@@ -60,7 +60,9 @@ export function parseParams(inner: ClangNode[]): CFunctionParam[] {
   return inner
     .filter((n) => n.kind === CDeclarationKind.PARM_VAL_DECL)
     .map((node) => ({
-      type: parseCTypeDeclFromString(node.type?.qualType ?? ''),
+      type: parseCTypeDeclFromString(
+        node.type?.desugaredQualType ?? node.type?.qualType ?? ''
+      ),
       name: node.name ?? '',
     }));
 }

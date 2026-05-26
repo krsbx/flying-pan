@@ -10,7 +10,9 @@ export function parseVarDecl(node: ClangNode): CVarDecl | null {
   return {
     kind: DeclarationKind.VAR,
     name: node.name,
-    type: parseCTypeDeclFromString(node.type?.qualType ?? ''),
+    type: parseCTypeDeclFromString(
+      node.type?.desugaredQualType ?? node.type?.qualType ?? ''
+    ),
     loc,
     doc: null,
   };

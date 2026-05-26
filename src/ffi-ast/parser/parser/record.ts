@@ -25,7 +25,9 @@ export function parseRecordDecl(
   if (node.inner) {
     for (const child of node.inner) {
       if (child.kind === CDeclarationKind.FIELD_DECL && child.name) {
-        const type = parseCTypeDeclFromString(child.type?.qualType ?? '');
+        const type = parseCTypeDeclFromString(
+          child.type?.desugaredQualType ?? child.type?.qualType ?? ''
+        );
 
         const field: CStructField = {
           type,

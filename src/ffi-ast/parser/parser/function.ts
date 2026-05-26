@@ -10,7 +10,7 @@ import {
 export function parseFunctionDecl(node: ClangNode): CFunctionDecl | null {
   if (!node.name) return null;
 
-  const qualType = node.type?.qualType ?? '';
+  const qualType = node.type?.desugaredQualType ?? node.type?.qualType ?? '';
   const returnType = parseReturnTypeFromQualType(qualType);
   const params = parseParams(node.inner ?? []);
   const loc = extractNodeLocation(node);

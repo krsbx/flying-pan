@@ -40,7 +40,7 @@ export function parseTypedefDecl(
 ): CTypedefDecl | CFunctionPointerDecl | null {
   if (!node.name) return null;
 
-  const qualType = node.type?.qualType ?? '';
+  const qualType = node.type?.desugaredQualType ?? node.type?.qualType ?? '';
   const loc = extractNodeLocation(node);
 
   if (isFunctionPointerType(qualType)) {
