@@ -23,7 +23,7 @@ export interface FFISymbolDef {
 
 export type CStructLikeDecl = CStructDecl | CUnionDecl;
 
-export interface StructCodeResult {
+export interface CodeGenResult {
   isType: boolean;
   code: string;
 }

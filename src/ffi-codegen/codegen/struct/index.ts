@@ -1,7 +1,8 @@
 import type {
   CStructLikeDecl,
-  StructCodeResult,
+  CodeGenResult,
 } from '@/ffi-codegen/types/codegen';
+import { TypeScriptType } from '@/ffi-codegen/utility/constant';
 import {
   computeLayout,
   generateBitField,
@@ -12,11 +13,11 @@ import {
 export function generateStructCode(options: {
   decl: CStructLikeDecl;
   structNames: Set<string>;
-}): StructCodeResult {
+}): CodeGenResult {
   if (options.decl.isOpaque || options.decl.fields.length === 0) {
     return {
       isType: true,
-      code: `export type ${options.decl.name} = Pointer;`,
+      code: `export type ${options.decl.name} = ${TypeScriptType.POINTER};`,
     } as const;
   }
 
