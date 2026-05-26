@@ -1,4 +1,4 @@
-import type { CFunctionDecl } from '../../../ast/types';
+import type { CFunctionDecl } from '../../../ast';
 import type { FFISymbolDef } from '../../types';
 import { CType, TypeScriptType } from '../../utility/constant';
 import { cTypeToFFI } from '../../utility/conversion';
