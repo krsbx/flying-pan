@@ -106,9 +106,13 @@ export function generateRegularField(field: FieldLayout): string[] {
   const needsBigIntCast =
     viewInfo.setter === 'setBigInt64' && tsType !== 'bigint';
 
+  // 8-bit DataView methods (getUint8, getInt8, setUint8, setInt8) don't take littleEndian
+  const isByteAccess =
+    viewInfo.getter === 'getUint8' || viewInfo.getter === 'getInt8';
+
   const getExpr = needsNumberCast
-    ? `Number(this.$view.${viewInfo.getter}(${field.offset}, true)) as ${tsType}`
-    : `this.$view.${viewInfo.getter}(${field.offset}, true)`;
+    ? `Number(this.$view.${viewInfo.getter}(${field.offset}${isByteAccess ? '' : ', true'})) as ${tsType}`
+    : `this.$view.${viewInfo.getter}(${field.offset}${isByteAccess ? '' : ', true'})`;
 
   lines.push(
     `  // ─── ${field.name} (offset ${field.offset}, ${field.type.name}) ───`
@@ -126,10 +130,12 @@ export function generateRegularField(field: FieldLayout): string[] {
   }
 
   const setExpr = needsBigIntCast ? `BigInt(value)` : 'value';
+  const isByteSet =
+    viewInfo.setter === 'setUint8' || viewInfo.setter === 'setInt8';
 
   lines.push(
     `  public set ${field.name}(value: ${tsType}) {`,
-    `    this.$view.${viewInfo.setter}(${field.offset}, ${setExpr}, true);`,
+    `    this.$view.${viewInfo.setter}(${field.offset}, ${setExpr}${isByteSet ? '' : ', true'});`,
     `  }`,
     ''
   );

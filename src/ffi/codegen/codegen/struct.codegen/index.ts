@@ -36,7 +36,7 @@ export function generateStructCode(options: {
       // Nested struct field
       lines.push(
         `  public get ${field.name}(): ${nestedStruct} {`,
-        `    return ${nestedStruct}.fromPointer(this.$address + ${field.offset});`,
+        `    return ${nestedStruct}.fromPointer((this.$address + ${field.offset}) as Pointer);`,
         `  }`,
         ''
       );
