@@ -1,4 +1,5 @@
 import type { CFunctionPointerDecl } from '@/ffi-ast';
+import { cTypeToTsType } from '@/ffi-codegen/utility/conversion';
 import type { CodeGenResult } from '../types/codegen';
 
 export function generateCallbackCode(
@@ -7,13 +8,13 @@ export function generateCallbackCode(
   const params = decl.params
     .map((p, i) => {
       const name = p.name || `arg${i}`;
-      const tsType = p.type.name;
+      const tsType = cTypeToTsType(p.type);
 
       return `${name}: ${tsType}`;
     })
     .join(', ');
 
-  const returnType = decl.returnType.name;
+  const returnType = cTypeToTsType(decl.returnType);
 
   return {
     isType: true,
