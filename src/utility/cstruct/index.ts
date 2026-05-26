@@ -43,21 +43,21 @@ export class CStruct<Options extends CStructOptions> {
   public static writeArrayPointer = writeArrayPointer;
 
   public $memory: Uint8Array;
-  public $address: Pointer;
   public $view: DataView;
+
+  public get $address(): Pointer {
+    return ptr(this.$memory);
+  }
 
   public constructor(options: Options) {
     if ('address' in options && 'length' in options) {
       const buffer = toArrayBuffer(options.address, 0, options.length);
       this.$memory = new Uint8Array(buffer);
-      this.$address = options.address;
     } else if ('length' in options) {
       this.$memory = new Uint8Array(options.length);
-      this.$address = ptr(this.$memory);
     } else {
       const buffer = toArrayBuffer(options.address);
       this.$memory = new Uint8Array(buffer);
-      this.$address = options.address;
     }
 
     this.$view = new DataView(
@@ -182,7 +182,6 @@ export class CStruct<Options extends CStructOptions> {
     });
 
     struct.$memory = this.$memory.slice();
-    struct.$address = ptr(struct.$memory);
 
     return struct;
   }

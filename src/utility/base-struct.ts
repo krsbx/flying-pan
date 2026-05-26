@@ -12,9 +12,12 @@ export type BaseStructConstructor<T extends BaseStruct = BaseStruct> = {
 export abstract class BaseStruct {
   public static readonly BYTE_SIZE: number;
 
-  public $address: Pointer;
   public $memory: Uint8Array;
   public $view: DataView;
+
+  public get $address(): Pointer {
+    return ptr(this.$memory);
+  }
 
   public constructor(data: BaseStructOptions) {
     const BYTE_SIZE = (new.target as typeof BaseStruct).BYTE_SIZE;
@@ -25,11 +28,9 @@ export abstract class BaseStruct {
 
     if (data instanceof Uint8Array) {
       this.$memory = data;
-      this.$address = ptr(data);
     } else {
       const buffer = toArrayBuffer(data, 0, BYTE_SIZE);
       this.$memory = new Uint8Array(buffer);
-      this.$address = data;
     }
 
     this.$view = new DataView(
