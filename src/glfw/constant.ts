@@ -111,7 +111,7 @@ export const GLFWDefinition = {
   },
   // glColor3b
   glColor3b: {
-    args: [FFIType.ptr, FFIType.ptr, FFIType.ptr],
+    args: [FFIType.i8, FFIType.i8, FFIType.i8],
     returns: FFIType.void,
   },
   // glColor3bv
@@ -191,7 +191,7 @@ export const GLFWDefinition = {
   },
   // glColor4b
   glColor4b: {
-    args: [FFIType.ptr, FFIType.ptr, FFIType.ptr, FFIType.ptr],
+    args: [FFIType.i8, FFIType.i8, FFIType.i8, FFIType.i8],
     returns: FFIType.void,
   },
   // glColor4bv
@@ -1221,7 +1221,7 @@ export const GLFWDefinition = {
   },
   // glNormal3b
   glNormal3b: {
-    args: [FFIType.ptr, FFIType.ptr, FFIType.ptr],
+    args: [FFIType.i8, FFIType.i8, FFIType.i8],
     returns: FFIType.void,
   },
   // glNormal3bv
@@ -2432,7 +2432,7 @@ export const GLFWDefinition = {
   },
   // glSecondaryColor3b
   glSecondaryColor3b: {
-    args: [FFIType.ptr, FFIType.ptr, FFIType.ptr],
+    args: [FFIType.i8, FFIType.i8, FFIType.i8],
     returns: FFIType.void,
   },
   // glSecondaryColor3bv

@@ -237,9 +237,9 @@ export function glClipPlane(
 export function glColor3b(
   this: GLFW,
   options: {
-    red: Pointer | NodeJS.TypedArray | null;
-    green: Pointer | NodeJS.TypedArray | null;
-    blue: Pointer | NodeJS.TypedArray | null;
+    red: number;
+    green: number;
+    blue: number;
   }
 ): void {
   this.symbols.glColor3b(options.red, options.green, options.blue);
@@ -397,10 +397,10 @@ export function glColor3usv(
 export function glColor4b(
   this: GLFW,
   options: {
-    red: Pointer | NodeJS.TypedArray | null;
-    green: Pointer | NodeJS.TypedArray | null;
-    blue: Pointer | NodeJS.TypedArray | null;
-    alpha: Pointer | NodeJS.TypedArray | null;
+    red: number;
+    green: number;
+    blue: number;
+    alpha: number;
   }
 ): void {
   this.symbols.glColor4b(
@@ -2611,9 +2611,9 @@ export function glNewList(
 export function glNormal3b(
   this: GLFW,
   options: {
-    nx: Pointer | NodeJS.TypedArray | null;
-    ny: Pointer | NodeJS.TypedArray | null;
-    nz: Pointer | NodeJS.TypedArray | null;
+    nx: number;
+    ny: number;
+    nz: number;
   }
 ): void {
   this.symbols.glNormal3b(options.nx, options.ny, options.nz);
@@ -5061,9 +5061,9 @@ export function glFogCoordPointer(
 export function glSecondaryColor3b(
   this: GLFW,
   options: {
-    red: Pointer | NodeJS.TypedArray | null;
-    green: Pointer | NodeJS.TypedArray | null;
-    blue: Pointer | NodeJS.TypedArray | null;
+    red: number;
+    green: number;
+    blue: number;
   }
 ): void {
   this.symbols.glSecondaryColor3b(options.red, options.green, options.blue);

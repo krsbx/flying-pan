@@ -8,7 +8,7 @@ export type wchar_t = number;
 
 export type max_align_t = number;
 
-export type int8_t = Pointer;
+export type int8_t = number;
 
 export type int16_t = number;
 
@@ -24,7 +24,7 @@ export type uint32_t = number;
 
 export type uint64_t = bigint;
 
-export type int_least8_t = Pointer;
+export type int_least8_t = number;
 
 export type int_least16_t = number;
 
@@ -40,7 +40,7 @@ export type uint_least32_t = number;
 
 export type uint_least64_t = bigint;
 
-export type int_fast8_t = Pointer;
+export type int_fast8_t = number;
 
 export type int_fast16_t = number;
 
@@ -56,7 +56,7 @@ export type uint_fast32_t = number;
 
 export type uint_fast64_t = bigint;
 
-export type __int8_t = Pointer;
+export type __int8_t = number;
 
 export type __uint8_t = number;
 
@@ -86,7 +86,7 @@ export type __darwin_ptrdiff_t = number;
 
 export type __darwin_size_t = number;
 
-export type __darwin_va_list = number;
+export type __darwin_va_list = Pointer;
 
 export type __darwin_wchar_t = number;
 
@@ -138,9 +138,9 @@ export type __darwin_uid_t = number;
 
 export type __darwin_useconds_t = number;
 
-export type __darwin_uuid_t = number;
+export type __darwin_uuid_t = Pointer;
 
-export type __darwin_uuid_string_t = number;
+export type __darwin_uuid_string_t = Pointer;
 
 export type __darwin_pthread_key_t = number;
 
@@ -156,7 +156,7 @@ export type GLbitfield = number;
 
 export type GLboolean = number;
 
-export type GLbyte = Pointer;
+export type GLbyte = number;
 
 export type GLclampf = number;
 
@@ -182,7 +182,7 @@ export type GLchar = number;
 
 export type GLcharARB = number;
 
-export type GLhandleARB = void;
+export type GLhandleARB = Pointer;
 
 export type GLdouble = number;
 
@@ -212,9 +212,9 @@ export type GLintptrARB = number;
 
 export type GLsizeiptrARB = number;
 
-export type GLFWglproc = (arg0: void) => void;
+export type GLFWglproc = () => void;
 
-export type GLFWvkproc = (arg0: void) => void;
+export type GLFWvkproc = () => void;
 
 export type GLFWmonitor = Pointer;
 
