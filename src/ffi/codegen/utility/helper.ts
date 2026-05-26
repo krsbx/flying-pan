@@ -3,7 +3,9 @@ import type { CTypeDecl } from '../../ast/types';
 import { CType, PrimitiveMap } from './constant';
 
 export function normalizeTypeName(name: string): string {
-  return name.replace(/^(struct|enum|union|class)\s+/, '');
+  return name
+    .replace(/^(struct|enum|union|class)\s+/, '')
+    .replace(/^signed\s+/, '');
 }
 
 export function primitiveSize(name: string): number {

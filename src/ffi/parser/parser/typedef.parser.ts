@@ -1,4 +1,5 @@
 import {
+  type CDeclarationTag,
   type CFunctionPointerDecl,
   type ClangNode,
   type CTypedefDecl,
@@ -40,17 +41,27 @@ export function parseTypedefDecl(
 ): CTypedefDecl | CFunctionPointerDecl | null {
   if (!node.name) return null;
 
-  const qualType = node.type?.desugaredQualType ?? node.type?.qualType ?? '';
+  const rawQualType = node.type?.qualType ?? '';
+  const qualType = node.type?.desugaredQualType ?? rawQualType;
   const loc = extractNodeLocation(node);
 
   if (isFunctionPointerType(qualType)) {
     return parseFunctionPointerTypedef(node, qualType);
   }
 
+  // Detect enum/struct/union tag from the raw qualType
+  let tag: CDeclarationTag | null = null;
+  const tagMatch = rawQualType.match(/^(enum|struct|union)\s+/);
+
+  if (tagMatch) {
+    tag = tagMatch[1] as CDeclarationTag;
+  }
+
   return {
     kind: DeclarationKind.TYPEDEF,
     name: node.name,
     underlyingType: parseCTypeDeclFromString(qualType),
+    tag,
     loc,
     doc: null,
   };

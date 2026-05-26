@@ -1,5 +1,6 @@
 import type { CFunctionParam, ClangNode, CTypeDecl } from '../ast/types';
 import { CDeclarationKind } from '../ast/utility';
+import { CType } from '../codegen/utility';
 
 export function parseCTypeDeclFromString(qualType: string): CTypeDecl {
   let name = qualType.trim();
@@ -57,14 +58,14 @@ export function parseReturnTypeFromQualType(qualType: string): CTypeDecl {
 }
 
 export function parseParams(inner: ClangNode[]): CFunctionParam[] {
-  return inner
-    .filter((n) => n.kind === CDeclarationKind.PARM_VAL_DECL)
-    .map((node) => ({
-      type: parseCTypeDeclFromString(
-        node.type?.desugaredQualType ?? node.type?.qualType ?? ''
-      ),
-      name: node.name ?? '',
-    }));
+  const params = inner.filter((n) => n.kind === CDeclarationKind.PARM_VAL_DECL);
+
+  return params.map((node, i) => ({
+    type: parseCTypeDeclFromString(
+      node.type?.desugaredQualType ?? node.type?.qualType ?? ''
+    ),
+    name: node.name || `arg${i}`,
+  }));
 }
 
 export function parseFunctionPointerParams(qualType: string) {
@@ -76,8 +77,13 @@ export function parseFunctionPointerParams(qualType: string) {
   const paramTypes = splitTopLevelCommas(paramsMatch[1]!);
 
   for (const pt of paramTypes) {
+    const trimmed = pt.trim();
+
+    // C's `void` param means no parameters
+    if (trimmed === CType.VOID) continue;
+
     params.push({
-      type: parseCTypeDeclFromString(pt.trim()),
+      type: parseCTypeDeclFromString(trimmed),
       name: '',
     });
   }

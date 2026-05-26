@@ -49,7 +49,7 @@ export function cTypeToFFI(cType: CTypeDecl): keyof FFITypeStringToType {
     return 'ptr';
   }
 
-  return CTypeToFFIType[cType.name as CType] ?? 'ptr';
+  return CTypeToFFIType[baseName as CType] ?? 'ptr';
 }
 
 export function cTypeToViewMethod(cType: CTypeDecl): DataViewMethodInfo | null {
@@ -65,7 +65,7 @@ export function cTypeToViewMethod(cType: CTypeDecl): DataViewMethodInfo | null {
     return null;
   }
 
-  const primitive = PrimitiveMap[cType.name as CType];
+  const primitive = PrimitiveMap[normalizeTypeName(cType.name) as CType];
 
   if (primitive) {
     return {

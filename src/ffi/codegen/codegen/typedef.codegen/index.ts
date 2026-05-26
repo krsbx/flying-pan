@@ -31,7 +31,8 @@ export function generateTypedefCode(options: {
   }
 
   const tsType = resolveTypedefType({
-    typeNames: underlying.name,
+    typeDecl: underlying,
+    tag: options.decl.tag,
     enumNames: options.enumNames,
   });
 

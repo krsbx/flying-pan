@@ -1,4 +1,8 @@
-import type { CDeclarationKind, DeclarationKind } from './utility';
+import type {
+  CDeclarationKind,
+  CDeclarationTag,
+  DeclarationKind,
+} from './utility';
 
 export interface ClangNode {
   kind: (string & {}) | CDeclarationKind;
@@ -8,6 +12,9 @@ export interface ClangNode {
     line: number | null;
     col: number | null;
     file: string | null;
+    includedFrom: {
+      file: string;
+    } | null;
   } | null;
   type: {
     desugaredQualType: string | null;
@@ -82,6 +89,8 @@ export interface CTypedefDecl extends CASTNode {
   kind: typeof DeclarationKind.TYPEDEF;
   name: string;
   underlyingType: CTypeDecl | CFunctionPointerDecl;
+  /** The C tag (enum/struct/union) from the raw qualType, if any */
+  tag: CDeclarationTag | null;
 }
 
 export interface CEnumConstant {

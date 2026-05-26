@@ -31,3 +31,12 @@ export const DeclarationKind = {
 
 export type DeclarationKind =
   (typeof DeclarationKind)[keyof typeof DeclarationKind];
+
+export const CDeclarationTag = {
+  ENUM: 'enum',
+  STRUCT: 'struct',
+  UNION: 'union',
+} as const;
+
+export type CDeclarationTag =
+  (typeof CDeclarationTag)[keyof typeof CDeclarationTag];
