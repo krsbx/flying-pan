@@ -18,14 +18,22 @@ export function resolveReturnType(options: {
   }
 
   if (options.cType.pointerDepth > 0 || options.cType.arraySize !== null) {
-    return cTypeToTsType(options.cType);
+    const tsType = cTypeToTsType(options.cType);
+
+    return tsType === TypeScriptType.POINTER
+      ? `${TypeScriptType.POINTER} | null`
+      : tsType;
   }
 
   if (options.enumNames.has(baseName)) {
     return baseName;
   }
 
-  return cTypeToTsType(options.cType);
+  const tsType = cTypeToTsType(options.cType);
+
+  return tsType === TypeScriptType.POINTER
+    ? `${TypeScriptType.POINTER} | null`
+    : tsType;
 }
 
 export function resolveParamType(options: {
@@ -35,12 +43,21 @@ export function resolveParamType(options: {
   const baseName = normalizeTypeName(options.cType.name);
 
   if (options.cType.pointerDepth > 0 || options.cType.arraySize !== null) {
-    return cTypeToTsType(options.cType);
+    const tsType = cTypeToTsType(options.cType);
+
+    // Pointer params accept null (common for optional C pointers)
+    return tsType === TypeScriptType.POINTER
+      ? `${TypeScriptType.POINTER} | null`
+      : tsType;
   }
 
   if (options.enumNames.has(baseName)) {
     return baseName;
   }
 
-  return cTypeToTsType(options.cType);
+  const tsType = cTypeToTsType(options.cType);
+
+  return tsType === TypeScriptType.POINTER
+    ? `${TypeScriptType.POINTER} | null`
+    : tsType;
 }
