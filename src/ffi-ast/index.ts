@@ -1,4 +1,3 @@
-export { generateCode, type CodegenConfig } from './codegen';
 export { ClangNodeParser } from './parser';
 export type {
   CASTNode,
