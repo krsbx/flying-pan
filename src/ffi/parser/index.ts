@@ -40,12 +40,19 @@ export class ClangNodeParser {
       if (node.isImplicit) continue;
       if (!node.loc?.line) continue;
 
-      if (
-        options.sourceFile &&
-        node.loc.file &&
-        !node.loc.file.includes(options.sourceFile)
-      ) {
-        continue;
+      if (options.sourceFile) {
+        const file = node.loc?.file ?? null;
+        const includedFrom = node.loc?.includedFrom?.file ?? null;
+
+        // includedFrom means the node is from an #include'd system header
+        if (includedFrom) {
+          continue;
+        }
+
+        // loc.file pointing to a non-matching path → system header
+        if (file && !file.includes(options.sourceFile)) {
+          continue;
+        }
       }
 
       const decl = Parser.parseNode(node, options);
