@@ -15,7 +15,7 @@ export function cTypeToTsType(cType: CTypeDecl): TypeScriptType {
 
   if (cType.pointerDepth > 0) {
     if (cType.pointerDepth === 1 && cType.isConst && baseName === CType.CHAR) {
-      return TypeScriptType.CSTRING;
+      return TypeScriptType.STRING;
     }
 
     return TypeScriptType.POINTER;
@@ -42,7 +42,7 @@ export function cTypeToFFI(cType: CTypeDecl): keyof FFITypeStringToType {
       return 'cstring';
     }
 
-    return 'cstring';
+    return 'ptr';
   }
 
   if (cType.arraySize !== null) {

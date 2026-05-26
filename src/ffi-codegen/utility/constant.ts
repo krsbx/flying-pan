@@ -109,7 +109,7 @@ export const PrimitiveMap = {
   [CType.DOUBLE]: {
     prefix: DataViewPrefix.f64,
     size: CStruct.BYTE_SIZE.f64,
-    tsType: TypeScriptType.BIGINT,
+    tsType: TypeScriptType.NUMBER,
   },
   [CType.LONG_LONG]: {
     prefix: DataViewPrefix.i64,
