@@ -19,6 +19,7 @@
   },
   "scripts": {
     "build:glfw": "bun bin/glfw.ts",
+    "build:miniaudio": "bun bin/miniaudio.ts",
     "prepare": "husky"
   },
   "lint-staged": {
