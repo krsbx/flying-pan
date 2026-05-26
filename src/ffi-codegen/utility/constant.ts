@@ -26,7 +26,9 @@ export const TypeScriptType = {
   VOID: 'void',
   NEVER: 'never',
   POINTER: 'Pointer',
+  TYPED_ARRAY: 'NodeJS.TypedArray',
   CSTRING: 'CString',
+  NULL: 'null',
 } as const;
 
 export type TypeScriptType =

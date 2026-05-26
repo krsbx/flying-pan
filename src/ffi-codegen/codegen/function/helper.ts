@@ -3,6 +3,14 @@ import { CType, TypeScriptType } from '@/ffi-codegen/utility/constant';
 import { cTypeToTsType } from '@/ffi-codegen/utility/conversion';
 import { normalizeTypeName } from '@/ffi-codegen/utility/helper';
 
+const pointerReturnType = [TypeScriptType.POINTER, TypeScriptType.NULL];
+
+const pointerParamType = [
+  TypeScriptType.POINTER,
+  TypeScriptType.TYPED_ARRAY,
+  TypeScriptType.NULL,
+];
+
 export function resolveReturnType(options: {
   cType: CTypeDecl;
   enumNames: Set<string>;
@@ -21,7 +29,7 @@ export function resolveReturnType(options: {
     const tsType = cTypeToTsType(options.cType);
 
     return tsType === TypeScriptType.POINTER
-      ? `${TypeScriptType.POINTER} | null`
+      ? pointerReturnType.join(' | ')
       : tsType;
   }
 
@@ -32,7 +40,7 @@ export function resolveReturnType(options: {
   const tsType = cTypeToTsType(options.cType);
 
   return tsType === TypeScriptType.POINTER
-    ? `${TypeScriptType.POINTER} | null`
+    ? pointerReturnType.join(' | ')
     : tsType;
 }
 
@@ -45,10 +53,12 @@ export function resolveParamType(options: {
   if (options.cType.pointerDepth > 0 || options.cType.arraySize !== null) {
     const tsType = cTypeToTsType(options.cType);
 
-    // Pointer params accept null (common for optional C pointers)
-    return tsType === TypeScriptType.POINTER
-      ? `${TypeScriptType.POINTER} | null`
-      : tsType;
+    // Pointer params accept null and TypedArray (Bun auto-converts to ptr)
+    if (tsType === TypeScriptType.POINTER) {
+      return pointerParamType.join(' | ');
+    }
+
+    return tsType;
   }
 
   if (options.enumNames.has(baseName)) {
@@ -57,7 +67,9 @@ export function resolveParamType(options: {
 
   const tsType = cTypeToTsType(options.cType);
 
-  return tsType === TypeScriptType.POINTER
-    ? `${TypeScriptType.POINTER} | null`
-    : tsType;
+  if (tsType === TypeScriptType.POINTER) {
+    return pointerParamType.join(' | ');
+  }
+
+  return tsType;
 }
