@@ -9,7 +9,7 @@ import {
   parseVarDecl,
 } from './parser';
 
-interface ParseOptions {
+export interface ParseOptions {
   /** Only include declarations whose names match this prefix (e.g. "GLFW") */
   namePrefix?: string;
   /** Only include declarations from this source file (substring match) */

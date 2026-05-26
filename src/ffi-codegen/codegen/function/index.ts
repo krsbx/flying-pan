@@ -14,6 +14,7 @@ export function generateFFIDefinition(decl: CFunctionDecl): FFISymbolDef {
 
 export function generateFunctionCode(options: {
   decl: CFunctionDecl;
+  libName: string;
   enumNames: Set<string>;
 }): string {
   const returnType = resolveReturnType({
@@ -28,7 +29,7 @@ export function generateFunctionCode(options: {
         : `  return this.symbols.${options.decl.name}() as ${returnType};`;
 
     return [
-      `export function ${options.decl.name}(this: FFILibrary): ${returnType} {`,
+      `export function ${options.decl.name}(this: ${options.libName}): ${returnType} {`,
       body,
       `}`,
     ].join('\n');
@@ -40,34 +41,34 @@ export function generateFunctionCode(options: {
       enumNames: options.enumNames,
     });
 
-    return `  ${p.name}: ${paramType};`;
+    return `    ${p.name}: ${paramType};`;
   });
 
-  const paramNames = options.decl.params
+  const argList = options.decl.params
     .map((p) => {
-      const baseName = p.name.replace(/^(struct|enum|union)\s+/, '');
+      const baseName = p.type.name.replace(/^(struct|enum|union)\s+/, '');
 
       if (
         p.type.pointerDepth === 1 &&
         p.type.isConst &&
         baseName === CType.CHAR
       ) {
-        return `stringToCString(params.${p.name})`;
+        return `stringToCString(options.${p.name}).ptr`;
       }
 
-      return `params.${p.name}`;
+      return `options.${p.name}`;
     })
     .join(', ');
 
   const body =
     returnType === TypeScriptType.VOID
-      ? `  this.symbols.${options.decl.name}(${paramNames});`
-      : `  return this.symbols.${options.decl.name}(${paramNames}) as ${returnType};`;
+      ? `  this.symbols.${options.decl.name}(${argList});`
+      : `  return this.symbols.${options.decl.name}(${argList}) as ${returnType};`;
 
   return [
-    `export function ${options.decl.name}(this: FFILibrary, params: {`,
+    `export function ${options.decl.name}(this: ${options.libName}, options: {`,
     ...paramEntries,
-    `}): ${returnType} {`,
+    `  }): ${returnType} {`,
     body,
     `}`,
   ].join('\n');

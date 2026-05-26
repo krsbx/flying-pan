@@ -39,3 +39,12 @@ export interface LayoutResult {
   fields: FieldLayout[];
   byteSize: number;
 }
+
+export interface CodeGenpart {
+  constant: string[];
+  enums: string[];
+  functions: string[];
+  ffiSymbols: FFISymbolDef[];
+  structs: string[];
+  types: string[];
+}
