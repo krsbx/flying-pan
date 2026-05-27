@@ -17,7 +17,7 @@ import {
   writeArrayString,
 } from './utils';
 
-export class CStruct<Options extends CStructOptions> {
+export class CStruct<Options extends CStructOptions = CStructOptions> {
   public static readonly BYTE_SIZE = {
     u8: 1,
     i8: 1,
