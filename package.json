@@ -19,6 +19,7 @@
   },
   "scripts": {
     "build:glfw": "bun bin/glfw.ts",
+    "build:truetype": "bun bin/truetype.ts",
     "build:miniaudio": "bun bin/miniaudio.ts",
     "prepare": "husky"
   },
