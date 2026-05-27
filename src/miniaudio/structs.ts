@@ -1,5 +1,5 @@
-import type { Pointer } from 'bun:ffi';
 import { BaseStruct } from '@utility/base-struct';
+import type { Pointer } from 'bun:ffi';
 
 export class ma_resampler_config extends BaseStruct {
   public static override readonly BYTE_SIZE = 56;

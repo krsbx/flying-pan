@@ -4,17 +4,27 @@ import type {
   DeclarationKind,
 } from './utility';
 
+/** A single position in a Clang AST — can recursively contain spelling/expansion locations */
+export interface ClangLoc {
+  offset: number | null;
+  line: number | null;
+  col: number | null;
+  tokLen: number | null;
+  file: string | null;
+  includedFrom: {
+    file: string;
+  } | null;
+  spellingLoc: ClangLoc | null;
+  expansionLoc: ClangLoc | null;
+}
+
 export interface ClangNode {
   kind: (string & {}) | CDeclarationKind;
   name: string | null;
-  loc: {
-    offset: number | null;
-    line: number | null;
-    col: number | null;
-    file: string | null;
-    includedFrom: {
-      file: string;
-    } | null;
+  loc: ClangLoc | null;
+  range: {
+    begin: ClangLoc | null;
+    end: ClangLoc | null;
   } | null;
   type: {
     desugaredQualType: string | null;

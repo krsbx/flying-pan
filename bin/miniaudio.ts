@@ -5,7 +5,9 @@ const parser = new ClangNodeParser(
   path.join(import.meta.dir, '../assets/miniaudio.json')
 );
 
-const parsed = await parser.parse();
+const parsed = await parser.parse({
+  sourceFile: 'miniaudio.h',
+});
 
 const generator = new FFICodeGenerator({
   libName: 'MiniAudio',

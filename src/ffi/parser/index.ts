@@ -8,6 +8,7 @@ import {
   parseTypedefDecl,
   parseVarDecl,
 } from './parser';
+import { findIncludedFrom } from './utility';
 
 export interface ParseOptions {
   /** Only include declarations whose names match this prefix (e.g. "GLFW") */
@@ -45,15 +46,20 @@ export class ClangNodeParser {
       if (node.storageClass === 'static') continue;
 
       if (options.sourceFile) {
-        const file = node.loc?.file ?? null;
-        const includedFrom = node.loc?.includedFrom?.file ?? null;
+        const loc = node.loc;
+        const rangeBegin = node.range?.begin;
+
+        const file = loc?.file ?? rangeBegin?.file ?? null;
+
+        const includedFrom =
+          findIncludedFrom(loc) ?? findIncludedFrom(rangeBegin);
 
         // includedFrom means the node is from an #include'd system header
         if (includedFrom) {
           continue;
         }
 
-        // loc.file pointing to a non-matching path → system header
+        // file pointing to a non-matching path → system header
         if (file && !file.includes(options.sourceFile)) {
           continue;
         }

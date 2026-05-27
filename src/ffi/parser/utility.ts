@@ -1,4 +1,9 @@
-import type { CFunctionParam, ClangNode, CTypeDecl } from '../ast/types';
+import type {
+  CFunctionParam,
+  ClangLoc,
+  ClangNode,
+  CTypeDecl,
+} from '../ast/types';
 import { CDeclarationKind } from '../ast/utility';
 import { CType } from '../codegen/utility';
 
@@ -158,4 +163,14 @@ export function extractNodeLocation(node: ClangNode) {
 
 export function isFunctionPointerType(qualType: string): boolean {
   return /\(\*\)/.test(qualType) || /\(\*\s*\w*\s*\)\s*\(/.test(qualType);
+}
+
+/** Walk a ClangLoc tree to find any `includedFrom.file` */
+export function findIncludedFrom(
+  l: ClangLoc | null | undefined
+): string | null {
+  if (!l) return null;
+  if (l.includedFrom?.file) return l.includedFrom.file;
+
+  return findIncludedFrom(l.spellingLoc) ?? findIncludedFrom(l.expansionLoc);
 }
