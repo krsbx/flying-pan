@@ -50,7 +50,9 @@ export class CStruct<Options extends CStructOptions = CStructOptions> {
   }
 
   public constructor(options: Options) {
-    if ('address' in options && 'length' in options) {
+    if (typeof options !== 'object') {
+      this.$memory = new Uint8Array(options);
+    } else if ('address' in options && 'length' in options) {
       const buffer = toArrayBuffer(options.address, 0, options.length);
       this.$memory = new Uint8Array(buffer);
     } else if ('length' in options) {

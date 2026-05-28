@@ -16,6 +16,7 @@ export type CStructOptionsWithLengthAndAddress = {
 };
 
 export type CStructOptions =
+  | number
   | CStructOptionsWithLength
   | CStructOptionsWithAddress
   | CStructOptionsWithLengthAndAddress;
