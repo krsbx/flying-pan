@@ -31,13 +31,13 @@ export interface FontAtlasOptions {
 }
 
 export abstract class BaseFontAtlas implements FontAtlasContract {
-  private truetype: TrueType;
-  private fontPath: string;
-  private fontSize: number;
-  private bakedChars: CStruct;
-  private glfw: GLFW | null;
-  private _textureId: number;
-  private ATLAS_SIZE: number;
+  protected truetype: TrueType;
+  protected fontPath: string;
+  protected fontSize: number;
+  protected bakedChars: CStruct;
+  protected glfw: GLFW | null;
+  protected _textureId: number;
+  protected ATLAS_SIZE: number;
 
   public constructor(options: FontAtlasOptions) {
     this.fontPath = options.fontPath;
@@ -64,7 +64,7 @@ export abstract class BaseFontAtlas implements FontAtlasContract {
     });
   }
 
-  private async bakeFontBitmap() {
+  protected async bakeFontBitmap() {
     // Load font file asynchronously
     const fontData = await Bun.file(this.fontPath).bytes();
 
@@ -110,7 +110,7 @@ export abstract class BaseFontAtlas implements FontAtlasContract {
     };
   }
 
-  private generateOpenGLTexture(options: { gl: GLFW; rgba: CStruct }): void {
+  protected generateOpenGLTexture(options: { gl: GLFW; rgba: CStruct }): void {
     // Generate OpenGL Texture
     const textureStruct = new CStruct({ length: CStruct.BYTE_SIZE.i32 });
 
