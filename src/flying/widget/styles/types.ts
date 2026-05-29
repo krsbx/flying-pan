@@ -4,6 +4,7 @@ import type {
   FlexJustify,
   FlexWrap,
   FontWeight,
+  SizeUnit,
   TextAlign,
   WidgetType,
 } from '../constant';
@@ -20,6 +21,12 @@ export type SpacingInput =
   | [number, number]
   | [number, number, number, number]
   | Spacing;
+
+export type SizeInputWithUnit = {
+  [K in keyof typeof SizeUnit]: `${number}${(typeof SizeUnit)[K]}`;
+}[keyof typeof SizeUnit];
+
+export type SizeInput = number | SizeInputWithUnit;
 
 export interface ViewStyle {
   // Box model

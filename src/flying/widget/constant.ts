@@ -64,3 +64,12 @@ export const WidgetType = {
 } as const;
 
 export type WidgetType = (typeof WidgetType)[keyof typeof WidgetType];
+
+export const SizeUnit = {
+  Pixel: 'px',
+  EM: 'em',
+  REM: 'rem',
+  Percentage: '%',
+} as const;
+
+export type SizeUnit = (typeof SizeUnit)[keyof typeof SizeUnit];

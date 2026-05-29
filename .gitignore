@@ -37,5 +37,6 @@ ffi
 
 !src/ffi
 
+glfw3.h
 miniaudio.h
 stb_truetype.h
