@@ -18,7 +18,6 @@ import {
   generateTypedefCode,
 } from './codegen';
 import type { CodeGenpart } from './types';
-import { CType, normalizeTypeName } from './utility';
 
 export interface FFICodeGeneratorOptions {
   /** Name of the library, will be use to name the class */
@@ -95,6 +94,9 @@ export class FFICodeGenerator {
       types: [],
     };
 
+    const neededTypes = new Set<string>();
+    let needsStringHelper = false;
+
     for (const decl of parsed.declarations) {
       switch (decl.kind) {
         case DeclarationKind.STRUCT:
@@ -130,7 +132,7 @@ export class FFICodeGenerator {
         case DeclarationKind.FUNCTION: {
           const funcDecl = decl as CFunctionDecl;
 
-          const code = generateFunctionCode({
+          const generated = generateFunctionCode({
             decl: funcDecl,
             enumNames,
             libName,
@@ -139,7 +141,11 @@ export class FFICodeGenerator {
           const ffi = generateFFIDefinition(funcDecl);
 
           parts.ffiSymbols.push(ffi);
-          parts.functions.push(code);
+          parts.functions.push(generated.code);
+
+          for (const t of generated.neededTypes) neededTypes.add(t);
+          if (generated.needsStringHelper) needsStringHelper = true;
+
           break;
         }
 
@@ -176,17 +182,6 @@ export class FFICodeGenerator {
         }
       }
     }
-
-    const hasStringParams = parsed.declarations.some(
-      (decl) =>
-        decl.kind === DeclarationKind.FUNCTION &&
-        (decl as CFunctionDecl).params.some(
-          (p) =>
-            p.type.pointerDepth === 1 &&
-            p.type.isConst &&
-            normalizeTypeName(p.type.name) === CType.CHAR
-        )
-    );
 
     const promises: Promise<void>[] = [];
 
@@ -230,18 +225,31 @@ export class FFICodeGenerator {
     }
 
     if (parts.functions.length > 0) {
+      const functionImports: string[] = [
+        `import type { CString, Pointer } from 'bun:ffi';`,
+        `import type { ${libName} } from './index';`,
+      ];
+
+      if (neededTypes.size > 0) {
+        functionImports.push(
+          `import type { TypedJSCallback } from '@utility/callback'`,
+          `import type { ${[...neededTypes].join(', ')} } from './types'`
+        );
+      }
+
+      if (needsStringHelper) {
+        functionImports.push(
+          `import { stringToCString } from '@utility/common';`
+        );
+      }
+
       promises.push(
         this.writeGeneratedFile({
           outputDir,
           filename: 'functions.ts',
-          content: [
-            `import type { CString, Pointer } from 'bun:ffi';`,
-            `import type { ${libName} } from './index';`,
-            ...(hasStringParams
-              ? [`import { stringToCString } from '@utility/common';`, '']
-              : ['']),
-            parts.functions.join('\n\n'),
-          ].join('\n'),
+          content: [...functionImports, '', parts.functions.join('\n\n')].join(
+            '\n'
+          ),
         })
       );
     }

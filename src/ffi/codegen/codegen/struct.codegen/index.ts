@@ -49,6 +49,10 @@ export function generateStructCode(options: {
     }
   }
 
+  if (lines.at(-1) === '') {
+    lines.pop();
+  }
+
   lines.push('}');
 
   return {

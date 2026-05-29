@@ -12,11 +12,18 @@ export function generateFFIDefinition(decl: CFunctionDecl): FFISymbolDef {
   };
 }
 
+export interface FunctionCodeGenResult {
+  code: string;
+  /** Type names that must be imported from ./types */
+  neededTypes: string[];
+  needsStringHelper: boolean;
+}
+
 export function generateFunctionCode(options: {
   decl: CFunctionDecl;
   libName: string;
   enumNames: Set<string>;
-}): string {
+}): FunctionCodeGenResult {
   const returnType = resolveReturnType({
     cType: options.decl.returnType,
     enumNames: options.enumNames,
@@ -28,24 +35,31 @@ export function generateFunctionCode(options: {
         ? `  this.symbols.${options.decl.name}();`
         : `  return this.symbols.${options.decl.name}() as ${returnType};`;
 
-    return [
-      `export function ${options.decl.name}(this: ${options.libName}): ${returnType} {`,
-      body,
-      `}`,
-    ].join('\n');
+    return {
+      code: [
+        `export function ${options.decl.name}(this: ${options.libName}): ${returnType} {`,
+        body,
+        `}`,
+      ].join('\n'),
+      neededTypes: [],
+      needsStringHelper: false,
+    };
   }
 
-  const paramEntries = options.decl.params.map((p) => {
-    const paramType = resolveParamType({
-      cType: p.type,
-      enumNames: options.enumNames,
-    });
+  const resolvedParams = options.decl.params.map((p) => ({
+    ...resolveParamType({ cType: p.type, enumNames: options.enumNames }),
+    name: p.name,
+  }));
 
-    return `    ${p.name}: ${paramType};`;
-  });
+  const paramEntries = resolvedParams.map(
+    (p) =>
+      `    ${p.name}: ${p.typeName ? `TypedJSCallback<${p.code}>` : p.code};`
+  );
+
+  let needsStringHelper = false;
 
   const argList = options.decl.params
-    .map((p) => {
+    .map((p, i) => {
       const baseName = p.type.name.replace(/^(struct|enum|union)\s+/, '');
 
       if (
@@ -53,10 +67,11 @@ export function generateFunctionCode(options: {
         p.type.isConst &&
         baseName === CType.CHAR
       ) {
+        needsStringHelper = true;
         return `stringToCString(options.${p.name}).ptr`;
       }
 
-      return `options.${p.name}`;
+      return `options.${resolvedParams[i]!.name}`;
     })
     .join(', ');
 
@@ -65,11 +80,17 @@ export function generateFunctionCode(options: {
       ? `  this.symbols.${options.decl.name}(${argList});`
       : `  return this.symbols.${options.decl.name}(${argList}) as ${returnType};`;
 
-  return [
-    `export function ${options.decl.name}(this: ${options.libName}, options: {`,
-    ...paramEntries,
-    `  }): ${returnType} {`,
-    body,
-    `}`,
-  ].join('\n');
+  return {
+    code: [
+      `export function ${options.decl.name}(this: ${options.libName}, options: {`,
+      ...paramEntries,
+      `  }): ${returnType} {`,
+      body,
+      `}`,
+    ].join('\n'),
+    neededTypes: resolvedParams
+      .map((p) => p.typeName)
+      .filter((t): t is string => t !== null),
+    needsStringHelper,
+  };
 }

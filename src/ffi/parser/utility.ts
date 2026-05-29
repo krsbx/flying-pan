@@ -33,6 +33,7 @@ export function parseCTypeDeclFromString(qualType: string): CTypeDecl {
     isConst,
     pointerDepth,
     arraySize,
+    isFunctionPointer: null,
   };
 }
 
@@ -65,12 +66,30 @@ export function parseReturnTypeFromQualType(qualType: string): CTypeDecl {
 export function parseParams(inner: ClangNode[]): CFunctionParam[] {
   const params = inner.filter((n) => n.kind === CDeclarationKind.PARM_VAL_DECL);
 
-  return params.map((node, i) => ({
-    type: parseCTypeDeclFromString(
-      node.type?.desugaredQualType ?? node.type?.qualType ?? ''
-    ),
-    name: node.name || `arg${i}`,
-  }));
+  return params.map((node, i) => {
+    const desugared = node.type?.desugaredQualType;
+    const qual = node.type?.qualType ?? '';
+
+    // When the desugared type is a function pointer (e.g. "void (*)(GLFWwindow *, int)"),
+    // use the typedef name from qualType (e.g. "GLFWwindowfocusfun") for TS type resolution
+    if (desugared && isFunctionPointerType(desugared)) {
+      return {
+        type: {
+          name: qual,
+          isConst: false,
+          pointerDepth: 0,
+          arraySize: null,
+          isFunctionPointer: true,
+        },
+        name: node.name || `arg${i}`,
+      };
+    }
+
+    return {
+      type: parseCTypeDeclFromString(desugared ?? qual),
+      name: node.name || `arg${i}`,
+    };
+  });
 }
 
 export function parseFunctionPointerParams(qualType: string) {

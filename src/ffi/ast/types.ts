@@ -56,6 +56,7 @@ export interface CTypeDecl {
   isConst: boolean;
   pointerDepth: number;
   arraySize: number | null;
+  isFunctionPointer: boolean | null;
 }
 
 export interface CFunctionParam {

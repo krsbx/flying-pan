@@ -47,32 +47,60 @@ export function resolveReturnType(options: {
     : tsType;
 }
 
+export interface ResolvedParam {
+  /** The TS type code for the param declaration */
+  code: string;
+  /** If non-null, this type name must be imported from ./types */
+  typeName: string | null;
+}
+
 export function resolveParamType(options: {
   cType: CTypeDecl;
   enumNames: Set<string>;
-}): string {
+}): ResolvedParam {
+  if (options.cType.isFunctionPointer) {
+    return {
+      code: options.cType.name,
+      typeName: options.cType.name,
+    };
+  }
+
   const baseName = normalizeTypeName(options.cType.name);
 
   if (options.cType.pointerDepth > 0 || options.cType.arraySize !== null) {
     const tsType = cTypeToTsType(options.cType);
 
-    // Pointer params accept null and TypedArray (Bun auto-converts to ptr)
     if (tsType === TypeScriptType.POINTER) {
-      return pointerParamType.join(' | ');
+      return {
+        code: pointerParamType.join(' | '),
+        typeName: null,
+      };
     }
 
-    return tsType;
+    return {
+      code: tsType,
+      typeName: null,
+    };
   }
 
   if (options.enumNames.has(baseName)) {
-    return baseName;
+    return {
+      code: baseName,
+      typeName: null,
+    };
   }
 
   const tsType = cTypeToTsType(options.cType);
 
   if (tsType === TypeScriptType.POINTER) {
-    return pointerParamType.join(' | ');
+    return {
+      code: pointerParamType.join(' | '),
+      typeName: null,
+    };
   }
 
-  return tsType;
+  return {
+    code: tsType,
+    typeName: null,
+  };
 }
