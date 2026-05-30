@@ -31,12 +31,12 @@ export function ma_version_string(this: MiniAudio): CString {
 export function ma_log_callback_init(
   this: MiniAudio,
   options: {
-    onLog: TypedJSCallback<ma_log_callback_proc>;
+    onLog: TypedJSCallback<ma_log_callback_proc> | null;
     pUserData: Pointer | NodeJS.TypedArray | null;
   }
 ): Pointer | null {
   return this.symbols.ma_log_callback_init(
-    options.onLog,
+    options.onLog?.ptr ?? null,
     options.pUserData
   ) as Pointer | null;
 }
@@ -4491,12 +4491,12 @@ export function ma_data_source_set_next_callback(
   this: MiniAudio,
   options: {
     pDataSource: Pointer | NodeJS.TypedArray | null;
-    onGetNext: TypedJSCallback<ma_data_source_get_next_proc>;
+    onGetNext: TypedJSCallback<ma_data_source_get_next_proc> | null;
   }
 ): Pointer | null {
   return this.symbols.ma_data_source_set_next_callback(
     options.pDataSource,
-    options.onGetNext
+    options.onGetNext?.ptr ?? null
   ) as Pointer | null;
 }
 
@@ -6287,13 +6287,13 @@ export function ma_context_enumerate_devices(
   this: MiniAudio,
   options: {
     pContext: Pointer | NodeJS.TypedArray | null;
-    callback: TypedJSCallback<ma_enum_devices_callback_proc>;
+    callback: TypedJSCallback<ma_enum_devices_callback_proc> | null;
     pUserData: Pointer | NodeJS.TypedArray | null;
   }
 ): Pointer | null {
   return this.symbols.ma_context_enumerate_devices(
     options.pContext,
-    options.callback,
+    options.callback?.ptr ?? null,
     options.pUserData
   ) as Pointer | null;
 }
@@ -7558,16 +7558,16 @@ export function ma_decoder_config_init_default(
 export function ma_decoder_init(
   this: MiniAudio,
   options: {
-    onRead: TypedJSCallback<ma_decoder_read_proc>;
-    onSeek: TypedJSCallback<ma_decoder_seek_proc>;
+    onRead: TypedJSCallback<ma_decoder_read_proc> | null;
+    onSeek: TypedJSCallback<ma_decoder_seek_proc> | null;
     pUserData: Pointer | NodeJS.TypedArray | null;
     pConfig: Pointer | NodeJS.TypedArray | null;
     pDecoder: Pointer | NodeJS.TypedArray | null;
   }
 ): Pointer | null {
   return this.symbols.ma_decoder_init(
-    options.onRead,
-    options.onSeek,
+    options.onRead?.ptr ?? null,
+    options.onSeek?.ptr ?? null,
     options.pUserData,
     options.pConfig,
     options.pDecoder
@@ -7829,16 +7829,16 @@ export function ma_encoder_config_init(
 export function ma_encoder_init(
   this: MiniAudio,
   options: {
-    onWrite: TypedJSCallback<ma_encoder_write_proc>;
-    onSeek: TypedJSCallback<ma_encoder_seek_proc>;
+    onWrite: TypedJSCallback<ma_encoder_write_proc> | null;
+    onSeek: TypedJSCallback<ma_encoder_seek_proc> | null;
     pUserData: Pointer | NodeJS.TypedArray | null;
     pConfig: Pointer | NodeJS.TypedArray | null;
     pEncoder: Pointer | NodeJS.TypedArray | null;
   }
 ): Pointer | null {
   return this.symbols.ma_encoder_init(
-    options.onWrite,
-    options.onSeek,
+    options.onWrite?.ptr ?? null,
+    options.onSeek?.ptr ?? null,
     options.pUserData,
     options.pConfig,
     options.pEncoder
@@ -11848,13 +11848,13 @@ export function ma_sound_set_end_callback(
   this: MiniAudio,
   options: {
     pSound: Pointer | NodeJS.TypedArray | null;
-    callback: TypedJSCallback<ma_sound_end_proc>;
+    callback: TypedJSCallback<ma_sound_end_proc> | null;
     pUserData: Pointer | NodeJS.TypedArray | null;
   }
 ): Pointer | null {
   return this.symbols.ma_sound_set_end_callback(
     options.pSound,
-    options.callback,
+    options.callback?.ptr ?? null,
     options.pUserData
   ) as Pointer | null;
 }

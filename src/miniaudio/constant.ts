@@ -13,7 +13,7 @@ export const MiniAudioDefinition = {
   },
   // ma_log_callback_init
   ma_log_callback_init: {
-    args: [FFIType.function, FFIType.ptr],
+    args: [FFIType.ptr, FFIType.ptr],
     returns: FFIType.ptr,
   },
   // ma_log_init
@@ -1680,7 +1680,7 @@ export const MiniAudioDefinition = {
   },
   // ma_data_source_set_next_callback
   ma_data_source_set_next_callback: {
-    args: [FFIType.ptr, FFIType.function],
+    args: [FFIType.ptr, FFIType.ptr],
     returns: FFIType.ptr,
   },
   // ma_data_source_get_next_callback
@@ -2451,7 +2451,7 @@ export const MiniAudioDefinition = {
   },
   // ma_context_enumerate_devices
   ma_context_enumerate_devices: {
-    args: [FFIType.ptr, FFIType.function, FFIType.ptr],
+    args: [FFIType.ptr, FFIType.ptr, FFIType.ptr],
     returns: FFIType.ptr,
   },
   // ma_context_get_devices
@@ -2890,13 +2890,7 @@ export const MiniAudioDefinition = {
   },
   // ma_decoder_init
   ma_decoder_init: {
-    args: [
-      FFIType.function,
-      FFIType.function,
-      FFIType.ptr,
-      FFIType.ptr,
-      FFIType.ptr,
-    ],
+    args: [FFIType.ptr, FFIType.ptr, FFIType.ptr, FFIType.ptr, FFIType.ptr],
     returns: FFIType.ptr,
   },
   // ma_decoder_init_memory
@@ -2988,13 +2982,7 @@ export const MiniAudioDefinition = {
   },
   // ma_encoder_init
   ma_encoder_init: {
-    args: [
-      FFIType.function,
-      FFIType.function,
-      FFIType.ptr,
-      FFIType.ptr,
-      FFIType.ptr,
-    ],
+    args: [FFIType.ptr, FFIType.ptr, FFIType.ptr, FFIType.ptr, FFIType.ptr],
     returns: FFIType.ptr,
   },
   // ma_encoder_init_vfs
@@ -4599,7 +4587,7 @@ export const MiniAudioDefinition = {
   },
   // ma_sound_set_end_callback
   ma_sound_set_end_callback: {
-    args: [FFIType.ptr, FFIType.function, FFIType.ptr],
+    args: [FFIType.ptr, FFIType.ptr, FFIType.ptr],
     returns: FFIType.ptr,
   },
   // ma_sound_group_init
