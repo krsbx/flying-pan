@@ -53,7 +53,7 @@ export function generateFunctionCode(options: {
 
   const paramEntries = resolvedParams.map(
     (p) =>
-      `    ${p.name}: ${p.typeName ? `TypedJSCallback<${p.code}>` : p.code};`
+      `    ${p.name}: ${p.typeName ? `TypedJSCallback<${p.code}> | null` : p.code};`
   );
 
   let needsStringHelper = false;
@@ -69,6 +69,10 @@ export function generateFunctionCode(options: {
       ) {
         needsStringHelper = true;
         return `stringToCString(options.${p.name}).ptr`;
+      }
+
+      if (resolvedParams[i]!.typeName) {
+        return `options.${resolvedParams[i]!.name}?.ptr ?? null`;
       }
 
       return `options.${resolvedParams[i]!.name}`;

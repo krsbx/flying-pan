@@ -35,10 +35,6 @@ export function cTypeToTsType(cType: CTypeDecl): TypeScriptType {
 }
 
 export function cTypeToFFI(cType: CTypeDecl): keyof FFITypeStringToType {
-  if (cType.isFunctionPointer) {
-    return 'function';
-  }
-
   const baseName = normalizeTypeName(cType.name);
 
   if (cType.pointerDepth > 0) {
