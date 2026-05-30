@@ -3275,7 +3275,7 @@ export const GLFWDefinition = {
   },
   // glfwSetErrorCallback
   glfwSetErrorCallback: {
-    args: [FFIType.function],
+    args: [FFIType.ptr],
     returns: FFIType.ptr,
   },
   // glfwGetPlatform
@@ -3335,7 +3335,7 @@ export const GLFWDefinition = {
   },
   // glfwSetMonitorCallback
   glfwSetMonitorCallback: {
-    args: [FFIType.function],
+    args: [FFIType.ptr],
     returns: FFIType.ptr,
   },
   // glfwGetVideoModes
@@ -3543,47 +3543,47 @@ export const GLFWDefinition = {
   },
   // glfwSetWindowPosCallback
   glfwSetWindowPosCallback: {
-    args: [FFIType.ptr, FFIType.function],
+    args: [FFIType.ptr, FFIType.ptr],
     returns: FFIType.ptr,
   },
   // glfwSetWindowSizeCallback
   glfwSetWindowSizeCallback: {
-    args: [FFIType.ptr, FFIType.function],
+    args: [FFIType.ptr, FFIType.ptr],
     returns: FFIType.ptr,
   },
   // glfwSetWindowCloseCallback
   glfwSetWindowCloseCallback: {
-    args: [FFIType.ptr, FFIType.function],
+    args: [FFIType.ptr, FFIType.ptr],
     returns: FFIType.ptr,
   },
   // glfwSetWindowRefreshCallback
   glfwSetWindowRefreshCallback: {
-    args: [FFIType.ptr, FFIType.function],
+    args: [FFIType.ptr, FFIType.ptr],
     returns: FFIType.ptr,
   },
   // glfwSetWindowFocusCallback
   glfwSetWindowFocusCallback: {
-    args: [FFIType.ptr, FFIType.function],
+    args: [FFIType.ptr, FFIType.ptr],
     returns: FFIType.ptr,
   },
   // glfwSetWindowIconifyCallback
   glfwSetWindowIconifyCallback: {
-    args: [FFIType.ptr, FFIType.function],
+    args: [FFIType.ptr, FFIType.ptr],
     returns: FFIType.ptr,
   },
   // glfwSetWindowMaximizeCallback
   glfwSetWindowMaximizeCallback: {
-    args: [FFIType.ptr, FFIType.function],
+    args: [FFIType.ptr, FFIType.ptr],
     returns: FFIType.ptr,
   },
   // glfwSetFramebufferSizeCallback
   glfwSetFramebufferSizeCallback: {
-    args: [FFIType.ptr, FFIType.function],
+    args: [FFIType.ptr, FFIType.ptr],
     returns: FFIType.ptr,
   },
   // glfwSetWindowContentScaleCallback
   glfwSetWindowContentScaleCallback: {
-    args: [FFIType.ptr, FFIType.function],
+    args: [FFIType.ptr, FFIType.ptr],
     returns: FFIType.ptr,
   },
   // glfwPollEvents
@@ -3673,42 +3673,42 @@ export const GLFWDefinition = {
   },
   // glfwSetKeyCallback
   glfwSetKeyCallback: {
-    args: [FFIType.ptr, FFIType.function],
+    args: [FFIType.ptr, FFIType.ptr],
     returns: FFIType.ptr,
   },
   // glfwSetCharCallback
   glfwSetCharCallback: {
-    args: [FFIType.ptr, FFIType.function],
+    args: [FFIType.ptr, FFIType.ptr],
     returns: FFIType.ptr,
   },
   // glfwSetCharModsCallback
   glfwSetCharModsCallback: {
-    args: [FFIType.ptr, FFIType.function],
+    args: [FFIType.ptr, FFIType.ptr],
     returns: FFIType.ptr,
   },
   // glfwSetMouseButtonCallback
   glfwSetMouseButtonCallback: {
-    args: [FFIType.ptr, FFIType.function],
+    args: [FFIType.ptr, FFIType.ptr],
     returns: FFIType.ptr,
   },
   // glfwSetCursorPosCallback
   glfwSetCursorPosCallback: {
-    args: [FFIType.ptr, FFIType.function],
+    args: [FFIType.ptr, FFIType.ptr],
     returns: FFIType.ptr,
   },
   // glfwSetCursorEnterCallback
   glfwSetCursorEnterCallback: {
-    args: [FFIType.ptr, FFIType.function],
+    args: [FFIType.ptr, FFIType.ptr],
     returns: FFIType.ptr,
   },
   // glfwSetScrollCallback
   glfwSetScrollCallback: {
-    args: [FFIType.ptr, FFIType.function],
+    args: [FFIType.ptr, FFIType.ptr],
     returns: FFIType.ptr,
   },
   // glfwSetDropCallback
   glfwSetDropCallback: {
-    args: [FFIType.ptr, FFIType.function],
+    args: [FFIType.ptr, FFIType.ptr],
     returns: FFIType.ptr,
   },
   // glfwJoystickPresent
@@ -3758,7 +3758,7 @@ export const GLFWDefinition = {
   },
   // glfwSetJoystickCallback
   glfwSetJoystickCallback: {
-    args: [FFIType.function],
+    args: [FFIType.ptr],
     returns: FFIType.ptr,
   },
   // glfwUpdateGamepadMappings

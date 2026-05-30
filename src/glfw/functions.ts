@@ -7026,10 +7026,12 @@ export function glfwGetError(
 export function glfwSetErrorCallback(
   this: GLFW,
   options: {
-    callback: TypedJSCallback<GLFWerrorfun>;
+    callback: TypedJSCallback<GLFWerrorfun> | null;
   }
 ): Pointer | null {
-  return this.symbols.glfwSetErrorCallback(options.callback) as Pointer | null;
+  return this.symbols.glfwSetErrorCallback(
+    options.callback?.ptr ?? null
+  ) as Pointer | null;
 }
 
 export function glfwGetPlatform(this: GLFW): number {
@@ -7151,11 +7153,11 @@ export function glfwGetMonitorUserPointer(
 export function glfwSetMonitorCallback(
   this: GLFW,
   options: {
-    callback: TypedJSCallback<GLFWmonitorfun>;
+    callback: TypedJSCallback<GLFWmonitorfun> | null;
   }
 ): Pointer | null {
   return this.symbols.glfwSetMonitorCallback(
-    options.callback
+    options.callback?.ptr ?? null
   ) as Pointer | null;
 }
 
@@ -7611,12 +7613,12 @@ export function glfwSetWindowPosCallback(
   this: GLFW,
   options: {
     window: Pointer | NodeJS.TypedArray | null;
-    callback: TypedJSCallback<GLFWwindowposfun>;
+    callback: TypedJSCallback<GLFWwindowposfun> | null;
   }
 ): Pointer | null {
   return this.symbols.glfwSetWindowPosCallback(
     options.window,
-    options.callback
+    options.callback?.ptr ?? null
   ) as Pointer | null;
 }
 
@@ -7624,12 +7626,12 @@ export function glfwSetWindowSizeCallback(
   this: GLFW,
   options: {
     window: Pointer | NodeJS.TypedArray | null;
-    callback: TypedJSCallback<GLFWwindowsizefun>;
+    callback: TypedJSCallback<GLFWwindowsizefun> | null;
   }
 ): Pointer | null {
   return this.symbols.glfwSetWindowSizeCallback(
     options.window,
-    options.callback
+    options.callback?.ptr ?? null
   ) as Pointer | null;
 }
 
@@ -7637,12 +7639,12 @@ export function glfwSetWindowCloseCallback(
   this: GLFW,
   options: {
     window: Pointer | NodeJS.TypedArray | null;
-    callback: TypedJSCallback<GLFWwindowclosefun>;
+    callback: TypedJSCallback<GLFWwindowclosefun> | null;
   }
 ): Pointer | null {
   return this.symbols.glfwSetWindowCloseCallback(
     options.window,
-    options.callback
+    options.callback?.ptr ?? null
   ) as Pointer | null;
 }
 
@@ -7650,12 +7652,12 @@ export function glfwSetWindowRefreshCallback(
   this: GLFW,
   options: {
     window: Pointer | NodeJS.TypedArray | null;
-    callback: TypedJSCallback<GLFWwindowrefreshfun>;
+    callback: TypedJSCallback<GLFWwindowrefreshfun> | null;
   }
 ): Pointer | null {
   return this.symbols.glfwSetWindowRefreshCallback(
     options.window,
-    options.callback
+    options.callback?.ptr ?? null
   ) as Pointer | null;
 }
 
@@ -7663,12 +7665,12 @@ export function glfwSetWindowFocusCallback(
   this: GLFW,
   options: {
     window: Pointer | NodeJS.TypedArray | null;
-    callback: TypedJSCallback<GLFWwindowfocusfun>;
+    callback: TypedJSCallback<GLFWwindowfocusfun> | null;
   }
 ): Pointer | null {
   return this.symbols.glfwSetWindowFocusCallback(
     options.window,
-    options.callback
+    options.callback?.ptr ?? null
   ) as Pointer | null;
 }
 
@@ -7676,12 +7678,12 @@ export function glfwSetWindowIconifyCallback(
   this: GLFW,
   options: {
     window: Pointer | NodeJS.TypedArray | null;
-    callback: TypedJSCallback<GLFWwindowiconifyfun>;
+    callback: TypedJSCallback<GLFWwindowiconifyfun> | null;
   }
 ): Pointer | null {
   return this.symbols.glfwSetWindowIconifyCallback(
     options.window,
-    options.callback
+    options.callback?.ptr ?? null
   ) as Pointer | null;
 }
 
@@ -7689,12 +7691,12 @@ export function glfwSetWindowMaximizeCallback(
   this: GLFW,
   options: {
     window: Pointer | NodeJS.TypedArray | null;
-    callback: TypedJSCallback<GLFWwindowmaximizefun>;
+    callback: TypedJSCallback<GLFWwindowmaximizefun> | null;
   }
 ): Pointer | null {
   return this.symbols.glfwSetWindowMaximizeCallback(
     options.window,
-    options.callback
+    options.callback?.ptr ?? null
   ) as Pointer | null;
 }
 
@@ -7702,12 +7704,12 @@ export function glfwSetFramebufferSizeCallback(
   this: GLFW,
   options: {
     window: Pointer | NodeJS.TypedArray | null;
-    callback: TypedJSCallback<GLFWframebuffersizefun>;
+    callback: TypedJSCallback<GLFWframebuffersizefun> | null;
   }
 ): Pointer | null {
   return this.symbols.glfwSetFramebufferSizeCallback(
     options.window,
-    options.callback
+    options.callback?.ptr ?? null
   ) as Pointer | null;
 }
 
@@ -7715,12 +7717,12 @@ export function glfwSetWindowContentScaleCallback(
   this: GLFW,
   options: {
     window: Pointer | NodeJS.TypedArray | null;
-    callback: TypedJSCallback<GLFWwindowcontentscalefun>;
+    callback: TypedJSCallback<GLFWwindowcontentscalefun> | null;
   }
 ): Pointer | null {
   return this.symbols.glfwSetWindowContentScaleCallback(
     options.window,
-    options.callback
+    options.callback?.ptr ?? null
   ) as Pointer | null;
 }
 
@@ -7881,12 +7883,12 @@ export function glfwSetKeyCallback(
   this: GLFW,
   options: {
     window: Pointer | NodeJS.TypedArray | null;
-    callback: TypedJSCallback<GLFWkeyfun>;
+    callback: TypedJSCallback<GLFWkeyfun> | null;
   }
 ): Pointer | null {
   return this.symbols.glfwSetKeyCallback(
     options.window,
-    options.callback
+    options.callback?.ptr ?? null
   ) as Pointer | null;
 }
 
@@ -7894,12 +7896,12 @@ export function glfwSetCharCallback(
   this: GLFW,
   options: {
     window: Pointer | NodeJS.TypedArray | null;
-    callback: TypedJSCallback<GLFWcharfun>;
+    callback: TypedJSCallback<GLFWcharfun> | null;
   }
 ): Pointer | null {
   return this.symbols.glfwSetCharCallback(
     options.window,
-    options.callback
+    options.callback?.ptr ?? null
   ) as Pointer | null;
 }
 
@@ -7907,12 +7909,12 @@ export function glfwSetCharModsCallback(
   this: GLFW,
   options: {
     window: Pointer | NodeJS.TypedArray | null;
-    callback: TypedJSCallback<GLFWcharmodsfun>;
+    callback: TypedJSCallback<GLFWcharmodsfun> | null;
   }
 ): Pointer | null {
   return this.symbols.glfwSetCharModsCallback(
     options.window,
-    options.callback
+    options.callback?.ptr ?? null
   ) as Pointer | null;
 }
 
@@ -7920,12 +7922,12 @@ export function glfwSetMouseButtonCallback(
   this: GLFW,
   options: {
     window: Pointer | NodeJS.TypedArray | null;
-    callback: TypedJSCallback<GLFWmousebuttonfun>;
+    callback: TypedJSCallback<GLFWmousebuttonfun> | null;
   }
 ): Pointer | null {
   return this.symbols.glfwSetMouseButtonCallback(
     options.window,
-    options.callback
+    options.callback?.ptr ?? null
   ) as Pointer | null;
 }
 
@@ -7933,12 +7935,12 @@ export function glfwSetCursorPosCallback(
   this: GLFW,
   options: {
     window: Pointer | NodeJS.TypedArray | null;
-    callback: TypedJSCallback<GLFWcursorposfun>;
+    callback: TypedJSCallback<GLFWcursorposfun> | null;
   }
 ): Pointer | null {
   return this.symbols.glfwSetCursorPosCallback(
     options.window,
-    options.callback
+    options.callback?.ptr ?? null
   ) as Pointer | null;
 }
 
@@ -7946,12 +7948,12 @@ export function glfwSetCursorEnterCallback(
   this: GLFW,
   options: {
     window: Pointer | NodeJS.TypedArray | null;
-    callback: TypedJSCallback<GLFWcursorenterfun>;
+    callback: TypedJSCallback<GLFWcursorenterfun> | null;
   }
 ): Pointer | null {
   return this.symbols.glfwSetCursorEnterCallback(
     options.window,
-    options.callback
+    options.callback?.ptr ?? null
   ) as Pointer | null;
 }
 
@@ -7959,12 +7961,12 @@ export function glfwSetScrollCallback(
   this: GLFW,
   options: {
     window: Pointer | NodeJS.TypedArray | null;
-    callback: TypedJSCallback<GLFWscrollfun>;
+    callback: TypedJSCallback<GLFWscrollfun> | null;
   }
 ): Pointer | null {
   return this.symbols.glfwSetScrollCallback(
     options.window,
-    options.callback
+    options.callback?.ptr ?? null
   ) as Pointer | null;
 }
 
@@ -7972,12 +7974,12 @@ export function glfwSetDropCallback(
   this: GLFW,
   options: {
     window: Pointer | NodeJS.TypedArray | null;
-    callback: TypedJSCallback<GLFWdropfun>;
+    callback: TypedJSCallback<GLFWdropfun> | null;
   }
 ): Pointer | null {
   return this.symbols.glfwSetDropCallback(
     options.window,
-    options.callback
+    options.callback?.ptr ?? null
   ) as Pointer | null;
 }
 
@@ -8078,11 +8080,11 @@ export function glfwJoystickIsGamepad(
 export function glfwSetJoystickCallback(
   this: GLFW,
   options: {
-    callback: TypedJSCallback<GLFWjoystickfun>;
+    callback: TypedJSCallback<GLFWjoystickfun> | null;
   }
 ): Pointer | null {
   return this.symbols.glfwSetJoystickCallback(
-    options.callback
+    options.callback?.ptr ?? null
   ) as Pointer | null;
 }
 
