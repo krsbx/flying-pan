@@ -212,9 +212,9 @@ export type GLintptrARB = number;
 
 export type GLsizeiptrARB = number;
 
-export type GLFWglproc = () => void;
+export type GLFWglproc = () => Pointer | null;
 
-export type GLFWvkproc = () => void;
+export type GLFWvkproc = () => Pointer | null;
 
 export type GLFWmonitor = Pointer;
 
@@ -230,60 +230,79 @@ export type GLFWreallocatefun = (
   arg2: Pointer
 ) => Pointer;
 
-export type GLFWdeallocatefun = (arg0: Pointer, arg1: Pointer) => void;
+export type GLFWdeallocatefun = (
+  arg0: Pointer,
+  arg1: Pointer
+) => Pointer | null;
 
-export type GLFWerrorfun = (arg0: number, arg1: string) => void;
+export type GLFWerrorfun = (arg0: number, arg1: string) => Pointer | null;
 
 export type GLFWwindowposfun = (
   arg0: Pointer,
   arg1: number,
   arg2: number
-) => void;
+) => Pointer | null;
 
 export type GLFWwindowsizefun = (
   arg0: Pointer,
   arg1: number,
   arg2: number
-) => void;
+) => Pointer | null;
 
-export type GLFWwindowclosefun = (arg0: Pointer) => void;
+export type GLFWwindowclosefun = (arg0: Pointer) => Pointer | null;
 
-export type GLFWwindowrefreshfun = (arg0: Pointer) => void;
+export type GLFWwindowrefreshfun = (arg0: Pointer) => Pointer | null;
 
-export type GLFWwindowfocusfun = (arg0: Pointer, arg1: number) => void;
+export type GLFWwindowfocusfun = (
+  arg0: Pointer,
+  arg1: number
+) => Pointer | null;
 
-export type GLFWwindowiconifyfun = (arg0: Pointer, arg1: number) => void;
+export type GLFWwindowiconifyfun = (
+  arg0: Pointer,
+  arg1: number
+) => Pointer | null;
 
-export type GLFWwindowmaximizefun = (arg0: Pointer, arg1: number) => void;
+export type GLFWwindowmaximizefun = (
+  arg0: Pointer,
+  arg1: number
+) => Pointer | null;
 
 export type GLFWframebuffersizefun = (
   arg0: Pointer,
   arg1: number,
   arg2: number
-) => void;
+) => Pointer | null;
 
 export type GLFWwindowcontentscalefun = (
   arg0: Pointer,
   arg1: number,
   arg2: number
-) => void;
+) => Pointer | null;
 
 export type GLFWmousebuttonfun = (
   arg0: Pointer,
   arg1: number,
   arg2: number,
   arg3: number
-) => void;
+) => Pointer | null;
 
 export type GLFWcursorposfun = (
   arg0: Pointer,
   arg1: number,
   arg2: number
-) => void;
+) => Pointer | null;
 
-export type GLFWcursorenterfun = (arg0: Pointer, arg1: number) => void;
+export type GLFWcursorenterfun = (
+  arg0: Pointer,
+  arg1: number
+) => Pointer | null;
 
-export type GLFWscrollfun = (arg0: Pointer, arg1: number, arg2: number) => void;
+export type GLFWscrollfun = (
+  arg0: Pointer,
+  arg1: number,
+  arg2: number
+) => Pointer | null;
 
 export type GLFWkeyfun = (
   arg0: Pointer,
@@ -291,18 +310,22 @@ export type GLFWkeyfun = (
   arg2: number,
   arg3: number,
   arg4: number
-) => void;
+) => Pointer | null;
 
-export type GLFWcharfun = (arg0: Pointer, arg1: number) => void;
+export type GLFWcharfun = (arg0: Pointer, arg1: number) => Pointer | null;
 
 export type GLFWcharmodsfun = (
   arg0: Pointer,
   arg1: number,
   arg2: number
-) => void;
+) => Pointer | null;
 
-export type GLFWdropfun = (arg0: Pointer, arg1: number, arg2: Pointer) => void;
+export type GLFWdropfun = (
+  arg0: Pointer,
+  arg1: number,
+  arg2: Pointer
+) => Pointer | null;
 
-export type GLFWmonitorfun = (arg0: Pointer, arg1: number) => void;
+export type GLFWmonitorfun = (arg0: Pointer, arg1: number) => Pointer | null;
 
-export type GLFWjoystickfun = (arg0: number, arg1: number) => void;
+export type GLFWjoystickfun = (arg0: number, arg1: number) => Pointer | null;

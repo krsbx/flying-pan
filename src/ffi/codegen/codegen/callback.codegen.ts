@@ -1,6 +1,7 @@
 import type { CFunctionPointerDecl } from '../../ast';
 import type { CodeGenResult } from '../types';
-import { cTypeToTsType } from '../utility';
+import { TypeScriptType, cTypeToTsType, normalizeTypeName } from '../utility';
+import { CType } from '../utility/constant';
 
 export function generateCallbackCode(
   decl: CFunctionPointerDecl
@@ -14,7 +15,14 @@ export function generateCallbackCode(
     })
     .join(', ');
 
-  const returnType = cTypeToTsType(decl.returnType);
+  // Callbacks always use Pointer | null for FFI compatibility —
+  // even void-returning C callbacks need a pointer return type for JSCallback
+  const baseName = normalizeTypeName(decl.returnType.name);
+  const isVoid = baseName === CType.VOID && decl.returnType.pointerDepth === 0;
+
+  const returnType = isVoid
+    ? [TypeScriptType.POINTER, TypeScriptType.NULL].join(' | ')
+    : cTypeToTsType(decl.returnType);
 
   return {
     isType: true,

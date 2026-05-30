@@ -30,7 +30,7 @@ export type ma_handle = Pointer;
 
 export type ma_ptr = Pointer;
 
-export type ma_proc = () => void;
+export type ma_proc = () => Pointer | null;
 
 export type ma_pthread_t = Pointer;
 
@@ -88,7 +88,7 @@ export type ma_log_callback_proc = (
   arg0: Pointer,
   arg1: Pointer,
   arg2: string
-) => void;
+) => Pointer | null;
 
 export type ma_log_callback = Pointer;
 
@@ -290,16 +290,16 @@ export type ma_device_notification_type = number;
 
 export type ma_device_notification = Pointer;
 
-export type ma_device_notification_proc = (arg0: Pointer) => void;
+export type ma_device_notification_proc = (arg0: Pointer) => Pointer | null;
 
 export type ma_device_data_proc = (
   arg0: Pointer,
   arg1: Pointer,
   arg2: Pointer,
   arg3: Pointer
-) => void;
+) => Pointer | null;
 
-export type ma_stop_proc = (arg0: Pointer) => void;
+export type ma_stop_proc = (arg0: Pointer) => Pointer | null;
 
 export type ma_device_type = number;
 
@@ -417,7 +417,7 @@ export type ma_encoder_seek_proc = (
 
 export type ma_encoder_init_proc = (arg0: Pointer) => Pointer;
 
-export type ma_encoder_uninit_proc = (arg0: Pointer) => void;
+export type ma_encoder_uninit_proc = (arg0: Pointer) => Pointer | null;
 
 export type ma_encoder_write_pcm_frames_proc = (
   arg0: Pointer,
@@ -548,7 +548,10 @@ export type ma_engine_node_config = Pointer;
 
 export type ma_engine_node = Pointer;
 
-export type ma_sound_end_proc = (arg0: Pointer, arg1: Pointer) => void;
+export type ma_sound_end_proc = (
+  arg0: Pointer,
+  arg1: Pointer
+) => Pointer | null;
 
 export type ma_sound_config = Pointer;
 
@@ -560,6 +563,6 @@ export type ma_engine_process_proc = (
   arg0: Pointer,
   arg1: Pointer,
   arg2: Pointer
-) => void;
+) => Pointer | null;
 
 export type ma_engine_config = Pointer;
