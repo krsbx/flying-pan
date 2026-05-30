@@ -1,14 +1,23 @@
 import type {
+  GLFWcharfun,
   GLFWcursorenterfun,
   GLFWcursorposfun,
+  GLFWdropfun,
+  GLFWframebuffersizefun,
+  GLFWkeyfun,
+  GLFWmousebuttonfun,
+  GLFWscrollfun,
+  GLFWwindowclosefun,
+  GLFWwindowcontentscalefun,
   GLFWwindowfocusfun,
   GLFWwindowiconifyfun,
   GLFWwindowmaximizefun,
   GLFWwindowposfun,
+  GLFWwindowrefreshfun,
   GLFWwindowsizefun,
 } from '@/glfw/types';
 import type { TypedJSCallback } from '@/utility/callback';
-import type { WindowEvent } from './constant';
+import type { InputEvent, WindowEvent } from './constant';
 
 export interface Position {
   x: number;
@@ -20,12 +29,27 @@ export interface WidthHeight {
   height: number;
 }
 
+export interface BaseInput {
+  action: number;
+  mods: number;
+}
+
+export interface MouseAction extends BaseInput {
+  button: number;
+}
+
+export interface KeyAction extends BaseInput {
+  key: number;
+  scancode: number;
+}
+
+// #region WindowEvent
 export interface OnWindowPosition {
-  (value: Position): void;
+  (position: Position): void;
 }
 
 export interface OnWindowResized {
-  (value: WidthHeight): void;
+  (size: WidthHeight): void;
 }
 
 export interface OnWindowClose {
@@ -33,35 +57,84 @@ export interface OnWindowClose {
 }
 
 export interface OnWindowFocus {
-  (value: boolean): void;
+  (isFocus: boolean): void;
 }
 
 export interface OnWindowMinimize {
-  (value: boolean): void;
+  (isMinimize: boolean): void;
 }
 
 export interface OnWindowMaximize {
-  (value: boolean): void;
+  (isMaximize: boolean): void;
 }
 
+export interface OnWindowFrameBuffer {
+  (size: WidthHeight): void;
+}
+
+export interface OnWindowRefresh {
+  (): void;
+}
+
+export interface OnWindowScale {
+  (scale: Position): void;
+}
+// #endregion WindowEvent
+
+// #region InputEvent
 export interface OnWindowHover {
-  (value: boolean): void;
+  (isHovered: boolean): void;
+}
+
+export interface OnMouseButton {
+  (value: MouseAction): void;
+}
+
+export interface OnMouseScroll {
+  (offsets: Position): void;
 }
 
 export interface OnCursorPosition {
-  (value: Position): void;
+  (position: Position): void;
 }
 
+export interface OnKeyButton {
+  (value: KeyAction): void;
+}
+
+export interface OnCharButton {
+  (codepoint: number): void;
+}
+
+export interface OnDropFile {
+  (paths: string[]): void;
+}
+// #endregion InputEvent
+
 export type WindowCallback =
+  // #region WindowEvent
   | OnWindowPosition
   | OnWindowResized
+  | OnWindowClose
   | OnWindowFocus
   | OnWindowMinimize
   | OnWindowMaximize
+  | OnWindowFrameBuffer
+  | OnWindowRefresh
+  | OnWindowScale
+  // #endregion WindowEvent
+  //
+  // #region InputEvent
   | OnWindowHover
-  | OnCursorPosition;
+  | OnMouseButton
+  | OnCursorPosition
+  | OnMouseScroll
+  | OnKeyButton
+  | OnCharButton
+  | OnDropFile;
+// #endregion InputEvent
 
-export type CallbackRegistries = {
+export type WindowEventCallbackRegistries = {
   [WindowEvent.Position]: {
     callback: TypedJSCallback<GLFWwindowposfun>;
     fns: Set<OnWindowPosition>;
@@ -71,7 +144,7 @@ export type CallbackRegistries = {
     fns: Set<OnWindowResized>;
   };
   [WindowEvent.Close]: {
-    callback: TypedJSCallback<GLFWwindowsizefun>;
+    callback: TypedJSCallback<GLFWwindowclosefun>;
     fns: Set<OnWindowClose>;
   };
   [WindowEvent.Focus]: {
@@ -86,12 +159,69 @@ export type CallbackRegistries = {
     callback: TypedJSCallback<GLFWwindowmaximizefun>;
     fns: Set<OnWindowMaximize>;
   };
-  [WindowEvent.Hover]: {
+  [WindowEvent.FrameBuffer]: {
+    callback: TypedJSCallback<GLFWframebuffersizefun>;
+    fns: Set<OnWindowFrameBuffer>;
+  };
+  [WindowEvent.Refresh]: {
+    callback: TypedJSCallback<GLFWwindowrefreshfun>;
+    fns: Set<OnWindowRefresh>;
+  };
+  [WindowEvent.Scaling]: {
+    callback: TypedJSCallback<GLFWwindowcontentscalefun>;
+    fns: Set<OnWindowScale>;
+  };
+};
+
+export type InputEventCallbackRegistries = {
+  [InputEvent.Hover]: {
     callback: TypedJSCallback<GLFWcursorenterfun>;
     fns: Set<OnWindowHover>;
   };
-  [WindowEvent.Cursor]: {
+  [InputEvent.Mouse]: {
+    callback: TypedJSCallback<GLFWmousebuttonfun>;
+    fns: Set<OnMouseButton>;
+  };
+  [InputEvent.Scroll]: {
+    callback: TypedJSCallback<GLFWscrollfun>;
+    fns: Set<OnMouseScroll>;
+  };
+  [InputEvent.Cursor]: {
     callback: TypedJSCallback<GLFWcursorposfun>;
     fns: Set<OnCursorPosition>;
   };
+  [InputEvent.Key]: {
+    callback: TypedJSCallback<GLFWkeyfun>;
+    fns: Set<OnKeyButton>;
+  };
+  [InputEvent.Char]: {
+    callback: TypedJSCallback<GLFWcharfun>;
+    fns: Set<OnCharButton>;
+  };
+  [InputEvent.Drop]: {
+    callback: TypedJSCallback<GLFWdropfun>;
+    fns: Set<OnDropFile>;
+  };
+};
+
+export type CallbackRegistries = WindowEventCallbackRegistries &
+  InputEventCallbackRegistries;
+
+export type WindowSubscriptionMap = {
+  [WindowEvent.Position]: OnWindowPosition;
+  [WindowEvent.Resize]: OnWindowResized;
+  [WindowEvent.Close]: OnWindowClose;
+  [WindowEvent.Focus]: OnWindowFocus;
+  [WindowEvent.Minimize]: OnWindowMinimize;
+  [WindowEvent.Maximize]: OnWindowMaximize;
+  [WindowEvent.FrameBuffer]: OnWindowFrameBuffer;
+  [WindowEvent.Refresh]: OnWindowRefresh;
+  [WindowEvent.Scaling]: OnWindowScale;
+  [InputEvent.Hover]: OnWindowHover;
+  [InputEvent.Mouse]: OnMouseButton;
+  [InputEvent.Cursor]: OnCursorPosition;
+  [InputEvent.Scroll]: OnMouseScroll;
+  [InputEvent.Key]: OnKeyButton;
+  [InputEvent.Char]: OnCharButton;
+  [InputEvent.Drop]: OnDropFile;
 };

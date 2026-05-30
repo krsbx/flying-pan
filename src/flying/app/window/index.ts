@@ -1,22 +1,17 @@
 import type { GLFW } from '@/glfw';
 import { TypedJSCallback } from '@/utility/callback';
-import { Vector2 } from '@/utility/vectors';
+import { CStruct } from '@/utility/cstruct';
+import { FVector2, Vector2 } from '@/utility/vectors';
 import { FFIType, type Pointer } from 'bun:ffi';
 import type { Color } from '../../renderer/color';
-import { WindowEvent } from './constant';
+import { InputEvent, WindowEvent } from './constant';
 import type {
   CallbackRegistries,
-  OnCursorPosition,
-  OnWindowClose,
-  OnWindowFocus,
-  OnWindowHover,
-  OnWindowMaximize,
-  OnWindowMinimize,
-  OnWindowPosition,
-  OnWindowResized,
+  InputEventCallbackRegistries,
   Position,
   WidthHeight,
-  WindowCallback,
+  WindowEventCallbackRegistries,
+  WindowSubscriptionMap,
 } from './types';
 
 export interface WindowOptions {
@@ -44,6 +39,8 @@ export class Window {
   protected _isHovered: boolean;
   protected _isMaximized: boolean;
   protected _isMinimized: boolean;
+  protected _frameBuffer: WidthHeight;
+  protected _contentScale: Position;
 
   public constructor(options: WindowOptions & { gl: GLFW }) {
     this.gl = options.gl;
@@ -55,11 +52,18 @@ export class Window {
       monitor: null,
       share: null,
     });
+
+    if (!this.$address) {
+      throw new Error('Failed to initialize window!');
+    }
+
     this._title = options.title;
     this._identifier = options.identifier || options.title;
     this.backgroundColor = options.backgroundColor || '#1a1a2e';
     this._position = this.getPosition();
     this._mousePosition = this.getMousePosition();
+    this._frameBuffer = this.getFrameBuffer();
+    this._contentScale = this.getContentScale();
     this._size = {
       height: options.height,
       width: options.width,
@@ -91,7 +95,7 @@ export class Window {
   }
 
   protected getMousePosition(): Position {
-    const posVec = new Vector2();
+    const posVec = new FVector2();
 
     this.gl.glfwGetCursorPos({
       window: this.$address,
@@ -105,11 +109,44 @@ export class Window {
     };
   }
 
-  protected createCallbacksRegistries(): CallbackRegistries {
-    if (!this.$address) {
-      throw new Error('Failed to initialize window!');
-    }
+  protected getFrameBuffer(): WidthHeight {
+    const sizeVec = new Vector2();
 
+    this.gl.glfwGetFramebufferSize({
+      window: this.$address,
+      width: sizeVec.xRef,
+      height: sizeVec.yRef,
+    });
+
+    return {
+      width: sizeVec.x,
+      height: sizeVec.y,
+    };
+  }
+
+  protected getContentScale(): Position {
+    const scaleVec = new FVector2();
+
+    this.gl.glfwGetWindowContentScale({
+      window: this.$address,
+      xscale: scaleVec.xRef,
+      yscale: scaleVec.yRef,
+    });
+
+    return {
+      x: scaleVec.x,
+      y: scaleVec.y,
+    };
+  }
+
+  protected createCallbacksRegistries(): CallbackRegistries {
+    return {
+      ...this.createWindowCallbackRegistries(),
+      ...this.createInputCallbackRegistries(),
+    };
+  }
+
+  protected createWindowCallbackRegistries(): WindowEventCallbackRegistries {
     return {
       [WindowEvent.Position]: {
         callback: new TypedJSCallback(
@@ -147,7 +184,7 @@ export class Window {
             let shouldClose = true;
 
             const registry = this._fnRegistries[WindowEvent.Close];
-            registry.fns.forEach((fn) => (shouldClose = fn()));
+            registry.fns.forEach((fn) => !fn() && (shouldClose = false));
 
             if (shouldClose) return;
 
@@ -208,12 +245,60 @@ export class Window {
         ),
         fns: new Set(),
       },
-      [WindowEvent.Hover]: {
+      [WindowEvent.FrameBuffer]: {
+        callback: new TypedJSCallback(
+          (_, width, height) => {
+            this._frameBuffer = { width, height };
+
+            const registry = this._fnRegistries[WindowEvent.FrameBuffer];
+            registry.fns.forEach((fn) => fn(this._frameBuffer));
+          },
+          {
+            args: [FFIType.ptr, FFIType.i32, FFIType.i32],
+            returns: FFIType.ptr,
+          }
+        ),
+        fns: new Set(),
+      },
+      [WindowEvent.Refresh]: {
+        callback: new TypedJSCallback(
+          () => {
+            const registry = this._fnRegistries[WindowEvent.Refresh];
+            registry.fns.forEach((fn) => fn());
+          },
+          {
+            args: [FFIType.ptr],
+            returns: FFIType.ptr,
+          }
+        ),
+        fns: new Set(),
+      },
+      [WindowEvent.Scaling]: {
+        callback: new TypedJSCallback(
+          (_, x, y) => {
+            this._contentScale = { x, y };
+
+            const registry = this._fnRegistries[WindowEvent.Scaling];
+            registry.fns.forEach((fn) => fn(this._contentScale));
+          },
+          {
+            args: [FFIType.ptr, FFIType.float, FFIType.float],
+            returns: FFIType.ptr,
+          }
+        ),
+        fns: new Set(),
+      },
+    };
+  }
+
+  protected createInputCallbackRegistries(): InputEventCallbackRegistries {
+    return {
+      [InputEvent.Hover]: {
         callback: new TypedJSCallback(
           (_, hovered) => {
             this._isHovered = Boolean(hovered);
 
-            const registry = this._fnRegistries[WindowEvent.Hover];
+            const registry = this._fnRegistries[InputEvent.Hover];
             registry.fns.forEach((fn) => fn(this._isHovered));
           },
           {
@@ -223,16 +308,95 @@ export class Window {
         ),
         fns: new Set(),
       },
-      [WindowEvent.Cursor]: {
+      [InputEvent.Mouse]: {
+        callback: new TypedJSCallback(
+          (_, button, action, mods) => {
+            const registry = this._fnRegistries[InputEvent.Mouse];
+            registry.fns.forEach((fn) =>
+              fn({
+                action,
+                button,
+                mods,
+              })
+            );
+          },
+          {
+            args: [FFIType.ptr, FFIType.i32, FFIType.i32, FFIType.i32],
+            returns: FFIType.ptr,
+          }
+        ),
+        fns: new Set(),
+      },
+      [InputEvent.Scroll]: {
+        callback: new TypedJSCallback(
+          (_, x, y) => {
+            const registry = this._fnRegistries[InputEvent.Scroll];
+            registry.fns.forEach((fn) => fn({ x, y }));
+          },
+          {
+            args: [FFIType.ptr, FFIType.double, FFIType.double],
+            returns: FFIType.ptr,
+          }
+        ),
+        fns: new Set(),
+      },
+      [InputEvent.Cursor]: {
         callback: new TypedJSCallback(
           (_, x, y) => {
             this._mousePosition = { x, y };
 
-            const registry = this._fnRegistries[WindowEvent.Cursor];
+            const registry = this._fnRegistries[InputEvent.Cursor];
             registry.fns.forEach((fn) => fn(this._mousePosition));
           },
           {
-            args: [FFIType.ptr, FFIType.i32, FFIType.i32],
+            args: [FFIType.ptr, FFIType.double, FFIType.double],
+            returns: FFIType.ptr,
+          }
+        ),
+        fns: new Set(),
+      },
+      [InputEvent.Key]: {
+        callback: new TypedJSCallback(
+          (_, key, scancode, action, mods) => {
+            const registry = this._fnRegistries[InputEvent.Key];
+            registry.fns.forEach((fn) => fn({ key, scancode, action, mods }));
+          },
+          {
+            args: [
+              FFIType.ptr,
+              FFIType.i32,
+              FFIType.i32,
+              FFIType.i32,
+              FFIType.i32,
+            ],
+            returns: FFIType.ptr,
+          }
+        ),
+        fns: new Set(),
+      },
+      [InputEvent.Char]: {
+        callback: new TypedJSCallback(
+          (_, codepoint) => {
+            const registry = this._fnRegistries[InputEvent.Char];
+            registry.fns.forEach((fn) => fn(codepoint));
+          },
+          {
+            args: [FFIType.ptr, FFIType.u32],
+            returns: FFIType.ptr,
+          }
+        ),
+        fns: new Set(),
+      },
+      [InputEvent.Drop]: {
+        callback: new TypedJSCallback(
+          (_, count, pathPtr) => {
+            const paths = CStruct.readArrayString(pathPtr, count);
+
+            const registry = this._fnRegistries[InputEvent.Drop];
+            registry.fns.forEach((fn) => fn(paths));
+          },
+          {
+            args: [FFIType.ptr, FFIType.i32, FFIType.ptr],
             returns: FFIType.ptr,
           }
         ),
@@ -242,44 +406,35 @@ export class Window {
   }
 
   protected registerCallbacks() {
-    this.gl.glfwSetWindowPosCallback({
-      window: this.$address,
-      callback: this._fnRegistries[WindowEvent.Position].callback,
-    });
+    const registries = [
+      // #region WindowEvent
+      [WindowEvent.Position, 'glfwSetWindowPosCallback'],
+      [WindowEvent.Resize, 'glfwSetWindowSizeCallback'],
+      [WindowEvent.Close, 'glfwSetWindowCloseCallback'],
+      [WindowEvent.Focus, 'glfwSetWindowFocusCallback'],
+      [WindowEvent.Minimize, 'glfwSetWindowIconifyCallback'],
+      [WindowEvent.Maximize, 'glfwSetWindowMaximizeCallback'],
+      [WindowEvent.FrameBuffer, 'glfwSetFramebufferSizeCallback'],
+      [WindowEvent.Refresh, 'glfwSetWindowRefreshCallback'],
+      [WindowEvent.Scaling, 'glfwSetWindowContentScaleCallback'],
+      // #endregion WindowEvent
 
-    this.gl.glfwSetWindowSizeCallback({
-      window: this.$address,
-      callback: this._fnRegistries[WindowEvent.Resize].callback,
-    });
+      // #region InputEvent
+      [InputEvent.Hover, 'glfwSetCursorEnterCallback'],
+      [InputEvent.Mouse, 'glfwSetMouseButtonCallback'],
+      [InputEvent.Scroll, 'glfwSetScrollCallback'],
+      [InputEvent.Cursor, 'glfwSetCursorPosCallback'],
+      [InputEvent.Key, 'glfwSetKeyCallback'],
+      [InputEvent.Char, 'glfwSetCharCallback'],
+      [InputEvent.Drop, 'glfwSetDropCallback'],
+      // #endregion InputEvent
+    ] satisfies [WindowEvent | InputEvent, keyof GLFW][];
 
-    this.gl.glfwSetWindowCloseCallback({
-      window: this.$address,
-      callback: this._fnRegistries[WindowEvent.Close].callback,
-    });
-
-    this.gl.glfwSetWindowFocusCallback({
-      window: this.$address,
-      callback: this._fnRegistries[WindowEvent.Focus].callback,
-    });
-
-    this.gl.glfwSetWindowIconifyCallback({
-      window: this.$address,
-      callback: this._fnRegistries[WindowEvent.Minimize].callback,
-    });
-
-    this.gl.glfwSetWindowMaximizeCallback({
-      window: this.$address,
-      callback: this._fnRegistries[WindowEvent.Maximize].callback,
-    });
-
-    this.gl.glfwSetCursorEnterCallback({
-      window: this.$address,
-      callback: this._fnRegistries[WindowEvent.Hover].callback,
-    });
-
-    this.gl.glfwSetCursorPosCallback({
-      window: this.$address,
-      callback: this._fnRegistries[WindowEvent.Cursor].callback,
+    registries.forEach(([event, method]) => {
+      this.gl[method]({
+        window: this.$address,
+        callback: this._fnRegistries[event].callback,
+      });
     });
   }
 
@@ -353,6 +508,14 @@ export class Window {
     return this._isMinimized;
   }
 
+  public get frameBuffer() {
+    return this._frameBuffer;
+  }
+
+  public get contentScale() {
+    return this._contentScale;
+  }
+
   public maximize() {
     this.gl.glfwMaximizeWindow({
       window: this.$address,
@@ -365,15 +528,17 @@ export class Window {
     });
   }
 
-  public on(type: typeof WindowEvent.Position, fn: OnWindowPosition): void;
-  public on(type: typeof WindowEvent.Resize, fn: OnWindowResized): void;
-  public on(type: typeof WindowEvent.Close, fn: OnWindowClose): void;
-  public on(type: typeof WindowEvent.Minimize, fn: OnWindowMinimize): void;
-  public on(type: typeof WindowEvent.Maximize, fn: OnWindowMaximize): void;
-  public on(type: typeof WindowEvent.Focus, fn: OnWindowFocus): void;
-  public on(type: typeof WindowEvent.Hover, fn: OnWindowHover): void;
-  public on(type: typeof WindowEvent.Cursor, fn: OnCursorPosition): void;
-  public on(type: WindowEvent, fn: WindowCallback) {
+  public on<
+    T extends keyof WindowSubscriptionMap,
+    U extends WindowSubscriptionMap[T],
+  >(type: T, fn: U) {
     this._fnRegistries[type].fns.add(fn as never);
+  }
+
+  public off<
+    T extends keyof WindowSubscriptionMap,
+    U extends WindowSubscriptionMap[T],
+  >(type: T, fn: U) {
+    this._fnRegistries[type].fns.delete(fn as never);
   }
 }
