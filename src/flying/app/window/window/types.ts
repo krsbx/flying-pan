@@ -91,7 +91,7 @@ export interface OnMousePress {
 }
 
 export interface OnMouseScroll {
-  (offsets: Position): void;
+  (delta: Position): void;
 }
 
 export interface OnCursorPosition {

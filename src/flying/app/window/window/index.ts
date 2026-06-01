@@ -514,6 +514,12 @@ export class Window {
     return this._identifier;
   }
 
+  public restore() {
+    this.gl.glfwRestoreWindow({
+      window: this.$address,
+    });
+  }
+
   public maximize() {
     this.gl.glfwMaximizeWindow({
       window: this.$address,

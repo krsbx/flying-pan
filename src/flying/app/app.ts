@@ -1,8 +1,10 @@
 import { GLFW } from '@/glfw';
 import { parseColor } from '../renderer/color';
 import { GL_COLOR_BUFFER_BIT } from '../renderer/constant';
+import { InputManager } from './input';
 import { MonitorManager } from './monitor';
 import { Window, WindowManager, type WindowOptions } from './window';
+import { WindowManagerEvent } from './window/manager/constant';
 
 export interface FontConfig {
   libPath: string;
@@ -21,6 +23,7 @@ export class App {
   public readonly gl: GLFW;
   public readonly windowManager: WindowManager;
   public readonly monitorManager: MonitorManager;
+  public readonly inputManager: InputManager;
   public readonly root: Window;
   public createWindow: WindowManager['create'];
   public destroyWindow: WindowManager['destroy'];
@@ -36,9 +39,16 @@ export class App {
 
     const windowManager = new WindowManager(this.gl);
     const monitorManager = new MonitorManager(this.gl);
+    const inputManager = new InputManager(this.gl);
 
     this.windowManager = windowManager;
     this.monitorManager = monitorManager;
+    this.inputManager = inputManager;
+
+    windowManager.on(
+      WindowManagerEvent.Created,
+      inputManager.register.bind(inputManager)
+    );
 
     this.createWindow = windowManager.create.bind(windowManager);
     this.destroyWindow = windowManager.destroy.bind(windowManager);
@@ -63,6 +73,8 @@ export class App {
 
   public async run(fn: () => void) {
     while (true) {
+      this.inputManager.update();
+
       fn();
 
       if (this.activeWindow) {
