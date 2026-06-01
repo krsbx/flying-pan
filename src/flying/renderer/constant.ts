@@ -57,3 +57,6 @@ export const GL_TEXTURE_MIN_FILTER = 0x2801;
 export const GL_TEXTURE_MAG_FILTER = 0x2800;
 export const GL_NEAREST = 0x2600;
 export const GL_LINEAR = 0x2601;
+
+export const GLFW_CONNECTED = 0x00040001;
+export const GLFW_DISCONNECTED = 0x00040002;

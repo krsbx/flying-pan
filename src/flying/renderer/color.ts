@@ -19,6 +19,8 @@ export const Color = {
   transparent: '#00000000',
 } satisfies Record<string, string>;
 
+export type Color = keyof typeof Color;
+
 export function parseColor(color: string): RGBA {
   // #RGB
   if (/^#[0-9a-fA-F]{3}$/.test(color)) {
