@@ -55,8 +55,8 @@ export class WindowManager {
     this.setActive(window);
 
     // Auto switch the active window on focus
-    window.on(WindowEvent.Focus, (focus) => {
-      if (!focus) return;
+    window.on(WindowEvent.Focus, (focused) => {
+      if (!focused) return;
 
       this.setActive(window);
     });
@@ -146,6 +146,8 @@ export class WindowManager {
   public setActive(identifier: string): void;
   public setActive(arg0: Window | Pointer | string) {
     const window = this.resolve(arg0);
+
+    if (window.isMinimized) return;
 
     // Trigger the onActiveChanged event
     this._fnRegistries[WindowManagerEvent.ActiveChanged].forEach((fn) =>
