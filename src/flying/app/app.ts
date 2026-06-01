@@ -1,6 +1,7 @@
 import { GLFW } from '@/glfw';
 import { parseColor } from '../renderer/color';
 import { GL_COLOR_BUFFER_BIT } from '../renderer/constant';
+import { MonitorManager } from './monitor';
 import { Window, WindowManager, type WindowOptions } from './window';
 
 export interface FontConfig {
@@ -19,6 +20,7 @@ export interface AppConfig extends WindowOptions {
 export class App {
   public readonly gl: GLFW;
   public readonly windowManager: WindowManager;
+  public readonly monitorManager: MonitorManager;
   public readonly root: Window;
   public createWindow: WindowManager['create'];
   public destroyWindow: WindowManager['destroy'];
@@ -27,13 +29,16 @@ export class App {
 
   public constructor(options: AppConfig) {
     this.gl = new GLFW(options.libPath);
-    this.windowManager = new WindowManager(this.gl);
 
     if (!this.gl.glfwInit()) {
       throw new Error('Failed to initialize GLFW!');
     }
 
-    const windowManager = this.windowManager;
+    const windowManager = new WindowManager(this.gl);
+    const monitorManager = new MonitorManager(this.gl);
+
+    this.windowManager = windowManager;
+    this.monitorManager = monitorManager;
 
     this.createWindow = windowManager.create.bind(windowManager);
     this.destroyWindow = windowManager.destroy.bind(windowManager);
