@@ -3,7 +3,7 @@ import { TypedJSCallback } from '@/utility/callback';
 import { CStruct } from '@/utility/cstruct';
 import { FVector2, Vector2 } from '@/utility/vectors';
 import { FFIType, type Pointer } from 'bun:ffi';
-import type { Color } from '../../renderer/color';
+import type { Color } from '../../../renderer/color';
 import { InputEvent, WindowEvent } from './constant';
 import type {
   CallbackRegistries,
@@ -148,12 +148,12 @@ export class Window {
 
   protected createWindowCallbackRegistries(): WindowEventCallbackRegistries {
     return {
-      [WindowEvent.Position]: {
+      [WindowEvent.PositionChange]: {
         callback: new TypedJSCallback(
           (_, x, y) => {
             this._position = { x, y };
 
-            const registry = this._fnRegistries[WindowEvent.Position];
+            const registry = this._fnRegistries[WindowEvent.PositionChange];
             registry.fns.forEach((fn) => fn(this._position));
           },
           {
@@ -163,12 +163,12 @@ export class Window {
         ),
         fns: new Set(),
       },
-      [WindowEvent.Resize]: {
+      [WindowEvent.Resized]: {
         callback: new TypedJSCallback(
           (_, width, height) => {
             this._size = { width, height };
 
-            const registry = this._fnRegistries[WindowEvent.Resize];
+            const registry = this._fnRegistries[WindowEvent.Resized];
             registry.fns.forEach((fn) => fn(this._size));
           },
           {
@@ -215,12 +215,12 @@ export class Window {
         ),
         fns: new Set(),
       },
-      [WindowEvent.Minimize]: {
+      [WindowEvent.Minimized]: {
         callback: new TypedJSCallback(
           (_, minimized) => {
             this._isMinimized = Boolean(minimized);
 
-            const registry = this._fnRegistries[WindowEvent.Minimize];
+            const registry = this._fnRegistries[WindowEvent.Minimized];
             registry.fns.forEach((fn) => fn(this._isMinimized));
           },
           {
@@ -230,12 +230,12 @@ export class Window {
         ),
         fns: new Set(),
       },
-      [WindowEvent.Maximize]: {
+      [WindowEvent.Maximized]: {
         callback: new TypedJSCallback(
           (_, maximized) => {
             this._isMaximized = Boolean(maximized);
 
-            const registry = this._fnRegistries[WindowEvent.Maximize];
+            const registry = this._fnRegistries[WindowEvent.Maximized];
             registry.fns.forEach((fn) => fn(this._isMaximized));
           },
           {
@@ -308,17 +308,11 @@ export class Window {
         ),
         fns: new Set(),
       },
-      [InputEvent.Mouse]: {
+      [InputEvent.MousePress]: {
         callback: new TypedJSCallback(
           (_, button, action, mods) => {
-            const registry = this._fnRegistries[InputEvent.Mouse];
-            registry.fns.forEach((fn) =>
-              fn({
-                action,
-                button,
-                mods,
-              })
-            );
+            const registry = this._fnRegistries[InputEvent.MousePress];
+            registry.fns.forEach((fn) => fn({ action, button, mods }));
           },
           {
             args: [FFIType.ptr, FFIType.i32, FFIType.i32, FFIType.i32],
@@ -327,10 +321,10 @@ export class Window {
         ),
         fns: new Set(),
       },
-      [InputEvent.Scroll]: {
+      [InputEvent.MouseScroll]: {
         callback: new TypedJSCallback(
           (_, x, y) => {
-            const registry = this._fnRegistries[InputEvent.Scroll];
+            const registry = this._fnRegistries[InputEvent.MouseScroll];
             registry.fns.forEach((fn) => fn({ x, y }));
           },
           {
@@ -340,12 +334,12 @@ export class Window {
         ),
         fns: new Set(),
       },
-      [InputEvent.Cursor]: {
+      [InputEvent.CursorPosition]: {
         callback: new TypedJSCallback(
           (_, x, y) => {
             this._mousePosition = { x, y };
 
-            const registry = this._fnRegistries[InputEvent.Cursor];
+            const registry = this._fnRegistries[InputEvent.CursorPosition];
             registry.fns.forEach((fn) => fn(this._mousePosition));
           },
           {
@@ -408,12 +402,12 @@ export class Window {
   protected registerCallbacks() {
     const registries = [
       // #region WindowEvent
-      [WindowEvent.Position, 'glfwSetWindowPosCallback'],
-      [WindowEvent.Resize, 'glfwSetWindowSizeCallback'],
+      [WindowEvent.PositionChange, 'glfwSetWindowPosCallback'],
+      [WindowEvent.Resized, 'glfwSetWindowSizeCallback'],
       [WindowEvent.Close, 'glfwSetWindowCloseCallback'],
       [WindowEvent.Focus, 'glfwSetWindowFocusCallback'],
-      [WindowEvent.Minimize, 'glfwSetWindowIconifyCallback'],
-      [WindowEvent.Maximize, 'glfwSetWindowMaximizeCallback'],
+      [WindowEvent.Minimized, 'glfwSetWindowIconifyCallback'],
+      [WindowEvent.Maximized, 'glfwSetWindowMaximizeCallback'],
       [WindowEvent.FrameBuffer, 'glfwSetFramebufferSizeCallback'],
       [WindowEvent.Refresh, 'glfwSetWindowRefreshCallback'],
       [WindowEvent.Scaling, 'glfwSetWindowContentScaleCallback'],
@@ -421,9 +415,9 @@ export class Window {
 
       // #region InputEvent
       [InputEvent.Hover, 'glfwSetCursorEnterCallback'],
-      [InputEvent.Mouse, 'glfwSetMouseButtonCallback'],
-      [InputEvent.Scroll, 'glfwSetScrollCallback'],
-      [InputEvent.Cursor, 'glfwSetCursorPosCallback'],
+      [InputEvent.MousePress, 'glfwSetMouseButtonCallback'],
+      [InputEvent.MouseScroll, 'glfwSetScrollCallback'],
+      [InputEvent.CursorPosition, 'glfwSetCursorPosCallback'],
       [InputEvent.Key, 'glfwSetKeyCallback'],
       [InputEvent.Char, 'glfwSetCharCallback'],
       [InputEvent.Drop, 'glfwSetDropCallback'],

@@ -8,12 +8,12 @@
 // Minimize, Maximize, Refresh, Scaling
 
 export const WindowEvent = {
-  Position: 'position',
-  Resize: 'resize',
+  PositionChange: 'position_change',
+  Resized: 'resized',
   Close: 'close',
   Focus: 'focus',
-  Minimize: 'minimize',
-  Maximize: 'maximize',
+  Minimized: 'minimize',
+  Maximized: 'maximize',
   FrameBuffer: 'frame_buffer',
   Refresh: 'refresh',
   Scaling: 'scaling',
@@ -23,9 +23,9 @@ export type WindowEvent = (typeof WindowEvent)[keyof typeof WindowEvent];
 
 export const InputEvent = {
   Hover: 'hover',
-  Mouse: 'mouse',
-  Cursor: 'cursor',
-  Scroll: 'scroll',
+  MousePress: 'mouse_press',
+  CursorPosition: 'cursor_position',
+  MouseScroll: 'mouse_scroll',
   Key: 'key',
   Char: 'char',
   Drop: 'drop',

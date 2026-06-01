@@ -86,7 +86,7 @@ export interface OnWindowHover {
   (isHovered: boolean): void;
 }
 
-export interface OnMouseButton {
+export interface OnMousePress {
   (value: MouseAction): void;
 }
 
@@ -126,7 +126,7 @@ export type WindowCallback =
   //
   // #region InputEvent
   | OnWindowHover
-  | OnMouseButton
+  | OnMousePress
   | OnCursorPosition
   | OnMouseScroll
   | OnKeyButton
@@ -135,11 +135,11 @@ export type WindowCallback =
 // #endregion InputEvent
 
 export type WindowEventCallbackRegistries = {
-  [WindowEvent.Position]: {
+  [WindowEvent.PositionChange]: {
     callback: TypedJSCallback<GLFWwindowposfun>;
     fns: Set<OnWindowPosition>;
   };
-  [WindowEvent.Resize]: {
+  [WindowEvent.Resized]: {
     callback: TypedJSCallback<GLFWwindowsizefun>;
     fns: Set<OnWindowResized>;
   };
@@ -151,11 +151,11 @@ export type WindowEventCallbackRegistries = {
     callback: TypedJSCallback<GLFWwindowfocusfun>;
     fns: Set<OnWindowFocus>;
   };
-  [WindowEvent.Minimize]: {
+  [WindowEvent.Minimized]: {
     callback: TypedJSCallback<GLFWwindowiconifyfun>;
     fns: Set<OnWindowMinimize>;
   };
-  [WindowEvent.Maximize]: {
+  [WindowEvent.Maximized]: {
     callback: TypedJSCallback<GLFWwindowmaximizefun>;
     fns: Set<OnWindowMaximize>;
   };
@@ -178,15 +178,15 @@ export type InputEventCallbackRegistries = {
     callback: TypedJSCallback<GLFWcursorenterfun>;
     fns: Set<OnWindowHover>;
   };
-  [InputEvent.Mouse]: {
+  [InputEvent.MousePress]: {
     callback: TypedJSCallback<GLFWmousebuttonfun>;
-    fns: Set<OnMouseButton>;
+    fns: Set<OnMousePress>;
   };
-  [InputEvent.Scroll]: {
+  [InputEvent.MouseScroll]: {
     callback: TypedJSCallback<GLFWscrollfun>;
     fns: Set<OnMouseScroll>;
   };
-  [InputEvent.Cursor]: {
+  [InputEvent.CursorPosition]: {
     callback: TypedJSCallback<GLFWcursorposfun>;
     fns: Set<OnCursorPosition>;
   };
@@ -208,19 +208,19 @@ export type CallbackRegistries = WindowEventCallbackRegistries &
   InputEventCallbackRegistries;
 
 export type WindowSubscriptionMap = {
-  [WindowEvent.Position]: OnWindowPosition;
-  [WindowEvent.Resize]: OnWindowResized;
+  [WindowEvent.PositionChange]: OnWindowPosition;
+  [WindowEvent.Resized]: OnWindowResized;
   [WindowEvent.Close]: OnWindowClose;
   [WindowEvent.Focus]: OnWindowFocus;
-  [WindowEvent.Minimize]: OnWindowMinimize;
-  [WindowEvent.Maximize]: OnWindowMaximize;
+  [WindowEvent.Minimized]: OnWindowMinimize;
+  [WindowEvent.Maximized]: OnWindowMaximize;
   [WindowEvent.FrameBuffer]: OnWindowFrameBuffer;
   [WindowEvent.Refresh]: OnWindowRefresh;
   [WindowEvent.Scaling]: OnWindowScale;
   [InputEvent.Hover]: OnWindowHover;
-  [InputEvent.Mouse]: OnMouseButton;
-  [InputEvent.Cursor]: OnCursorPosition;
-  [InputEvent.Scroll]: OnMouseScroll;
+  [InputEvent.MousePress]: OnMousePress;
+  [InputEvent.CursorPosition]: OnCursorPosition;
+  [InputEvent.MouseScroll]: OnMouseScroll;
   [InputEvent.Key]: OnKeyButton;
   [InputEvent.Char]: OnCharButton;
   [InputEvent.Drop]: OnDropFile;
