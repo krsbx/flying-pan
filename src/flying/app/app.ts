@@ -1,8 +1,7 @@
 import { GLFW } from '@/glfw';
-import type { Pointer } from 'bun:ffi';
 import { parseColor } from '../renderer/color';
 import { GL_COLOR_BUFFER_BIT } from '../renderer/constant';
-import { Window, type WindowOptions } from './window';
+import { Window, WindowManager, type WindowOptions } from './window';
 
 export interface FontConfig {
   libPath: string;
@@ -19,70 +18,29 @@ export interface AppConfig extends WindowOptions {
 
 export class App {
   public readonly gl: GLFW;
-  public readonly windows: Map<string | Pointer, Window>;
+  public readonly windowManager: WindowManager;
   public readonly root: Window;
-  public activeWindow!: Window | null;
-
+  public createWindow: WindowManager['create'];
+  public destroyWindow: WindowManager['destroy'];
+  public setActiveWindow: WindowManager['setActive'];
   protected _vsync!: boolean;
 
   public constructor(options: AppConfig) {
     this.gl = new GLFW(options.libPath);
-    this.windows = new Map();
+    this.windowManager = new WindowManager(this.gl);
 
     if (!this.gl.glfwInit()) {
       throw new Error('Failed to initialize GLFW!');
     }
 
+    const windowManager = this.windowManager;
+
+    this.createWindow = windowManager.create.bind(windowManager);
+    this.destroyWindow = windowManager.destroy.bind(windowManager);
+    this.setActiveWindow = windowManager.setActive.bind(windowManager);
+
     this.root = this.createWindow(options);
     this.vsync = options.vsync ?? false;
-    this.setActive(this.root);
-  }
-
-  public createWindow(options: WindowOptions): Window {
-    const window = new Window({
-      ...options,
-      gl: this.gl,
-    });
-
-    if (!window.$address) {
-      this.gl.glfwTerminate();
-
-      throw new Error('Failed to create a new GLFW window!');
-    }
-
-    this.windows.set(options.identifier || options.title, window);
-    this.windows.set(window.$address, window);
-
-    // Auto switch the active window on focus
-    this.setActive(window);
-    window.on('focus', (focus) => {
-      if (!focus) return;
-
-      this.setActive(window);
-    });
-
-    return window;
-  }
-
-  public setActive(window: Window): void;
-  public setActive(pointer: Pointer): void;
-  public setActive(identifier: string): void;
-  public setActive(arg0: string | Window | Pointer) {
-    let window: Window | undefined;
-
-    if (arg0 instanceof Window) {
-      window = arg0;
-    } else {
-      window = this.windows.get(arg0);
-    }
-
-    if (!window) {
-      throw new Error('Window not found!');
-    }
-
-    this.activeWindow = window;
-
-    this.gl.glfwMakeContextCurrent({ window: window.$address });
   }
 
   public get vsync() {
@@ -92,6 +50,10 @@ export class App {
   public set vsync(value: boolean) {
     this._vsync = value;
     this.gl.glfwSwapInterval({ interval: Number(value) });
+  }
+
+  public get activeWindow() {
+    return this.windowManager.active;
   }
 
   public async run(fn: () => void) {
@@ -105,17 +67,9 @@ export class App {
       }
 
       this.gl.glfwPollEvents();
+      this.windowManager.cleanUp();
 
-      this.windows.forEach((window, key) => {
-        if (this.gl.glfwWindowShouldClose({ window: window.$address })) {
-          this.gl.glfwDestroyWindow({ window: window.$address });
-
-          this.windows.delete(window.$address || key);
-          this.windows.delete(key);
-        }
-      });
-
-      if (this.windows.size === 0) {
+      if (this.windowManager.isEmpty) {
         break;
       }
     }
