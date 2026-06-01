@@ -6,11 +6,6 @@ import type {
   OnMouseScroll,
 } from '../window/window/types';
 
-export interface Position {
-  x: number;
-  y: number;
-}
-
 export interface WindowCallbackMap {
   [InputEvent.Key]: OnKeyButton;
   [InputEvent.MousePress]: OnMousePress;

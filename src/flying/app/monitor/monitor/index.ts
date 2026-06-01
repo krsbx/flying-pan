@@ -1,7 +1,7 @@
+import type { Coordinate2D, Resolution } from '@/flying/types';
 import type { GLFW } from '@/glfw';
 import { FVector2, Vector2 } from '@/utility/vectors';
 import { type Pointer } from 'bun:ffi';
-import type { Position, WidthHeight } from './types';
 
 export interface MonitorOptions {
   gl: GLFW;
@@ -29,7 +29,7 @@ export class Monitor {
       .toString();
   }
 
-  protected getMonitorScale(): Position {
+  protected getMonitorScale(): Coordinate2D {
     const scaleVec = new FVector2();
 
     this.gl.glfwGetMonitorContentScale({
@@ -44,7 +44,7 @@ export class Monitor {
     };
   }
 
-  protected getMonitorPosition(): Position {
+  protected getMonitorPosition(): Coordinate2D {
     const posVec = new Vector2();
 
     this.gl.glfwGetMonitorPos({
@@ -59,7 +59,7 @@ export class Monitor {
     };
   }
 
-  protected getWorkArea(): Position & WidthHeight {
+  protected getWorkArea(): Coordinate2D & Resolution {
     const sizeVec = new Vector2();
     const posVec = new Vector2();
 

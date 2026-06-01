@@ -1,3 +1,4 @@
+import type { Coordinate2D, FrameBufferSize, Resolution } from '@/flying/types';
 import type {
   GLFWcharfun,
   GLFWcursorenterfun,
@@ -19,16 +20,6 @@ import type {
 import type { TypedJSCallback } from '@/utility/callback';
 import type { InputEvent, WindowEvent } from './constant';
 
-export interface Position {
-  x: number;
-  y: number;
-}
-
-export interface WidthHeight {
-  width: number;
-  height: number;
-}
-
 export interface BaseInput {
   action: number;
   mods: number;
@@ -45,11 +36,11 @@ export interface KeyAction extends BaseInput {
 
 // #region WindowEvent
 export interface OnWindowPosition {
-  (position: Position): void;
+  (position: Coordinate2D): void;
 }
 
 export interface OnWindowResized {
-  (size: WidthHeight): void;
+  (size: Resolution): void;
 }
 
 export interface OnWindowClose {
@@ -69,7 +60,7 @@ export interface OnWindowMaximize {
 }
 
 export interface OnWindowFrameBuffer {
-  (size: WidthHeight): void;
+  (size: FrameBufferSize): void;
 }
 
 export interface OnWindowRefresh {
@@ -77,7 +68,7 @@ export interface OnWindowRefresh {
 }
 
 export interface OnWindowScale {
-  (scale: Position): void;
+  (scale: Coordinate2D): void;
 }
 // #endregion WindowEvent
 
@@ -91,11 +82,11 @@ export interface OnMousePress {
 }
 
 export interface OnMouseScroll {
-  (delta: Position): void;
+  (delta: Coordinate2D): void;
 }
 
 export interface OnCursorPosition {
-  (position: Position): void;
+  (position: Coordinate2D): void;
 }
 
 export interface OnKeyButton {

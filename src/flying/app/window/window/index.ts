@@ -1,3 +1,4 @@
+import type { Coordinate2D, FrameBufferSize, Resolution } from '@/flying/types';
 import type { GLFW } from '@/glfw';
 import { TypedJSCallback } from '@/utility/callback';
 import { CStruct } from '@/utility/cstruct';
@@ -8,8 +9,6 @@ import { InputEvent, WindowEvent } from './constant';
 import type {
   CallbackRegistries,
   InputEventCallbackRegistries,
-  Position,
-  WidthHeight,
   WindowEventCallbackRegistries,
   WindowSubscriptionMap,
 } from './types';
@@ -27,9 +26,9 @@ export interface WindowOptions {
 export class Window {
   public readonly gl: GLFW;
   public $address: Pointer | null;
-  protected _size: WidthHeight;
-  protected _position: Position;
-  protected _mousePosition: Position;
+  protected _size: Resolution;
+  protected _position: Coordinate2D;
+  protected _mousePosition: Coordinate2D;
   protected _title: string;
   protected _identifier: string;
   protected _fnRegistries: CallbackRegistries;
@@ -39,8 +38,8 @@ export class Window {
   protected _isHovered: boolean;
   protected _isMaximized: boolean;
   protected _isMinimized: boolean;
-  protected _frameBuffer: WidthHeight;
-  protected _contentScale: Position;
+  protected _frameBuffer: FrameBufferSize;
+  protected _contentScale: Coordinate2D;
 
   public constructor(options: WindowOptions & { gl: GLFW }) {
     this.gl = options.gl;
@@ -79,7 +78,7 @@ export class Window {
     this.registerCallbacks();
   }
 
-  protected getPosition(): Position {
+  protected getPosition(): Coordinate2D {
     const posVec = new Vector2();
 
     this.gl.glfwGetWindowPos({
@@ -94,7 +93,7 @@ export class Window {
     };
   }
 
-  protected getMousePosition(): Position {
+  protected getMousePosition(): Coordinate2D {
     const posVec = new FVector2();
 
     this.gl.glfwGetCursorPos({
@@ -109,7 +108,7 @@ export class Window {
     };
   }
 
-  protected getFrameBuffer(): WidthHeight {
+  protected getFrameBuffer(): FrameBufferSize {
     const sizeVec = new Vector2();
 
     this.gl.glfwGetFramebufferSize({
@@ -124,7 +123,7 @@ export class Window {
     };
   }
 
-  protected getContentScale(): Position {
+  protected getContentScale(): Coordinate2D {
     const scaleVec = new FVector2();
 
     this.gl.glfwGetWindowContentScale({
@@ -436,7 +435,7 @@ export class Window {
     return this._size;
   }
 
-  public set size(value: WidthHeight) {
+  public set size(value: Resolution) {
     this._size = value;
 
     this.gl.glfwSetWindowSize({
@@ -449,7 +448,7 @@ export class Window {
     return this._position;
   }
 
-  public set position(value: Position) {
+  public set position(value: Coordinate2D) {
     this._position = value;
 
     this.gl.glfwSetWindowPos({
@@ -463,7 +462,7 @@ export class Window {
     return this._mousePosition;
   }
 
-  public set mousePosition(value: Position) {
+  public set mousePosition(value: Coordinate2D) {
     this._mousePosition = value;
 
     this.gl.glfwSetCursorPos({

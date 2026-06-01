@@ -1,3 +1,4 @@
+import type { Coordinate2D } from '@/flying/types';
 import type { GLFW } from '@/glfw';
 import {
   GLFW_MOD_ALT,
@@ -10,7 +11,7 @@ import type { Window } from '../window';
 import { InputEvent } from '../window/window/constant';
 import type { KeyAction, MouseAction } from '../window/window/types';
 import { InputState } from './state';
-import type { Position, WindowCallbackMap } from './types';
+import type { WindowCallbackMap } from './types';
 
 export class InputManager {
   public readonly gl: GLFW;
@@ -53,11 +54,11 @@ export class InputManager {
     }
   }
 
-  protected onCursorPosition(position: Position) {
+  protected onCursorPosition(position: Coordinate2D) {
     this._current.mousePosition = position;
   }
 
-  protected onMouseScroll(delta: Position) {
+  protected onMouseScroll(delta: Coordinate2D) {
     this._current.scrollDelta.x += delta.x;
     this._current.scrollDelta.y += delta.y;
   }

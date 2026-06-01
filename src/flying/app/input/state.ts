@@ -1,10 +1,10 @@
-import type { Position } from './types';
+import type { Coordinate2D } from '@/flying/types';
 
 export class InputState {
   public keys: Set<number>;
   public mouseButtons: Set<number>;
-  public mousePosition: Position;
-  public scrollDelta: Position;
+  public mousePosition: Coordinate2D;
+  public scrollDelta: Coordinate2D;
   public modifiers: number;
 
   public constructor() {
