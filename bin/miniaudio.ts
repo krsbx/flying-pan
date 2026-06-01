@@ -12,6 +12,8 @@ const parsed = await parser.parse({
 const generator = new FFICodeGenerator({
   libName: 'MiniAudio',
   outputDir: path.join(import.meta.dir, '../src/miniaudio'),
+  macroFile: path.join(import.meta.dir, '../assets/miniaudio.macros'),
+  macroPrefix: 'MA_',
 });
 
 await generator.generate(parsed);

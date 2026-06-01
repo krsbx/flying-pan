@@ -9,11 +9,13 @@ import type {
 } from '../ast/types';
 import { DeclarationKind } from '../ast/utility';
 import { ClangNodeParser, type ParseOptions } from '../parser';
+import { parseMacros } from '../parser/macro';
 import {
   generateCallbackCode,
   generateEnumCode,
   generateFFIDefinition,
   generateFunctionCode,
+  generateMacroCode,
   generateStructCode,
   generateTypedefCode,
 } from './codegen';
@@ -25,6 +27,12 @@ export interface FFICodeGeneratorOptions {
 
   /** Output directory */
   outputDir: string;
+
+  /** Path to a gcc -dM macro dump file */
+  macroFile?: string;
+
+  /** Only include macros whose names start with this prefix */
+  macroPrefix?: string;
 }
 
 export class FFICodeGenerator {
@@ -179,6 +187,24 @@ export class FFICodeGenerator {
           }
 
           break;
+        }
+      }
+    }
+
+    // Process macro constants if a macro dump file is provided
+    if (this.options.macroFile) {
+      const macroSource = await Bun.file(this.options.macroFile).text();
+      const macros = parseMacros(macroSource, {
+        namePrefix: this.options.macroPrefix,
+      });
+
+      const macroResults = generateMacroCode(macros);
+
+      for (const { isType, code } of macroResults) {
+        if (isType) {
+          parts.types.push(code);
+        } else {
+          parts.enums.push(code);
         }
       }
     }

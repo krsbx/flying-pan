@@ -48,6 +48,24 @@ clang -Xclang -ast-dump=json -fsyntax-only miniaudio.h > assets/miniaudio.json
 clang -Xclang -ast-dump=json -fsyntax-only freetype2/freetype/freetype.h > assets/freetype.json
 ```
 
+## Generate Macros dumps
+
+The FFI bindings are generated from Clang AST JSON dumps. Place the headers in the project root and run:
+
+```bash
+# GLFW
+gcc -dM -E glfw3.h > assets/glfw3.macros
+
+# stb_truetype (font rasterizer)
+gcc -dM -E stb_truetype.h > assets/stb_truetype.macros
+
+# miniaudio (audio)
+gcc -dM -E miniaudio.h > assets/miniaudio.macros
+
+# FreeType (optional)
+gcc -dM -E freetype2/freetype/freetype.h > assets/freetype.macros
+```
+
 ## Regenerating FFI bindings
 
 ```bash

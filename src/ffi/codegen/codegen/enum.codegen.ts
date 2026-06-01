@@ -10,7 +10,7 @@ export function generateEnumCode(decl: CEnumDecl): CodeGenResult[] {
         isType: false,
         code: decl.constants
           .map((c) => `export const ${c.name} = ${c.value};`)
-          .join('\n'),
+          .join('\n\n'),
       },
     ];
   }
@@ -22,7 +22,7 @@ export function generateEnumCode(decl: CEnumDecl): CodeGenResult[] {
   return [
     {
       isType: false,
-      code: lines.join('\n'),
+      code: lines.join('\n\n'),
     },
     {
       isType: true,

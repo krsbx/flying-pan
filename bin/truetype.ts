@@ -10,6 +10,8 @@ const parsed = await parser.parse();
 const generator = new FFICodeGenerator({
   libName: 'TrueType',
   outputDir: path.join(import.meta.dir, '../src/truetype'),
+  macroFile: path.join(import.meta.dir, '../assets/stb_truetype.macros'),
+  macroPrefix: 'STBTT_',
 });
 
 await generator.generate(parsed);

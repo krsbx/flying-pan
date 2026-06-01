@@ -4,5 +4,6 @@ export {
   generateFFIDefinition,
   generateFunctionCode,
 } from './function.codegen';
+export { generateMacroCode } from './macro.codegen';
 export { generateStructCode } from './struct.codegen';
 export { generateTypedefCode } from './typedef.codegen';
