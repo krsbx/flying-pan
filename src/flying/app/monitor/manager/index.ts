@@ -60,7 +60,7 @@ export class MonitorManager {
     this.populateMonitors();
   }
 
-  protected getAllMonitors() {
+  protected getAllMonitors(): Monitor[] {
     const count = new CStruct({ length: CStruct.BYTE_SIZE.i32 });
 
     const listPtr = this.gl.glfwGetMonitors({
@@ -78,7 +78,7 @@ export class MonitorManager {
     return monitorPtr.map((ptr) => new Monitor({ gl: this.gl, address: ptr }));
   }
 
-  protected populateMonitors() {
+  protected populateMonitors(): void {
     const monitors = this.getAllMonitors();
 
     for (const monitor of monitors) {
@@ -94,7 +94,7 @@ export class MonitorManager {
     return this._monitors.get(arg0) || null;
   }
 
-  public forEach(fn: (monitor: Monitor) => void) {
+  public forEach(fn: (monitor: Monitor) => void): void {
     this.all.forEach(fn);
   }
 
@@ -115,8 +115,8 @@ export class MonitorManager {
     return monitor;
   }
 
-  public get all() {
-    return [...this._monitorsSet.values()];
+  public get all(): ReadonlySet<Monitor> {
+    return this._monitorsSet;
   }
 
   public get count() {
@@ -130,14 +130,14 @@ export class MonitorManager {
   public on<
     T extends keyof MonitorManagerSubscriptionMap,
     U extends MonitorManagerSubscriptionMap[T],
-  >(event: T, fn: U) {
+  >(event: T, fn: U): void {
     this._fnRegistries[event].add(fn);
   }
 
   public off<
     T extends keyof MonitorManagerSubscriptionMap,
     U extends MonitorManagerSubscriptionMap[T],
-  >(event: T, fn: U) {
+  >(event: T, fn: U): void {
     this._fnRegistries[event].delete(fn as never);
   }
 }

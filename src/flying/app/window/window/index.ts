@@ -403,7 +403,7 @@ export class Window {
     };
   }
 
-  protected registerCallbacks() {
+  protected registerCallbacks(): void {
     const registries = [
       // #region WindowEvent
       [WindowEvent.PositionChange, 'glfwSetWindowPosCallback'],
@@ -539,14 +539,14 @@ export class Window {
   public on<
     T extends keyof WindowSubscriptionMap,
     U extends WindowSubscriptionMap[T],
-  >(type: T, fn: U) {
+  >(type: T, fn: U): void {
     this._fnRegistries[type].fns.add(fn as never);
   }
 
   public off<
     T extends keyof WindowSubscriptionMap,
     U extends WindowSubscriptionMap[T],
-  >(type: T, fn: U) {
+  >(type: T, fn: U): void {
     this._fnRegistries[type].fns.delete(fn as never);
   }
 }

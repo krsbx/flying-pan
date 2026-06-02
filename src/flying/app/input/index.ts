@@ -1,5 +1,4 @@
 import type { Coordinate2D } from '@/flying/types';
-import type { GLFW } from '@/glfw';
 import {
   GLFW_MOD_ALT,
   GLFW_MOD_CONTROL,
@@ -14,7 +13,6 @@ import { InputState } from './state';
 import type { WindowCallbackMap } from './types';
 
 export class InputManager {
-  public readonly gl: GLFW;
   public readonly events = [
     InputEvent.Key,
     InputEvent.MousePress,
@@ -26,15 +24,14 @@ export class InputManager {
   protected _registered: Set<Window>;
   protected _bindings: Map<Window, WindowCallbackMap>;
 
-  public constructor(gl: GLFW) {
-    this.gl = gl;
+  public constructor() {
     this._current = new InputState();
     this._previous = new InputState();
     this._registered = new Set();
     this._bindings = new Map();
   }
 
-  protected onKey({ key, action, mods }: KeyAction) {
+  protected onKey({ key, action, mods }: KeyAction): void {
     this._current.modifiers = mods;
 
     if (action === GLFW_PRESS || action === GLFW_REPEAT) {
@@ -44,7 +41,7 @@ export class InputManager {
     }
   }
 
-  protected onMousePress({ action, button, mods }: MouseAction) {
+  protected onMousePress({ action, button, mods }: MouseAction): void {
     this._current.modifiers = mods;
 
     if (action === GLFW_PRESS) {
@@ -54,11 +51,11 @@ export class InputManager {
     }
   }
 
-  protected onCursorPosition(position: Coordinate2D) {
+  protected onCursorPosition(position: Coordinate2D): void {
     this._current.mousePosition = position;
   }
 
-  protected onMouseScroll(delta: Coordinate2D) {
+  protected onMouseScroll(delta: Coordinate2D): void {
     this._current.scrollDelta.x += delta.x;
     this._current.scrollDelta.y += delta.y;
   }
@@ -73,7 +70,7 @@ export class InputManager {
     this._current.scrollDelta = { x: 0, y: 0 };
   }
 
-  protected createBindings() {
+  protected createBindings(): WindowCallbackMap {
     const key = this.onKey.bind(this);
     const mousePress = this.onMousePress.bind(this);
     const cursorPosition = this.onCursorPosition.bind(this);
@@ -87,7 +84,7 @@ export class InputManager {
     };
   }
 
-  public register(window: Window) {
+  public register(window: Window): void {
     if (this._registered.has(window)) return;
 
     const bindings = this.createBindings();
@@ -98,7 +95,7 @@ export class InputManager {
     this._bindings.set(window, bindings);
   }
 
-  public unregister(window: Window) {
+  public unregister(window: Window): void {
     if (!this._registered.has(window)) return;
 
     const bindings = this._bindings.get(window);
@@ -111,30 +108,30 @@ export class InputManager {
     this._bindings.delete(window);
   }
 
-  public isKeyDown(key: number) {
+  public isKeyDown(key: number): boolean {
     return this._current.keys.has(key);
   }
 
-  public isKeyPressed(key: number) {
+  public isKeyPressed(key: number): boolean {
     return this._current.keys.has(key) && !this._previous.keys.has(key);
   }
 
-  public isKeyReleased(key: number) {
+  public isKeyReleased(key: number): boolean {
     return !this._current.keys.has(key) && this._previous.keys.has(key);
   }
 
-  public isMouseDown(button: number) {
+  public isMouseDown(button: number): boolean {
     return this._current.mouseButtons.has(button);
   }
 
-  public isButtonPressed(button: number) {
+  public isButtonPressed(button: number): boolean {
     return (
       this._current.mouseButtons.has(button) &&
       !this._previous.mouseButtons.has(button)
     );
   }
 
-  public isButtonReleased(button: number) {
+  public isButtonReleased(button: number): boolean {
     return (
       !this._current.mouseButtons.has(button) &&
       this._previous.mouseButtons.has(button)

@@ -1,8 +1,5 @@
 import { GLFW } from '@/glfw';
-import { FontAtlas } from '../../fonts';
 import { Renderer } from '../../renderer';
-import { InputManager } from '../input';
-import { MonitorManager } from '../monitor';
 import {
   Window,
   WindowEvent,
@@ -10,14 +7,12 @@ import {
   WindowManagerEvent,
   type WindowOptions,
 } from '../window';
+import { AppManager } from './manager';
 import type { AppConfig, OnRenderFrame } from './types';
 
 export class App {
   public readonly gl: GLFW;
-  public readonly windowManager: WindowManager;
-  public readonly monitorManager: MonitorManager;
-  public readonly inputManager: InputManager;
-  public readonly fontAtlas: Map<string, FontAtlas>;
+  public readonly manager: AppManager;
   public readonly root: Window;
   public readonly renderer: Renderer;
   public destroyWindow: WindowManager['destroy'];
@@ -34,59 +29,40 @@ export class App {
       throw new Error('Failed to initialize GLFW!');
     }
 
-    const windowManager = new WindowManager(this.gl);
-    const monitorManager = new MonitorManager(this.gl);
-    const inputManager = new InputManager(this.gl);
-
+    this.manager = new AppManager({
+      fonts: options.fonts || [],
+      gl: this.gl,
+    });
     this.renderer = new Renderer({
       gl: this.gl,
-      windowManager,
+      windowManager: this.manager.window,
     });
-    this.windowManager = windowManager;
-    this.monitorManager = monitorManager;
-    this.inputManager = inputManager;
 
-    windowManager.on(WindowManagerEvent.Created, (window) => {
-      inputManager.register(window);
+    this.manager.window.on(WindowManagerEvent.Created, (window) => {
+      this.manager.input.register(window);
       this.renderer.init(window);
     });
 
-    this.destroyWindow = windowManager.destroy.bind(windowManager);
-    this.setActiveWindow = windowManager.setActive.bind(windowManager);
+    this.destroyWindow = this.manager.window.destroy.bind(this.manager.window);
+    this.setActiveWindow = this.manager.window.setActive.bind(
+      this.manager.window
+    );
 
     this._running = false;
     this.root = this.createWindow(options);
     this.vsync = options.vsync ?? false;
-
-    this.fontAtlas = new Map(
-      options.fonts
-        ? options.fonts.reduce(
-            (acc, curr) => {
-              acc.push([
-                curr.identifier as never,
-                new FontAtlas({
-                  fontPath: curr.fontPath,
-                  fontSize: curr.fontSize,
-                  truetypeLibPath: curr.libPath,
-                }),
-              ]);
-
-              return acc;
-            },
-            [] as [string, FontAtlas][]
-          )
-        : []
-    );
   }
 
   public onFrame(fn: OnRenderFrame): void {
     this._onRenderFrame = fn;
   }
 
-  public createWindow(options: Omit<WindowOptions, 'share'>) {
-    const window = this.windowManager.create({
+  public createWindow(options: Omit<WindowOptions, 'share'>): Window {
+    // Share GL context with any alive window to keep textures/buffers available
+    const existing = this.manager.window.all.values().next().value;
+    const window = this.manager.window.create({
       ...options,
-      share: this.root,
+      share: existing ?? null,
     });
 
     window.on(WindowEvent.Resized, () => {
@@ -110,20 +86,18 @@ export class App {
   }
 
   public get activeWindow() {
-    return this.windowManager.active;
+    return this.manager.window.active;
   }
 
-  public async run() {
-    if (this.fontAtlas.size > 0) {
-      await Promise.all(
-        this.fontAtlas.values().map((font) => font.init(this.gl))
-      );
+  public async run(): Promise<void> {
+    if (!this.manager.font.isEmpty) {
+      await this.manager.font.init();
     }
 
     this._running = true;
 
     while (this._running) {
-      this.inputManager.update();
+      this.manager.input.update();
 
       if (this.activeWindow) {
         this.renderer.clear(
@@ -139,9 +113,9 @@ export class App {
       }
 
       this.gl.glfwPollEvents();
-      this.windowManager.cleanUp();
+      this.manager.window.cleanUp();
 
-      if (this.windowManager.isEmpty) {
+      if (this.manager.window.isEmpty) {
         break;
       }
     }
@@ -152,12 +126,8 @@ export class App {
   public close(): void {
     this._running = false;
 
-    if (this.fontAtlas.size > 0) {
-      this.fontAtlas.forEach((font) => font.destroy(this.gl));
-      this.fontAtlas.clear();
-    }
-
-    this.windowManager.all.forEach((window) => this.destroyWindow(window));
+    this.manager.window.destroyAll();
+    this.manager.font.destroy();
     this.gl.glfwTerminate();
   }
 }

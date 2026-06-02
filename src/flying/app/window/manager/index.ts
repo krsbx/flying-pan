@@ -20,9 +20,9 @@ export class WindowManager {
     this._windows = new Map();
     this._windowsSet = new Set();
     this._fnRegistries = {
-      created: new Set(),
-      destroyed: new Set(),
-      active_changed: new Set(),
+      [WindowManagerEvent.Created]: new Set(),
+      [WindowManagerEvent.Destroyed]: new Set(),
+      [WindowManagerEvent.ActiveChanged]: new Set(),
     };
     this._active = null;
   }
@@ -37,7 +37,7 @@ export class WindowManager {
     return window;
   }
 
-  public create(options: WindowOptions) {
+  public create(options: WindowOptions): Window {
     const window = new Window({ ...options, gl: this.gl });
 
     if (!window.$address) {
@@ -115,18 +115,22 @@ export class WindowManager {
     this._windows.delete(window.identifier);
   }
 
+  public destroyAll(): void {
+    this.all.forEach((window) => this.destroy(window));
+  }
+
   public get(address: Pointer): Window | null;
   public get(identifier: string): Window | null;
   public get(arg0: Pointer | string) {
     return this._windows.get(arg0) || null;
   }
 
-  public forEach(fn: (window: Window) => void) {
+  public forEach(fn: (window: Window) => void): void {
     this.all.forEach(fn);
   }
 
-  public get all() {
-    return [...this._windowsSet.values()];
+  public get all(): ReadonlySet<Window> {
+    return this._windowsSet;
   }
 
   public get active() {
@@ -170,14 +174,14 @@ export class WindowManager {
   public on<
     T extends keyof WindowManagerSubscriptionMap,
     U extends WindowManagerSubscriptionMap[T],
-  >(type: T, fn: U) {
+  >(type: T, fn: U): void {
     this._fnRegistries[type].add(fn as never);
   }
 
   public off<
     T extends keyof WindowManagerSubscriptionMap,
     U extends WindowManagerSubscriptionMap[T],
-  >(type: T, fn: U) {
+  >(type: T, fn: U): void {
     this._fnRegistries[type].delete(fn as never);
   }
 }
