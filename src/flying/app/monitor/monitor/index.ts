@@ -79,19 +79,19 @@ export class Monitor {
     };
   }
 
-  public get name() {
+  public get name(): string {
     return this._name;
   }
 
-  public get position() {
+  public get position(): Coordinate2D {
     return this.getMonitorPosition();
   }
 
-  public get scale() {
+  public get scale(): Coordinate2D {
     return this.getMonitorScale();
   }
 
-  public get workArea() {
+  public get workArea(): Coordinate2D & Resolution {
     return this.getWorkArea();
   }
 }

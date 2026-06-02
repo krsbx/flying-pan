@@ -31,9 +31,9 @@ export interface FontAtlasOptions {
 }
 
 export abstract class BaseFontAtlas implements FontAtlasContract {
+  public readonly fontPath: string;
+  public readonly fontSize: number;
   protected truetype: TrueType;
-  protected fontPath: string;
-  protected fontSize: number;
   protected bakedChars: CStruct;
   protected glfw: GLFW | null;
   protected _textureId: number;

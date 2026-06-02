@@ -138,31 +138,31 @@ export class InputManager {
     );
   }
 
-  public get mousePosition() {
+  public get mousePosition(): Coordinate2D {
     return this._current.mousePosition;
   }
 
-  public get scrollDelta() {
+  public get scrollDelta(): Coordinate2D {
     return this._current.scrollDelta;
   }
 
-  public get isShiftDown() {
+  public get isShiftDown(): boolean {
     return !!(this._current.modifiers & GLFW_MOD_SHIFT);
   }
 
-  public get isControlDown() {
+  public get isControlDown(): boolean {
     return !!(this._current.modifiers & GLFW_MOD_CONTROL);
   }
 
-  public get isAltDown() {
+  public get isAltDown(): boolean {
     return !!(this._current.modifiers & GLFW_MOD_ALT);
   }
 
-  public get current() {
+  public get current(): InputState {
     return this._current;
   }
 
-  public get previous() {
+  public get previous(): InputState {
     return this._previous;
   }
 }

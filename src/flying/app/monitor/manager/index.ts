@@ -98,7 +98,7 @@ export class MonitorManager {
     this.all.forEach(fn);
   }
 
-  public get primary() {
+  public get primary(): Monitor {
     const monitorPtr = this.gl.glfwGetPrimaryMonitor();
 
     if (!monitorPtr) {
@@ -119,11 +119,11 @@ export class MonitorManager {
     return this._monitorsSet;
   }
 
-  public get count() {
+  public get count(): number {
     return this._monitorsSet.size;
   }
 
-  public get isEmpty() {
+  public get isEmpty(): boolean {
     return this.count === 0;
   }
 

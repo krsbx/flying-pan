@@ -72,11 +72,11 @@ export class App {
     return window;
   }
 
-  public get running() {
+  public get running(): boolean {
     return this._running;
   }
 
-  public get vsync() {
+  public get vsync(): boolean {
     return this._vsync;
   }
 
@@ -85,7 +85,7 @@ export class App {
     this.gl.glfwSwapInterval({ interval: Number(value) });
   }
 
-  public get activeWindow() {
+  public get activeWindow(): Window | null {
     return this.manager.window.active;
   }
 

@@ -72,11 +72,11 @@ export class FontManager {
     return font;
   }
 
-  public get count() {
+  public get count(): number {
     return this._fonts.size;
   }
 
-  public get isEmpty() {
+  public get isEmpty(): boolean {
     return this.count === 0;
   }
 }

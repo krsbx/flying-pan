@@ -436,7 +436,7 @@ export class Window {
     });
   }
 
-  public get size() {
+  public get size(): Resolution {
     return this._size;
   }
 
@@ -449,7 +449,7 @@ export class Window {
     });
   }
 
-  public get position() {
+  public get position(): Coordinate2D {
     return this._position;
   }
 
@@ -463,7 +463,7 @@ export class Window {
     });
   }
 
-  public get mousePosition() {
+  public get mousePosition(): Coordinate2D {
     return this._mousePosition;
   }
 
@@ -477,7 +477,7 @@ export class Window {
     });
   }
 
-  public get title() {
+  public get title(): string {
     return this._title;
   }
 
@@ -490,47 +490,47 @@ export class Window {
     });
   }
 
-  public get isFocused() {
+  public get isFocused(): boolean {
     return this._isFocused;
   }
 
-  public get isHovered() {
+  public get isHovered(): boolean {
     return this._isHovered;
   }
 
-  public get isMaximized() {
+  public get isMaximized(): boolean {
     return this._isMaximized;
   }
 
-  public get isMinimized() {
+  public get isMinimized(): boolean {
     return this._isMinimized;
   }
 
-  public get frameBuffer() {
+  public get frameBuffer(): FrameBufferSize {
     return this._frameBuffer;
   }
 
-  public get contentScale() {
+  public get contentScale(): Coordinate2D {
     return this._contentScale;
   }
 
-  public get identifier() {
+  public get identifier(): string {
     return this._identifier;
   }
 
-  public restore() {
+  public restore(): void {
     this.gl.glfwRestoreWindow({
       window: this.$address,
     });
   }
 
-  public maximize() {
+  public maximize(): void {
     this.gl.glfwMaximizeWindow({
       window: this.$address,
     });
   }
 
-  public minimize() {
+  public minimize(): void {
     this.gl.glfwIconifyWindow({
       window: this.$address,
     });

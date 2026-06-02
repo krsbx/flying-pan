@@ -133,15 +133,15 @@ export class WindowManager {
     return this._windowsSet;
   }
 
-  public get active() {
+  public get active(): Window | null {
     return this._active;
   }
 
-  public get count() {
+  public get count(): number {
     return this._windowsSet.size;
   }
 
-  public get isEmpty() {
+  public get isEmpty(): boolean {
     return this.count === 0;
   }
 
