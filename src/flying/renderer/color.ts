@@ -1,9 +1,4 @@
-export interface RGBA {
-  red: number;
-  green: number;
-  blue: number;
-  alpha: number;
-}
+import type { RGBA } from '../types';
 
 export const Color = {
   white: '#ffffff',

@@ -21,6 +21,7 @@ export interface WindowOptions {
   /** Active window identifier - Default use {title} */
   identifier?: string | null;
   backgroundColor?: Color | (string & {}) | null;
+  share?: Window | Pointer | null;
 }
 
 export class Window {
@@ -49,7 +50,11 @@ export class Window {
       width: options.width,
       title: options.title,
       monitor: null,
-      share: null,
+      share: options.share
+        ? options.share instanceof Window
+          ? options.share.$address
+          : options.share
+        : null,
     });
 
     if (!this.$address) {

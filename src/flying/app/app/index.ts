@@ -1,28 +1,33 @@
-import { parseColor } from '@/flying/renderer/color';
-import { GL_COLOR_BUFFER_BIT } from '@/flying/rendererx';
 import { GLFW } from '@/glfw';
-import { FontAtlas } from '../../fonts/font-atlas';
+import { FontAtlas } from '../../fonts';
+import { Renderer } from '../../renderer';
 import { InputManager } from '../input';
 import { MonitorManager } from '../monitor';
-import { Window, WindowManager, type WindowOptions } from '../window';
-import { WindowManagerEvent } from '../window/manager/constant';
-import type { AppConfig, AppFonts, FontConfig, OnRenderFrame } from './types';
+import {
+  Window,
+  WindowEvent,
+  WindowManager,
+  WindowManagerEvent,
+  type WindowOptions,
+} from '../window';
+import type { AppConfig, OnRenderFrame } from './types';
 
-export class App<Fonts extends readonly FontConfig[]> {
+export class App {
   public readonly gl: GLFW;
   public readonly windowManager: WindowManager;
   public readonly monitorManager: MonitorManager;
   public readonly inputManager: InputManager;
-  public readonly fontAtlas: AppFonts<Fonts>;
+  public readonly fontAtlas: Map<string, FontAtlas>;
   public readonly root: Window;
+  public readonly renderer: Renderer;
   public destroyWindow: WindowManager['destroy'];
   public setActiveWindow: WindowManager['setActive'];
 
-  protected _onRenderFrame: OnRenderFrame<Fonts> | null = null;
+  protected _onRenderFrame: OnRenderFrame | null = null;
   protected _running: boolean;
   protected _vsync!: boolean;
 
-  public constructor(options: AppConfig<Fonts>) {
+  public constructor(options: AppConfig) {
     this.gl = new GLFW(options.libPath);
 
     if (!this.gl.glfwInit()) {
@@ -33,12 +38,17 @@ export class App<Fonts extends readonly FontConfig[]> {
     const monitorManager = new MonitorManager(this.gl);
     const inputManager = new InputManager(this.gl);
 
+    this.renderer = new Renderer({
+      gl: this.gl,
+      windowManager,
+    });
     this.windowManager = windowManager;
     this.monitorManager = monitorManager;
     this.inputManager = inputManager;
 
     windowManager.on(WindowManagerEvent.Created, (window) => {
       inputManager.register(window);
+      this.renderer.init(window);
     });
 
     this.destroyWindow = windowManager.destroy.bind(windowManager);
@@ -63,18 +73,25 @@ export class App<Fonts extends readonly FontConfig[]> {
 
               return acc;
             },
-            [] as [keyof AppFonts<Fonts>, FontAtlas][]
+            [] as [string, FontAtlas][]
           )
         : []
-    ) as AppFonts<Fonts>;
+    );
   }
 
-  public onFrame(fn: OnRenderFrame<Fonts>): void {
+  public onFrame(fn: OnRenderFrame): void {
     this._onRenderFrame = fn;
   }
 
-  public createWindow(options: WindowOptions) {
-    const window = this.windowManager.create(options);
+  public createWindow(options: Omit<WindowOptions, 'share'>) {
+    const window = this.windowManager.create({
+      ...options,
+      share: this.root,
+    });
+
+    window.on(WindowEvent.Resized, () => {
+      this.renderer.init(window);
+    });
 
     return window;
   }
@@ -109,13 +126,17 @@ export class App<Fonts extends readonly FontConfig[]> {
       this.inputManager.update();
 
       if (this.activeWindow) {
-        this.gl.glClearColor(parseColor(this.activeWindow.backgroundColor));
-        this.gl.glClear({ mask: GL_COLOR_BUFFER_BIT });
-        this.gl.glFlush();
-        this.gl.glfwSwapBuffers({ window: this.activeWindow.$address });
+        this.renderer.clear(
+          this.activeWindow,
+          this.activeWindow.backgroundColor
+        );
       }
 
       this._onRenderFrame?.(this);
+
+      if (this.activeWindow) {
+        this.renderer.flush(this.activeWindow);
+      }
 
       this.gl.glfwPollEvents();
       this.windowManager.cleanUp();

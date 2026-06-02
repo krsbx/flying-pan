@@ -9,12 +9,10 @@ export interface FontConfig {
   identifier: string;
 }
 
-export interface AppConfig<
-  Fonts extends readonly FontConfig[],
-> extends WindowOptions {
+export interface AppConfig extends WindowOptions {
   libPath: string;
   backgroundColor?: string | null;
-  fonts?: Fonts | null;
+  fonts?: FontConfig[] | null;
   vsync?: boolean;
 }
 
@@ -25,6 +23,6 @@ export type AppFonts<Fonts extends readonly FontConfig[]> = Omit<
   get(key: Fonts[number]['identifier']): FontAtlas;
 };
 
-export interface OnRenderFrame<Fonts extends readonly FontConfig[]> {
-  (app: App<Fonts>): void;
+export interface OnRenderFrame {
+  (app: App): void;
 }

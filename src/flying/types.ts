@@ -1,3 +1,5 @@
+import type { Color } from './renderer/color';
+
 export interface Coordinate2D {
   x: number;
   y: number;
@@ -28,3 +30,5 @@ export interface FrameBufferSize {
   width: number;
   height: number;
 }
+
+export type ValidColor = Color | (string & {});
