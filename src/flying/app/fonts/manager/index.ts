@@ -65,9 +65,7 @@ export class FontManager {
   public get(identifier: string): BaseFontAtlas {
     const font = this._fonts.get(identifier);
 
-    if (!font) {
-      throw new Error(`Font "${identifier}" not found!`);
-    }
+    if (!font) throw new Error('[FontManager] Font not found!');
 
     return font;
   }

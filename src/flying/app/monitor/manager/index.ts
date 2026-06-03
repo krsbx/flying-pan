@@ -88,10 +88,14 @@ export class MonitorManager {
     }
   }
 
-  public get(address: Pointer): Monitor | null;
-  public get(identifier: string): Monitor | null;
+  public get(address: Pointer): Monitor;
+  public get(identifier: string): Monitor;
   public get(arg0: Pointer | string) {
-    return this._monitors.get(arg0) || null;
+    const monitor = this._monitors.get(arg0);
+
+    if (!monitor) throw new Error('[MonitorManager] Monitor not found!');
+
+    return monitor;
   }
 
   public forEach(fn: (monitor: Monitor) => void): void {

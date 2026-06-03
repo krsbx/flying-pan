@@ -119,10 +119,14 @@ export class WindowManager {
     this.all.forEach((window) => this.destroy(window));
   }
 
-  public get(address: Pointer): Window | null;
-  public get(identifier: string): Window | null;
+  public get(address: Pointer): Window;
+  public get(identifier: string): Window;
   public get(arg0: Pointer | string) {
-    return this._windows.get(arg0) || null;
+    const window = this._windows.get(arg0);
+
+    if (!window) throw new Error('[WindowManager] Window not found!');
+
+    return window;
   }
 
   public forEach(fn: (window: Window) => void): void {
