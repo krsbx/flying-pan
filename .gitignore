@@ -40,3 +40,4 @@ ffi
 glfw3.h
 miniaudio.h
 stb_truetype.h
+stb_image.h

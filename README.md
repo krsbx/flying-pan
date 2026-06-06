@@ -17,6 +17,19 @@ gcc -shared -fPIC -O3 stb_truetype.c -o libtruetype.so -lm
 gcc -shared -O3 stb_truetype.c -o truetype.dll -lm
 ```
 
+### stb_image
+
+```bash
+# macOS
+gcc -dynamiclib -O3 stb_image.c -o libimage.dylib -lm
+
+# Linux
+gcc -shared -fPIC -O3 stb_image.c -o libimage.so -lm
+
+# Windows (MinGW)
+gcc -shared -O3 stb_image.c -o image.dll -lm
+```
+
 ### miniaudio (audio)
 
 ```bash
@@ -41,6 +54,9 @@ clang -Xclang -ast-dump=json -fsyntax-only glfw3.h > assets/glfw3.json
 # stb_truetype (font rasterizer)
 clang -Xclang -ast-dump=json -fsyntax-only stb_truetype.h > assets/stb_truetype.json
 
+# stb_image
+clang -Xclang -ast-dump=json -fsyntax-only stb_image.h > assets/stb_image.json
+
 # miniaudio (audio)
 clang -Xclang -ast-dump=json -fsyntax-only miniaudio.h > assets/miniaudio.json
 
@@ -59,6 +75,9 @@ gcc -dM -E glfw3.h > assets/glfw3.macros
 # stb_truetype (font rasterizer)
 gcc -dM -E stb_truetype.h > assets/stb_truetype.macros
 
+# stb_image
+gcc -dM -E stb_image.h > assets/stb_image.macros
+
 # miniaudio (audio)
 gcc -dM -E miniaudio.h > assets/miniaudio.macros
 
@@ -73,6 +92,7 @@ bun run build:glfw          # GLFW + OpenGL bindings
 bun run build:miniaudio     # MiniAudio bindings
 bun run build:freetype      # FreeType bindings
 bun run build:truetype      # stb_truetype bindings
+bun run build:image      # stb_image bindings
 ```
 
 ## Running
