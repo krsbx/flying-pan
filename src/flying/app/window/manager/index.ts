@@ -87,10 +87,7 @@ export class WindowManager {
   public close(arg0: Window | Pointer | string) {
     const window = this.resolve(arg0);
 
-    this.gl.glfwSetWindowShouldClose({
-      window: window.$address,
-      value: Number(true),
-    });
+    window.close();
   }
 
   public destroy(window: Window): void;

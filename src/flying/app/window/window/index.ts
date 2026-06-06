@@ -518,6 +518,13 @@ export class Window {
     return this._identifier;
   }
 
+  public close(): void {
+    this.gl.glfwSetWindowShouldClose({
+      window: this.$address,
+      value: Number(true),
+    });
+  }
+
   public restore(): void {
     this.gl.glfwRestoreWindow({
       window: this.$address,
