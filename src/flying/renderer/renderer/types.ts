@@ -3,16 +3,19 @@ import type { Coordinate2D, RGBA, Size, ValidColor } from '@/flying/types';
 
 export interface DrawRectOptions extends Coordinate2D, Size {
   color: ValidColor;
+  opacity?: number;
   borderRadius?: number | null;
 }
 
 export interface DrawRectGLOptions extends Coordinate2D, Size {
   rgba: RGBA;
+  opacity?: number;
 }
 
 export interface DrawRoundedRectOptions extends Coordinate2D, Size {
   rgba: RGBA;
   radius: number;
+  opacity?: number;
 }
 
 export interface DrawCornerArcOptions {
@@ -36,4 +39,5 @@ export interface DrawTextOptions extends Coordinate2D {
   text: string;
   atlas: BaseFontAtlas;
   color: ValidColor;
+  opacity?: number;
 }

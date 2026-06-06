@@ -15,15 +15,16 @@ export function paint(window: Window, options: PaintOptions) {
   let finalWidth = width;
   let finalHeight = height;
 
+  // Render the border by drawing a rectangle with a same size as the requested but resize the rectangle to fit the border
   if (style.borderWidth && style.borderColor) {
-    // Render the border by drawing a rectangle with a slightly larger width and height
     renderer.drawRect(window, {
-      x,
-      y,
-      width,
-      height,
+      x: finalX,
+      y: finalY,
+      width: finalWidth,
+      height: finalHeight,
       color: style.borderColor,
       borderRadius: style.borderRadius,
+      opacity: style.opacity,
     });
 
     finalX += style.borderWidth / 2;
@@ -40,6 +41,7 @@ export function paint(window: Window, options: PaintOptions) {
       height: finalHeight,
       color: style.backgroundColor,
       borderRadius: style.borderRadius,
+      opacity: style.opacity,
     });
   }
 
@@ -58,6 +60,7 @@ export function paint(window: Window, options: PaintOptions) {
         y,
         color,
         atlas: fontAtlas,
+        opacity: style.opacity,
       });
     }
   }

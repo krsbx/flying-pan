@@ -105,6 +105,10 @@ export class Renderer {
     this.wrap(window, () => {
       const rgba = parseColor(options.color);
 
+      if (options.opacity !== undefined) {
+        rgba.alpha *= options.opacity;
+      }
+
       if (options.borderRadius && options.borderRadius > 0) {
         this.drawRoundedRect({
           ...options,
@@ -240,6 +244,11 @@ export class Renderer {
   public drawText(window: Window, options: DrawTextOptions) {
     this.wrap(window, () => {
       const rgba = parseColor(options.color);
+
+      if (options.opacity !== undefined) {
+        rgba.alpha *= options.opacity;
+      }
+
       const quads = options.atlas.getQuads(options);
 
       // Enable texturing
