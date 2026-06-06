@@ -5,6 +5,7 @@ import type {
   FlexJustify,
   FlexWrap,
   FontWeight,
+  Position,
   SizeUnit,
   TextAlign,
   WidgetType,

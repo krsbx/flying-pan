@@ -2,6 +2,7 @@ import {
   FlexAlign,
   FlexDirection,
   FlexJustify,
+  Position,
   SpacingType,
 } from '@/flying/widget/constant';
 import { resolveSpacing } from '@/flying/widget/styles';
@@ -80,7 +81,9 @@ export function layoutFlex(options: LayoutFlexOptions): LayoutNode {
 
     let crossPos = chilCrossStart;
 
-    switch (alignItems) {
+    const childAlign = m.widget.style?.alignSelf ?? alignItems;
+
+    switch (childAlign) {
       case FlexAlign.Center:
         crossPos += (crossWithMargin - childCrossSize) / 2;
         break;
@@ -97,8 +100,13 @@ export function layoutFlex(options: LayoutFlexOptions): LayoutNode {
     }
 
     crossPos += isRow ? m.margin.top : m.margin.left;
-    const childX = isRow ? childMain : crossPos;
-    const childY = isRow ? crossPos : childMain;
+    let childX = isRow ? childMain : crossPos;
+    let childY = isRow ? crossPos : childMain;
+
+    if (m.widget.style?.position === Position.Relative) {
+      if (m.widget.style.left !== undefined) childX += m.widget.style.left;
+      if (m.widget.style.top !== undefined) childY += m.widget.style.top;
+    }
 
     const childLayout = layoutFlex({
       node: m.widget,

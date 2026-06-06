@@ -22,6 +22,7 @@ export interface LayoutFlexOptions extends Coordinate2D {
 export interface ChildMeasurements extends Size {
   widget: WidgetDescriptor;
   flex: number;
+  flexShrink: number;
   margin: ResolvedSpacing;
 }
 
@@ -57,4 +58,11 @@ export interface CalculateMainContentSizeResult {
   alignItems: FlexAlign;
   justifyItems: FlexJustify;
   mainPos: number;
+}
+
+export interface DistributeChildOptions {
+  measurements: ChildMeasurements[];
+  totalFlex: number;
+  freeSpace: number;
+  isRow: boolean;
 }
