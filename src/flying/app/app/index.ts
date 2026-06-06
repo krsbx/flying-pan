@@ -15,11 +15,11 @@ export class App {
   public readonly gl: GLFW;
   public readonly manager: AppManager;
   public readonly renderer: Renderer;
-  public readonly root: Window;
   public destroyWindow: WindowManager['destroy'];
   public setActiveWindow: WindowManager['setActive'];
 
   protected _onRenderFrame: OnRenderFrame | null = null;
+  protected _root: Window | null;
   protected _running: boolean;
   protected _vsync!: boolean;
 
@@ -51,7 +51,14 @@ export class App {
 
     this._running = false;
     this.vsync = options.vsync ?? false;
-    this.root = this.createWindow(options);
+    this._root = this.createWindow(options);
+
+    this.manager.window.on(WindowManagerEvent.Destroyed, (window) => {
+      if (window === this._root) {
+        this._root = null;
+        this._running = false;
+      }
+    });
   }
 
   public onFrame(fn: OnRenderFrame): void {
@@ -84,6 +91,16 @@ export class App {
   public set vsync(value: boolean) {
     this._vsync = value;
     this.gl.glfwSwapInterval({ interval: Number(value) });
+  }
+
+  public get root() {
+    const root = this._root;
+
+    if (!root) {
+      throw new Error('Root window already destroyed!');
+    }
+
+    return root;
   }
 
   public get activeWindow(): Window | null {

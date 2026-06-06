@@ -16,20 +16,20 @@ export function paint(window: Window, options: PaintOptions) {
   let finalHeight = height;
 
   if (style.borderWidth && style.borderColor) {
-    finalX -= style.borderWidth;
-    finalY -= style.borderWidth;
-    finalWidth += style.borderWidth * 2;
-    finalHeight += style.borderWidth * 2;
-
     // Render the border by drawing a rectangle with a slightly larger width and height
     renderer.drawRect(window, {
-      x: x - style.borderWidth,
-      y: y - style.borderWidth,
-      width: width + style.borderWidth * 2,
-      height: height + style.borderWidth * 2,
+      x,
+      y,
+      width,
+      height,
       color: style.borderColor,
       borderRadius: style.borderRadius,
     });
+
+    finalX += style.borderWidth / 2;
+    finalY += style.borderWidth / 2;
+    finalWidth -= style.borderWidth;
+    finalHeight -= style.borderWidth;
   }
 
   if (style.backgroundColor) {
