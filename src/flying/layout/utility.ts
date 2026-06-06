@@ -27,11 +27,14 @@ export function measureChildsComponent(
     let width = child.style?.width ?? 0;
     let height = child.style?.height ?? 0;
 
-    if (child.type === WidgetType.Label && options.textMeasurer) {
-      const text = (child.props as LabelProps)?.text ?? '';
-      const fontSize = (child.style as TextStyle)?.fontSize ?? 16;
+    if (child.type === WidgetType.Label) {
+      const style = child.style as TextStyle;
+      const fontAtlas = options.fontManager.get(style.font);
 
-      const measured = options.textMeasurer.measureText({ fontSize, text });
+      const text = (child.props as LabelProps)?.text ?? '';
+      const fontSize = style?.fontSize ?? 16;
+
+      const measured = fontAtlas.measureText({ fontSize, text });
 
       if (!width) width = measured.width;
       if (!height) height = measured.height;

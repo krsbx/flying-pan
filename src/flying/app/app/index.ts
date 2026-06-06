@@ -1,5 +1,6 @@
+import { layoutFlex } from '@/flying/layout';
 import { GLFW } from '@/glfw';
-import { Renderer } from '../../renderer';
+import { paint, Renderer } from '../../renderer';
 import {
   Window,
   WindowEvent,
@@ -14,6 +15,7 @@ export class App {
   public readonly gl: GLFW;
   public readonly manager: AppManager;
   public readonly renderer: Renderer;
+  public readonly root: Window;
   public destroyWindow: WindowManager['destroy'];
   public setActiveWindow: WindowManager['setActive'];
 
@@ -49,7 +51,7 @@ export class App {
 
     this._running = false;
     this.vsync = options.vsync ?? false;
-    this.createWindow(options);
+    this.root = this.createWindow(options);
   }
 
   public onFrame(fn: OnRenderFrame): void {
@@ -99,10 +101,26 @@ export class App {
       this.manager.input.update();
 
       if (this.activeWindow) {
-        this.renderer.clear(
-          this.activeWindow,
-          this.activeWindow.backgroundColor
-        );
+        const window = this.activeWindow;
+
+        this.renderer.clear(window, window.backgroundColor);
+
+        if (window.widget) {
+          const layout = layoutFlex({
+            node: window.widget,
+            x: 0,
+            y: 0,
+            availableWidth: window.size.width,
+            availableHeight: window.size.height,
+            fontManager: this.manager.font,
+          });
+
+          paint(window, {
+            renderer: this.renderer,
+            layout: layout,
+            fontManager: this.manager.font,
+          });
+        }
       }
 
       this._onRenderFrame?.(this);

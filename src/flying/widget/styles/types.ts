@@ -84,6 +84,7 @@ export interface TextStyle extends ViewStyle {
   fontWeight?: FontWeight;
   lineHeight?: number;
   letterSpacing?: number;
+  font: string;
 }
 
 export type WidgetProps = Record<string, unknown>;

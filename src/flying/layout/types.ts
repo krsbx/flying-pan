@@ -1,4 +1,4 @@
-import type { TextMeasurer } from '../fonts/types';
+import type { FontManager } from '../app/fonts/manager';
 import type { Coordinate2D, Size } from '../types';
 import type { FlexAlign, FlexJustify } from '../widget/constant';
 import type {
@@ -16,7 +16,7 @@ export interface LayoutFlexOptions extends Coordinate2D {
   node: WidgetDescriptor;
   availableWidth: number;
   availableHeight: number;
-  textMeasurer: TextMeasurer | null;
+  fontManager: FontManager;
 }
 
 export interface ChildMeasurements extends Size {
@@ -27,7 +27,7 @@ export interface ChildMeasurements extends Size {
 
 export interface MeasureChildsComponentOptions {
   children: WidgetDescriptor[];
-  textMeasurer: TextMeasurer | null;
+  fontManager: FontManager;
 }
 
 export interface UpdateChildMeasurementsOptions {

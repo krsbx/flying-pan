@@ -13,7 +13,7 @@ import {
 } from './utility';
 
 export function layoutFlex(options: LayoutFlexOptions): LayoutNode {
-  const { node, x, y, textMeasurer, availableWidth, availableHeight } = options;
+  const { node, x, y, fontManager, availableWidth, availableHeight } = options;
   const style = node.style ?? {};
 
   const padding = resolveSpacing(node.style?.[SpacingType.Padding]);
@@ -40,7 +40,7 @@ export function layoutFlex(options: LayoutFlexOptions): LayoutNode {
 
   const measurements = measureChildsComponent({
     children: node.children,
-    textMeasurer: textMeasurer || null,
+    fontManager,
   });
 
   const { crossAxisSize, mainAxisSize, totalGaps } = updateChildMeasurements({
@@ -106,7 +106,7 @@ export function layoutFlex(options: LayoutFlexOptions): LayoutNode {
       y: y + childY,
       availableWidth: m.width,
       availableHeight: m.height,
-      textMeasurer,
+      fontManager,
     });
 
     children.push(childLayout);

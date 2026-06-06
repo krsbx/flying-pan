@@ -1,7 +1,6 @@
 import type { GLFW } from '@/glfw';
 import type { Window, WindowManager } from '../../app';
-import type { FontAtlas } from '../../fonts';
-import type { Coordinate2D, Resolution } from '../../types';
+import type { Resolution } from '../../types';
 import { Color, parseColor } from '../color';
 import {
   GL_BLEND,
@@ -19,6 +18,7 @@ import type {
   DrawRectGLOptions,
   DrawRectOptions,
   DrawRoundedRectOptions,
+  DrawTextOptions,
 } from './types';
 
 export interface RendererOptions {
@@ -237,14 +237,7 @@ export class Renderer {
     this.gl.glEnd();
   }
 
-  public drawText(
-    window: Window,
-    options: Coordinate2D & {
-      text: string;
-      atlas: FontAtlas;
-      color: Color | (string & {});
-    }
-  ) {
+  public drawText(window: Window, options: DrawTextOptions) {
     this.wrap(window, () => {
       const rgba = parseColor(options.color);
       const quads = options.atlas.getQuads(options);
