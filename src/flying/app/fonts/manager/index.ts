@@ -1,4 +1,4 @@
-import { BaseFontAtlas } from '@/flying/fonts';
+import { BaseFontAtlas, FontAtlas } from '@/flying/fonts';
 import type { GLFW } from '@/glfw';
 import type { FontConfig } from '../../app/types';
 
@@ -15,7 +15,13 @@ export class FontManager {
     this.gl = options.gl;
     this._fonts = new Map(
       options.fonts.map(
-        ({ fontPath, fontSize, identifier, libPath, fontAtlas }) => [
+        ({
+          fontPath,
+          fontSize,
+          identifier,
+          libPath,
+          fontAtlas = FontAtlas,
+        }) => [
           identifier,
           new fontAtlas({
             fontPath,
@@ -32,7 +38,13 @@ export class FontManager {
   }
 
   public async load(config: FontConfig): Promise<void> {
-    const { fontPath, fontSize, identifier, libPath, fontAtlas } = config;
+    const {
+      fontPath,
+      fontSize,
+      identifier,
+      libPath,
+      fontAtlas = FontAtlas,
+    } = config;
 
     const existing = this._fonts.get(identifier);
 

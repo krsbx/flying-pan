@@ -7,7 +7,7 @@ export interface FontConfig {
   fontSize: number;
   fontPath: string;
   identifier: string;
-  fontAtlas: new (font: FontAtlasOptions) => BaseFontAtlas;
+  fontAtlas?: new (font: FontAtlasOptions) => BaseFontAtlas;
 }
 
 export interface AppConfig extends WindowOptions {
