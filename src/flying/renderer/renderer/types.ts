@@ -40,4 +40,6 @@ export interface DrawTextOptions extends Coordinate2D {
   atlas: BaseFontAtlas;
   color: ValidColor;
   opacity?: number;
+  letterSpacing?: number;
+  lineHeight?: number;
 }

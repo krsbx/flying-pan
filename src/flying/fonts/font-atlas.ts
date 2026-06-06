@@ -12,10 +12,7 @@ import type {
 } from './types';
 
 export class FontAtlas extends BaseFontAtlas {
-  public override measureText(
-    options: Pick<MeasureTextOptions, 'text'> &
-      Partial<Pick<MeasureTextOptions, 'fontSize'>>
-  ): MeasureTextResult {
+  public override measureText(options: MeasureTextOptions): MeasureTextResult {
     const scale = options.fontSize ? options.fontSize / this.fontSize : 1;
     const bakedChars = CStruct.readArrayLazy(
       BakedChar,
@@ -23,57 +20,82 @@ export class FontAtlas extends BaseFontAtlas {
       NUM_CHARS
     );
 
-    let width = 0;
+    const lines = options.text.split('\n');
+    const letterSpacing = options.letterSpacing ?? 0;
+    let maxWidth = 0;
 
-    for (let i = 0; i < options.text.length; i++) {
-      const code = options.text.charCodeAt(i);
-      const idx = code - FIRST_CHAR;
+    for (const line of lines) {
+      let lineWidth = 0;
 
-      if (idx < 0 || idx >= NUM_CHARS) continue;
+      for (let i = 0; i < line.length; i++) {
+        const code = line.charCodeAt(i);
+        const idx = code - FIRST_CHAR;
 
-      const xAdvance = bakedChars[idx]?.xAdvance ?? 0;
+        if (idx < 0 || idx >= NUM_CHARS) continue;
 
-      width += xAdvance;
+        const xAdvance = bakedChars[idx]?.xAdvance ?? 0;
+
+        lineWidth += xAdvance + letterSpacing;
+      }
+
+      maxWidth = Math.max(maxWidth, lineWidth);
     }
 
+    const effectiveLineHeight = options.lineHeight ?? this.fontSize * scale;
+
     return {
-      width: width * scale,
-      height: this.fontSize * scale,
+      width: maxWidth * scale,
+      height: lines.length * effectiveLineHeight,
     };
   }
 
   public override getQuads(options: GetQuadsOptions): TextQuad[] {
     const quads: TextQuad[] = [];
     const alignedQuad = AlignedQuad.create();
-    const pos = new FVector2(options);
+    const letterSpacing = options.letterSpacing ?? 0;
+    const effectiveLineHeight = options.lineHeight ?? this.fontSize;
 
-    for (let i = 0; i < options.text.length; i++) {
-      const code = options.text.charCodeAt(i);
-      const charIndex = code - FIRST_CHAR;
+    const lines = options.text.split('\n');
 
-      if (charIndex < 0 || charIndex >= NUM_CHARS) continue;
-
-      this.truetype.stbtt_GetBakedQuad({
-        chardata: this.bakedChars.$address,
-        pw: ATLAS_WIDTH,
-        ph: ATLAS_HEIGHT,
-        char_index: charIndex,
-        xpos: pos.xRef,
-        ypos: pos.yRef,
-        q: alignedQuad.$address,
-        opengl_fillrule: 1,
+    for (let lineIdx = 0; lineIdx < lines.length; lineIdx++) {
+      const line = lines[lineIdx]!;
+      const pos = new FVector2({
+        x: options.x,
+        y: options.y + lineIdx * effectiveLineHeight,
       });
 
-      quads.push({
-        x0: alignedQuad.x0,
-        y0: alignedQuad.y0,
-        s0: alignedQuad.s0,
-        t0: alignedQuad.t0,
-        x1: alignedQuad.x1,
-        y1: alignedQuad.y1,
-        s1: alignedQuad.s1,
-        t1: alignedQuad.t1,
-      });
+      for (let i = 0; i < line.length; i++) {
+        const code = line.charCodeAt(i);
+        const charIndex = code - FIRST_CHAR;
+
+        if (charIndex < 0 || charIndex >= NUM_CHARS) continue;
+
+        this.truetype.stbtt_GetBakedQuad({
+          chardata: this.bakedChars.$address,
+          pw: ATLAS_WIDTH,
+          ph: ATLAS_HEIGHT,
+          char_index: charIndex,
+          xpos: pos.xRef,
+          ypos: pos.yRef,
+          q: alignedQuad.$address,
+          opengl_fillrule: 1,
+        });
+
+        quads.push({
+          x0: alignedQuad.x0,
+          y0: alignedQuad.y0,
+          s0: alignedQuad.s0,
+          t0: alignedQuad.t0,
+          x1: alignedQuad.x1,
+          y1: alignedQuad.y1,
+          s1: alignedQuad.s1,
+          t1: alignedQuad.t1,
+        });
+
+        if (letterSpacing) {
+          pos.x += letterSpacing;
+        }
+      }
     }
 
     return quads;

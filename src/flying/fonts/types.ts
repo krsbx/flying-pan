@@ -14,7 +14,9 @@ export interface TextQuad {
 
 export interface MeasureTextOptions {
   text: string;
-  fontSize: number;
+  fontSize?: number;
+  letterSpacing?: number;
+  lineHeight?: number;
 }
 
 export interface MeasureTextResult {
@@ -30,6 +32,8 @@ export interface GetQuadsOptions {
   text: string;
   x: number;
   y: number;
+  letterSpacing?: number;
+  lineHeight?: number;
 }
 
 export interface GetQuads {

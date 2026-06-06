@@ -1,5 +1,5 @@
 import type { LabelProps } from '@/flying/widget';
-import { WidgetType } from '@/flying/widget/constant';
+import { TextAlign, WidgetType } from '@/flying/widget/constant';
 import type { TextStyle } from '@/flying/widget/styles';
 import type { Window } from '../../app';
 import { Color } from '../color';
@@ -46,14 +46,38 @@ export function paint(window: Window, options: PaintOptions) {
   }
 
   if (widget.type === WidgetType.Label) {
-    const fontAtlas = fontManager.get((style as TextStyle).font);
+    const textStyle = style as TextStyle;
+    const fontAtlas = fontManager.get(textStyle.font);
 
     const text = (widget.props as LabelProps)?.text ?? '';
-    const color = (style as TextStyle).color ?? Color.white;
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const fontSize = (style as TextStyle).fontSize;
+    const color = textStyle.color ?? Color.white;
 
     if (text) {
+      let x = options.layout.x;
+
+      const measured = fontAtlas.measureText({
+        text,
+        letterSpacing: textStyle.letterSpacing,
+        lineHeight: textStyle.lineHeight,
+        fontSize: textStyle.fontSize,
+      });
+
+      switch (textStyle.textAlign) {
+        case TextAlign.Center: {
+          x += (width - measured.width) / 2;
+          break;
+        }
+
+        case TextAlign.Right: {
+          x += width - measured.width;
+          break;
+        }
+
+        case TextAlign.Left:
+        default:
+          break;
+      }
+
       renderer.drawText(window, {
         text,
         x,
@@ -61,6 +85,8 @@ export function paint(window: Window, options: PaintOptions) {
         color,
         atlas: fontAtlas,
         opacity: style.opacity,
+        letterSpacing: textStyle.letterSpacing,
+        lineHeight: textStyle.lineHeight,
       });
     }
   }
