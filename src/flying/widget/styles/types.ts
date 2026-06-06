@@ -1,3 +1,4 @@
+import type { ValidColor } from '@/flying/types';
 import type {
   FlexAlign,
   FlexDirection,
@@ -9,7 +10,21 @@ import type {
   WidgetType,
 } from '../constant';
 
+export type SizeInputWithUnit = {
+  [K in keyof typeof SizeUnit]: `${number}${(typeof SizeUnit)[K]}`;
+}[keyof typeof SizeUnit];
+
+export type SizeInput = number;
+//  | SizeInputWithUnit;
+
 export interface Spacing {
+  top: SizeInput;
+  right: SizeInput;
+  bottom: SizeInput;
+  left: SizeInput;
+}
+
+export interface ResolvedSpacing {
   top: number;
   right: number;
   bottom: number;
@@ -17,17 +32,10 @@ export interface Spacing {
 }
 
 export type SpacingInput =
-  | number
-  | [number, number]
-  | [number, number, number, number]
+  | SizeInput
+  | [SizeInput, SizeInput]
+  | [SizeInput, SizeInput, SizeInput, SizeInput]
   | Spacing;
-
-export type SizeInputWithUnit = {
-  [K in keyof typeof SizeUnit]: `${number}${(typeof SizeUnit)[K]}`;
-}[keyof typeof SizeUnit];
-
-export type SizeInput = number;
-//  | SizeInputWithUnit;
 
 export interface ViewStyle {
   // Box model
@@ -52,10 +60,10 @@ export interface ViewStyle {
   flexWrap?: FlexWrap;
 
   // Visual
-  backgroundColor?: string;
+  backgroundColor?: ValidColor;
   borderRadius?: number;
   borderWidth?: number;
-  borderColor?: string;
+  borderColor?: ValidColor;
   opacity?: number;
 
   // Position
@@ -71,7 +79,7 @@ export interface ViewStyle {
 export interface TextStyle extends ViewStyle {
   fontSize?: number;
   fontFamily?: string;
-  color?: string;
+  color?: ValidColor;
   textAlign?: TextAlign;
   fontWeight?: FontWeight;
   lineHeight?: number;
@@ -85,4 +93,18 @@ export interface WidgetDescriptor {
   props: WidgetProps;
   style?: ViewStyle;
   children?: WidgetDescriptor[];
+}
+
+export interface LayoutConstraintsOptions {
+  width?: number | null;
+  height?: number | null;
+  parentWidth: number;
+  parentHeight: number;
+}
+
+export interface LayoutConstraints {
+  minWidth: number;
+  maxWidth: number;
+  minHeight: number;
+  maxHeight: number;
 }

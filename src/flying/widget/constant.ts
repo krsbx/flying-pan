@@ -73,3 +73,10 @@ export const SizeUnit = {
 } as const;
 
 export type SizeUnit = (typeof SizeUnit)[keyof typeof SizeUnit];
+
+export const SpacingType = {
+  Padding: 'padding',
+  Margin: 'margin',
+} as const;
+
+export type SpacingType = (typeof SpacingType)[keyof typeof SpacingType];
