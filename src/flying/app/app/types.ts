@@ -1,4 +1,4 @@
-import type { FontAtlas } from '@/flying/fonts/font-atlas';
+import type { BaseFontAtlas, FontAtlasOptions } from '@/flying/fonts';
 import type { App } from '.';
 import type { WindowOptions } from '../window';
 
@@ -7,6 +7,7 @@ export interface FontConfig {
   fontSize: number;
   fontPath: string;
   identifier: string;
+  fontAtlas: new (font: FontAtlasOptions) => BaseFontAtlas;
 }
 
 export interface AppConfig extends WindowOptions {
@@ -17,10 +18,10 @@ export interface AppConfig extends WindowOptions {
 }
 
 export type AppFonts<Fonts extends readonly FontConfig[]> = Omit<
-  Map<Fonts[number]['identifier'], FontAtlas>,
+  Map<Fonts[number]['identifier'], BaseFontAtlas>,
   'get'
 > & {
-  get(key: Fonts[number]['identifier']): FontAtlas;
+  get(key: Fonts[number]['identifier']): BaseFontAtlas;
 };
 
 export interface OnRenderFrame {

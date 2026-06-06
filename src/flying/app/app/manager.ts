@@ -1,4 +1,3 @@
-import { FontAtlas } from '@/flying/fonts';
 import type { GLFW } from '@/glfw';
 import { FontManager } from '../fonts/manager';
 import { InputManager } from '../input';
@@ -22,7 +21,6 @@ export class AppManager {
     this.monitor = new MonitorManager(options.gl);
     this.input = new InputManager();
     this.font = new FontManager({
-      fontAtlas: FontAtlas,
       fonts: options.fonts,
       gl: options.gl,
     });

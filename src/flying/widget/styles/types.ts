@@ -26,7 +26,8 @@ export type SizeInputWithUnit = {
   [K in keyof typeof SizeUnit]: `${number}${(typeof SizeUnit)[K]}`;
 }[keyof typeof SizeUnit];
 
-export type SizeInput = number | SizeInputWithUnit;
+export type SizeInput = number;
+//  | SizeInputWithUnit;
 
 export interface ViewStyle {
   // Box model

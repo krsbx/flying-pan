@@ -1,30 +1,29 @@
-import { BaseFontAtlas, type FontAtlasOptions } from '@/flying/fonts';
+import { BaseFontAtlas } from '@/flying/fonts';
 import type { GLFW } from '@/glfw';
 import type { FontConfig } from '../../app/types';
 
 export interface FontManagerOptions {
-  fontAtlas: new (font: FontAtlasOptions) => BaseFontAtlas;
   fonts: FontConfig[];
   gl: GLFW;
 }
 
 export class FontManager {
   public readonly gl: GLFW;
-  protected _fontAtlas: new (font: FontAtlasOptions) => BaseFontAtlas;
   protected _fonts: Map<string, BaseFontAtlas>;
 
   public constructor(options: FontManagerOptions) {
     this.gl = options.gl;
-    this._fontAtlas = options.fontAtlas;
     this._fonts = new Map(
-      options.fonts.map(({ fontPath, fontSize, identifier, libPath }) => [
-        identifier,
-        new options.fontAtlas({
-          fontPath,
-          fontSize,
-          truetypeLibPath: libPath,
-        }),
-      ])
+      options.fonts.map(
+        ({ fontPath, fontSize, identifier, libPath, fontAtlas }) => [
+          identifier,
+          new fontAtlas({
+            fontPath,
+            fontSize,
+            truetypeLibPath: libPath,
+          }),
+        ]
+      )
     );
   }
 
@@ -33,20 +32,22 @@ export class FontManager {
   }
 
   public async load(config: FontConfig): Promise<void> {
-    const { fontPath, fontSize, identifier, libPath } = config;
+    const { fontPath, fontSize, identifier, libPath, fontAtlas } = config;
 
     const existing = this._fonts.get(identifier);
 
     if (existing) {
       // Same font already loaded, skip
-      if (existing.fontPath === fontPath && existing.fontSize === fontSize) {
-        return;
+      if (existing instanceof fontAtlas) {
+        if (existing.fontPath === fontPath && existing.fontSize === fontSize) {
+          return;
+        }
       }
 
       existing.destroy(this.gl);
     }
 
-    const font = new this._fontAtlas({
+    const font = new fontAtlas({
       fontPath,
       fontSize,
       truetypeLibPath: libPath,

@@ -1,10 +1,17 @@
-import type { Coordinate2D, FrameBufferSize, Resolution } from '@/flying/types';
+import { Color } from '@/flying/renderer';
+import type {
+  Coordinate2D,
+  FrameBufferSize,
+  Resolution,
+  ValidColor,
+} from '@/flying/types';
+import type { WidgetDescriptor } from '@/flying/widget/styles';
 import type { GLFW } from '@/glfw';
 import { TypedJSCallback } from '@/utility/callback';
 import { CStruct } from '@/utility/cstruct';
 import { FVector2, Vector2 } from '@/utility/vectors';
 import { FFIType, type Pointer } from 'bun:ffi';
-import type { Color } from '../../../renderer/color';
+import type { Monitor } from '../../monitor';
 import { InputEvent, WindowEvent } from './constant';
 import type {
   CallbackRegistries,
@@ -20,8 +27,10 @@ export interface WindowOptions {
 
   /** Active window identifier - Default use {title} */
   identifier?: string | null;
-  backgroundColor?: Color | (string & {}) | null;
+  backgroundColor?: ValidColor | null;
   share?: Window | Pointer | null;
+  monitor?: Monitor | Pointer | null;
+  widget?: WidgetDescriptor | null;
 }
 
 export class Window {
@@ -34,6 +43,7 @@ export class Window {
   protected _identifier: string;
   protected _fnRegistries: CallbackRegistries;
   public backgroundColor: string;
+  public widget: WidgetDescriptor | null;
 
   protected _isFocused: boolean;
   protected _isHovered: boolean;
@@ -63,7 +73,8 @@ export class Window {
 
     this._title = options.title;
     this._identifier = options.identifier || options.title;
-    this.backgroundColor = options.backgroundColor || '#1a1a2e';
+    this.backgroundColor = options.backgroundColor || Color.background;
+    this.widget = options.widget || null;
     this._position = this.getPosition();
     this._mousePosition = this.getMousePosition();
     this._frameBuffer = this.getFrameBuffer();

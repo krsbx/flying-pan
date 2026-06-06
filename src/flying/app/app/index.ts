@@ -13,7 +13,6 @@ import type { AppConfig, OnRenderFrame } from './types';
 export class App {
   public readonly gl: GLFW;
   public readonly manager: AppManager;
-  public readonly root: Window;
   public readonly renderer: Renderer;
   public destroyWindow: WindowManager['destroy'];
   public setActiveWindow: WindowManager['setActive'];
@@ -49,8 +48,8 @@ export class App {
     );
 
     this._running = false;
-    this.root = this.createWindow(options);
     this.vsync = options.vsync ?? false;
+    this.createWindow(options);
   }
 
   public onFrame(fn: OnRenderFrame): void {

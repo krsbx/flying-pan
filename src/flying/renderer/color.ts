@@ -1,6 +1,7 @@
 import type { RGBA } from '../types';
 
 export const Color = {
+  background: '#1a1a2e',
   white: '#ffffff',
   black: '#000000',
   red: '#ff0000',
