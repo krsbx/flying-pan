@@ -33,6 +33,8 @@ export interface ChildMeasurements extends Size {
 export interface MeasureChildsComponentOptions {
   children: WidgetDescriptor[];
   fontManager: FontManager;
+  parentWidth: number;
+  parentHeight: number;
 }
 
 export interface MeasureChildsComponentResult {

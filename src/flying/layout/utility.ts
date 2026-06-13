@@ -1,4 +1,5 @@
 import { clamp } from '@/utility/common';
+import { resolveSize } from '../widget/styles';
 import { distributeFreeSpace, distributeShrinking } from './calculator';
 import type {
   UpdateChildMeasurementsOptions,
@@ -58,14 +59,26 @@ export function updateChildMeasurements(
     if (options.isRow) {
       m.width = clamp({
         value: m.width,
-        min: style?.minWidth,
-        max: style?.maxWidth,
+        min:
+          style?.minWidth != null
+            ? resolveSize(style.minWidth, options.contentWidth)
+            : null,
+        max:
+          style?.maxWidth != null
+            ? resolveSize(style.maxWidth, options.contentWidth)
+            : null,
       });
     } else {
       m.height = clamp({
         value: m.height,
-        min: style?.minHeight,
-        max: style?.maxHeight,
+        min:
+          style?.minHeight != null
+            ? resolveSize(style.minHeight, options.contentHeight)
+            : null,
+        max:
+          style?.maxHeight != null
+            ? resolveSize(style.maxHeight, options.contentHeight)
+            : null,
       });
     }
   }
@@ -88,8 +101,14 @@ export function updateChildMeasurements(
 
       m.height = clamp({
         value: m.height,
-        min: style?.minHeight,
-        max: style?.maxHeight,
+        min:
+          style?.minHeight != null
+            ? resolveSize(style.minHeight, options.contentHeight)
+            : null,
+        max:
+          style?.maxHeight != null
+            ? resolveSize(style.maxHeight, options.contentHeight)
+            : null,
       });
     } else {
       if (!m.width) {
@@ -98,8 +117,14 @@ export function updateChildMeasurements(
 
       m.width = clamp({
         value: m.width,
-        min: style?.minWidth,
-        max: style?.maxWidth,
+        min:
+          style?.minWidth != null
+            ? resolveSize(style.minWidth, options.contentWidth)
+            : null,
+        max:
+          style?.maxWidth != null
+            ? resolveSize(style.maxWidth, options.contentWidth)
+            : null,
       });
     }
   }

@@ -14,8 +14,7 @@ export type SizeInputWithUnit = {
   [K in keyof typeof SizeUnit]: `${number}${(typeof SizeUnit)[K]}`;
 }[keyof typeof SizeUnit];
 
-export type SizeInput = number;
-//  | SizeInputWithUnit;
+export type SizeInput = number | `${number}` | SizeInputWithUnit;
 
 export interface Spacing {
   top: SizeInput;
@@ -41,19 +40,19 @@ export interface ViewStyle {
   // Box model
   padding?: SpacingInput;
   margin?: SpacingInput;
-  width?: number;
-  height?: number;
-  minWidth?: number;
-  minHeight?: number;
-  maxWidth?: number;
-  maxHeight?: number;
+  width?: SizeInput;
+  height?: SizeInput;
+  minWidth?: SizeInput;
+  minHeight?: SizeInput;
+  maxWidth?: SizeInput;
+  maxHeight?: SizeInput;
 
   // Flexbox
   flexDirection?: FlexDirection;
   justifyContent?: FlexJustify;
   alignItems?: FlexAlign;
   alignSelf?: FlexAlign;
-  gap?: number;
+  gap?: SizeInput;
   flex?: number;
   flexGrow?: number;
   flexShrink?: number;
@@ -68,12 +67,12 @@ export interface ViewStyle {
 
   // Position
   position?: Position;
-  x?: number;
-  y?: number;
-  top?: number;
-  right?: number;
-  bottom?: number;
-  left?: number;
+  x?: SizeInput;
+  y?: SizeInput;
+  top?: SizeInput;
+  right?: SizeInput;
+  bottom?: SizeInput;
+  left?: SizeInput;
 }
 
 export interface TextStyle extends ViewStyle {

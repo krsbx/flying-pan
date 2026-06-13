@@ -1,3 +1,4 @@
+import { resolveSize } from '../widget/styles';
 import type { LayoutFlexFn, PositionAbsoluteOptions } from './types';
 
 export function positionAbsolute(
@@ -19,22 +20,29 @@ export function positionAbsolute(
   // Resolve horizontal position
   const absX =
     childStyle?.left !== undefined
-      ? padding.left + childStyle.left
+      ? padding.left + resolveSize(childStyle.left, contentWidth)
       : childStyle?.right !== undefined
-        ? contentWidth + padding.left - m.width - childStyle.right
+        ? contentWidth +
+          padding.left -
+          m.width -
+          resolveSize(childStyle.right, contentWidth)
         : padding.left;
 
   // Resolve vertical position
   const absY =
     childStyle?.top !== undefined
-      ? padding.top + childStyle.top
+      ? padding.top + resolveSize(childStyle.top, contentHeight)
       : childStyle?.bottom !== undefined
-        ? contentHeight + padding.top - m.height - childStyle.bottom
+        ? contentHeight +
+          padding.top -
+          m.height -
+          resolveSize(childStyle.bottom, contentHeight)
         : padding.top;
 
   // Use explicit size or fall back to content area size
-  const absWidth = childStyle?.width || contentWidth;
-  const absHeight = childStyle?.height || contentHeight;
+  const absWidth = resolveSize(childStyle?.width, contentWidth) || contentWidth;
+  const absHeight =
+    resolveSize(childStyle?.height, contentHeight) || contentHeight;
 
   children.push(
     layoutFlex({

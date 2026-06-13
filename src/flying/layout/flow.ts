@@ -1,4 +1,5 @@
 import { FlexAlign, FlexJustify, Position } from '@/flying/widget/constant';
+import { resolveSize } from '../widget/styles';
 import type { LayoutFlexFn, PositionFlowChildrenOptions } from './types';
 
 export function positionFlowChildren(
@@ -59,8 +60,10 @@ export function positionFlowChildren(
 
     // Apply position: relative offset
     if (m.widget.style?.position === Position.Relative) {
-      if (m.widget.style.left !== undefined) childX += m.widget.style.left;
-      if (m.widget.style.top !== undefined) childY += m.widget.style.top;
+      if (m.widget.style.left != null)
+        childX += resolveSize(m.widget.style.left, crossAxisSize);
+      if (m.widget.style.top != null)
+        childY += resolveSize(m.widget.style.top, crossAxisSize);
     }
 
     children.push(

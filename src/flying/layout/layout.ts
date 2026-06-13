@@ -1,5 +1,5 @@
 import { FlexDirection, FlexWrap, SpacingType } from '@/flying/widget/constant';
-import { resolveSpacing } from '@/flying/widget/styles';
+import { resolveSize, resolveSpacing } from '@/flying/widget/styles';
 import type { ViewStyle } from '@/flying/widget/styles/types';
 import { positionAbsolute } from './absolute';
 import { measureChildsComponent } from './measurement';
@@ -10,14 +10,20 @@ export const layoutFlex: LayoutFlexFn = function (options) {
   const { node, x, y, fontManager, availableWidth, availableHeight } = options;
   const style: ViewStyle = node.style ?? {};
 
-  const padding = resolveSpacing(node.style?.[SpacingType.Padding]);
+  const padding = resolveSpacing(
+    node.style?.[SpacingType.Padding],
+    availableWidth
+  );
   const isRow = style.flexDirection === FlexDirection.Row;
-  const gap = style.gap ?? 0;
 
-  const contentWidth =
-    (style.width ?? availableWidth) - padding.left - padding.right;
+  const width = resolveSize(style.width, availableWidth);
+  const height = resolveSize(style.height, availableHeight);
+
+  const contentWidth = (width || availableWidth) - padding.left - padding.right;
   const contentHeight =
-    (style.height ?? availableHeight) - padding.top - padding.bottom;
+    (height || availableHeight) - padding.top - padding.bottom;
+
+  const gap = resolveSize(style.gap, contentWidth);
 
   const children: LayoutNode[] = [];
 
@@ -35,6 +41,8 @@ export const layoutFlex: LayoutFlexFn = function (options) {
   const { flow, absolute } = measureChildsComponent({
     children: node.children,
     fontManager,
+    parentWidth: contentWidth,
+    parentHeight: contentHeight,
   });
 
   const lineOptions = {

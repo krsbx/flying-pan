@@ -7,7 +7,7 @@ import {
   SpacingType,
   WidgetType,
 } from '../widget/constant';
-import { resolveSpacing, type TextStyle } from '../widget/styles';
+import { resolveSize, resolveSpacing, type TextStyle } from '../widget/styles';
 import type {
   CalculateMainContentSizeOptions,
   CalculateMainContentSizeResult,
@@ -21,11 +21,15 @@ import type {
 export function measureChildsComponent(
   options: MeasureChildsComponentOptions
 ): MeasureChildsComponentResult {
+  const { parentWidth, parentHeight } = options;
   const flow: ChildMeasurements[] = [];
   const absolute: ChildMeasurements[] = [];
 
   for (const child of options.children) {
-    const margin = resolveSpacing(child.style?.[SpacingType.Margin]);
+    const margin = resolveSpacing(
+      child.style?.[SpacingType.Margin],
+      parentWidth
+    );
     const isAbsolute = child.style?.position === Position.Absolute;
     const flexValue = child.style?.flexGrow ?? child.style?.flex ?? 0;
     const flexShrinkValue =
@@ -34,8 +38,8 @@ export function measureChildsComponent(
     const flex = isAbsolute ? 0 : flexValue;
     const flexShrink = isAbsolute ? 0 : flexShrinkValue;
 
-    let width = child.style?.width ?? 0;
-    let height = child.style?.height ?? 0;
+    let width = resolveSize(child.style?.width, parentWidth);
+    let height = resolveSize(child.style?.height, parentHeight);
 
     if (child.type === WidgetType.Label) {
       const style = child.style as TextStyle;
@@ -60,13 +64,25 @@ export function measureChildsComponent(
     // Clamp to min/max constraints
     width = clamp({
       value: width,
-      min: child.style?.minWidth,
-      max: child.style?.maxWidth,
+      min:
+        child.style?.minWidth != null
+          ? resolveSize(child.style.minWidth, parentWidth)
+          : null,
+      max:
+        child.style?.maxWidth != null
+          ? resolveSize(child.style.maxWidth, parentWidth)
+          : null,
     });
     height = clamp({
       value: height,
-      min: child.style?.minHeight,
-      max: child.style?.maxHeight,
+      min:
+        child.style?.minHeight != null
+          ? resolveSize(child.style.minHeight, parentHeight)
+          : null,
+      max:
+        child.style?.maxHeight != null
+          ? resolveSize(child.style.maxHeight, parentHeight)
+          : null,
     });
 
     const measurement: ChildMeasurements = {

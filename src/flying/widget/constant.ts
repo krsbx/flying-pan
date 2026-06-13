@@ -73,3 +73,5 @@ export const SpacingType = {
 } as const;
 
 export type SpacingType = (typeof SpacingType)[keyof typeof SpacingType];
+
+export const ROOT_FONT_SIZE = 16;
