@@ -1,21 +1,14 @@
-import {
-  FlexAlign,
-  FlexDirection,
-  FlexJustify,
-  Position,
-  SpacingType,
-} from '@/flying/widget/constant';
+import { FlexDirection, FlexWrap, SpacingType } from '@/flying/widget/constant';
 import { resolveSpacing } from '@/flying/widget/styles';
-import type { LayoutFlexOptions, LayoutNode } from './types';
-import {
-  calculateMainContentSize,
-  measureChildsComponent,
-  updateChildMeasurements,
-} from './utility';
+import type { ViewStyle } from '@/flying/widget/styles/types';
+import { positionAbsolute } from './absolute';
+import { measureChildsComponent } from './measurement';
+import type { LayoutFlexFn, LayoutNode } from './types';
+import { layoutSingleLine, layoutWrap } from './wrap';
 
-export function layoutFlex(options: LayoutFlexOptions): LayoutNode {
+export const layoutFlex: LayoutFlexFn = function (options) {
   const { node, x, y, fontManager, availableWidth, availableHeight } = options;
-  const style = node.style ?? {};
+  const style: ViewStyle = node.style ?? {};
 
   const padding = resolveSpacing(node.style?.[SpacingType.Padding]);
   const isRow = style.flexDirection === FlexDirection.Row;
@@ -39,96 +32,35 @@ export function layoutFlex(options: LayoutFlexOptions): LayoutNode {
     };
   }
 
-  const measurements = measureChildsComponent({
+  const { flow, absolute } = measureChildsComponent({
     children: node.children,
     fontManager,
   });
 
-  const { crossAxisSize, mainAxisSize, totalGaps } = updateChildMeasurements({
-    measurements,
-    contentHeight,
-    contentWidth,
+  const lineOptions = {
+    flow,
+    style,
+    padding,
     isRow,
     gap,
-  });
+    contentWidth,
+    contentHeight,
+    x,
+    y,
+    fontManager,
+    children,
+  };
 
-  const {
-    alignItems,
-    justifyItems,
-    mainPos: calculatedMainPos,
-    spaceBetweenGap,
-    spaceEvenlyGap,
-  } = calculateMainContentSize({
-    crossAxisSize,
-    mainAxisSize,
-    measurements,
-    totalGaps,
-    padding,
-    style,
-    isRow,
-  });
-
-  let mainPos = calculatedMainPos;
-
-  for (const m of measurements) {
-    const chilCrossStart = isRow ? padding.top : padding.left;
-    const childMain = mainPos + (isRow ? m.margin.left : m.margin.top);
-
-    const childCrossSize = isRow ? m.height : m.width;
-    const crossWithMargin = isRow
-      ? crossAxisSize - m.margin.top - m.margin.bottom
-      : crossAxisSize - m.margin.left - m.margin.right;
-
-    let crossPos = chilCrossStart;
-
-    const childAlign = m.widget.style?.alignSelf ?? alignItems;
-
-    switch (childAlign) {
-      case FlexAlign.Center:
-        crossPos += (crossWithMargin - childCrossSize) / 2;
-        break;
-
-      case FlexAlign.End:
-        crossPos += crossWithMargin - childCrossSize;
-        break;
-
-      case FlexAlign.Start:
-      case FlexAlign.Stretch:
-      case FlexAlign.Baseline:
-      default:
-        break;
+  if (flow.length > 0) {
+    if (style.flexWrap === FlexWrap.Wrap) {
+      layoutWrap(lineOptions, layoutFlex);
+    } else {
+      layoutSingleLine(lineOptions, layoutFlex);
     }
+  }
 
-    crossPos += isRow ? m.margin.top : m.margin.left;
-    let childX = isRow ? childMain : crossPos;
-    let childY = isRow ? crossPos : childMain;
-
-    if (m.widget.style?.position === Position.Relative) {
-      if (m.widget.style.left !== undefined) childX += m.widget.style.left;
-      if (m.widget.style.top !== undefined) childY += m.widget.style.top;
-    }
-
-    const childLayout = layoutFlex({
-      node: m.widget,
-      x: x + childX,
-      y: y + childY,
-      availableWidth: m.width,
-      availableHeight: m.height,
-      fontManager,
-    });
-
-    children.push(childLayout);
-
-    const childMainSize = isRow ? m.width : m.height;
-    const marginEnd = isRow ? m.margin.right : m.margin.bottom;
-
-    mainPos += childMainSize + marginEnd + gap;
-
-    if (justifyItems === FlexJustify.SpaceBetween) {
-      mainPos += spaceBetweenGap;
-    } else if (justifyItems === FlexJustify.SpaceEvenly) {
-      mainPos += spaceEvenlyGap;
-    }
+  for (const m of absolute) {
+    positionAbsolute({ m, ...lineOptions }, layoutFlex);
   }
 
   return {
@@ -139,4 +71,4 @@ export function layoutFlex(options: LayoutFlexOptions): LayoutNode {
     height: contentHeight + padding.top + padding.bottom,
     children,
   };
-}
+};

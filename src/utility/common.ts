@@ -60,3 +60,9 @@ export function stringToCWideString(value: string) {
 
   return clone as CWideString & { $buffer: Uint8Array };
 }
+
+export function clamp(options: { value: number; min?: number; max?: number }) {
+  const { value, min, max } = options;
+
+  return Math.min(Math.max(value, min ?? 0), max ?? Infinity);
+}

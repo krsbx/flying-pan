@@ -19,6 +19,10 @@ export interface LayoutFlexOptions extends Coordinate2D {
   fontManager: FontManager;
 }
 
+export interface LayoutFlexFn {
+  (options: LayoutFlexOptions): LayoutNode;
+}
+
 export interface ChildMeasurements extends Size {
   widget: WidgetDescriptor;
   flex: number;
@@ -29,6 +33,23 @@ export interface ChildMeasurements extends Size {
 export interface MeasureChildsComponentOptions {
   children: WidgetDescriptor[];
   fontManager: FontManager;
+}
+
+export interface MeasureChildsComponentResult {
+  flow: ChildMeasurements[];
+  absolute: ChildMeasurements[];
+}
+
+export interface WrapLine {
+  measurements: ChildMeasurements[];
+  crossSize: number;
+}
+
+export interface WrapMeasurementsOptions {
+  measurements: ChildMeasurements[];
+  mainAxisSize: number;
+  isRow: boolean;
+  gap: number;
 }
 
 export interface UpdateChildMeasurementsOptions {
@@ -65,4 +86,46 @@ export interface DistributeChildOptions {
   totalFlex: number;
   freeSpace: number;
   isRow: boolean;
+}
+
+export interface LayoutLineOptions {
+  flow: ChildMeasurements[];
+  style: ViewStyle;
+  padding: ResolvedSpacing;
+  isRow: boolean;
+  gap: number;
+  contentWidth: number;
+  contentHeight: number;
+  x: number;
+  y: number;
+  fontManager: FontManager;
+  children: LayoutNode[];
+}
+
+export interface PositionFlowChildrenOptions {
+  measurements: ChildMeasurements[];
+  alignItems: FlexAlign;
+  isRow: boolean;
+  padding: ResolvedSpacing;
+  crossAxisSize: number;
+  mainPos: number;
+  spaceBetweenGap: number;
+  spaceEvenlyGap: number;
+  justifyItems: FlexJustify;
+  x: number;
+  y: number;
+  gap: number;
+  fontManager: FontManager;
+  children: LayoutNode[];
+}
+
+export interface PositionAbsoluteOptions {
+  m: ChildMeasurements;
+  padding: ResolvedSpacing;
+  contentWidth: number;
+  contentHeight: number;
+  x: number;
+  y: number;
+  fontManager: FontManager;
+  children: LayoutNode[];
 }
