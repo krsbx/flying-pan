@@ -27,13 +27,6 @@ export const TextAlign = {
 
 export type TextAlign = (typeof TextAlign)[keyof typeof TextAlign];
 
-export const FontWeight = {
-  Normal: 'normal',
-  Bold: 'bold',
-} as const;
-
-export type FontWeight = (typeof FontWeight)[keyof typeof FontWeight];
-
 export const Position = {
   Relative: 'relative',
   Absolute: 'absolute',

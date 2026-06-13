@@ -4,7 +4,6 @@ import type {
   FlexDirection,
   FlexJustify,
   FlexWrap,
-  FontWeight,
   Position,
   SizeUnit,
   TextAlign,
@@ -79,10 +78,8 @@ export interface ViewStyle {
 
 export interface TextStyle extends ViewStyle {
   fontSize?: number;
-  fontFamily?: string;
   color?: ValidColor;
   textAlign?: TextAlign;
-  fontWeight?: FontWeight;
   lineHeight?: number;
   letterSpacing?: number;
   font: string;
