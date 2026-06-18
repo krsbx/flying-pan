@@ -1,9 +1,14 @@
+import type {
+  ClickEventHandler,
+  PointerEventHandler,
+} from '@/flying/interactions';
 import type { ValidColor } from '@/flying/types';
 import type {
   FlexAlign,
   FlexDirection,
   FlexJustify,
   FlexWrap,
+  PointerEvents,
   Position,
   SizeUnit,
   TextAlign,
@@ -73,6 +78,9 @@ export interface ViewStyle {
   right?: SizeInput;
   bottom?: SizeInput;
   left?: SizeInput;
+
+  // Interaction
+  pointerEvents?: PointerEvents;
 }
 
 export interface TextStyle extends ViewStyle {
@@ -91,6 +99,11 @@ export interface WidgetDescriptor {
   props: WidgetProps;
   style?: ViewStyle;
   children?: WidgetDescriptor[];
+  onPointerDown?: PointerEventHandler;
+  onPointerUp?: PointerEventHandler;
+  onClick?: ClickEventHandler;
+  onPointerEnter?: PointerEventHandler;
+  onPointerLeave?: PointerEventHandler;
 }
 
 export interface LayoutConstraintsOptions {

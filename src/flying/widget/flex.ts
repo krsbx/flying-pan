@@ -1,7 +1,8 @@
+import type { InteractionProps } from '@/flying/interactions/types';
 import { WidgetType, type FlexDirection } from './constant';
 import type { ViewStyle, WidgetDescriptor, WidgetProps } from './styles';
 
-export interface FlexProps extends WidgetProps {
+export interface FlexProps extends WidgetProps, InteractionProps {
   direction: FlexDirection;
   gap?: number;
   justifyContent?: ViewStyle['justifyContent'];
@@ -11,7 +12,15 @@ export interface FlexProps extends WidgetProps {
 }
 
 export function Flex(props: FlexProps): WidgetDescriptor {
-  const { children, ...rest } = props;
+  const {
+    children,
+    onPointerDown,
+    onPointerUp,
+    onClick,
+    onPointerEnter,
+    onPointerLeave,
+    ...rest
+  } = props;
 
   return {
     type: WidgetType.Flex,
@@ -24,5 +33,10 @@ export function Flex(props: FlexProps): WidgetDescriptor {
       ...props.style,
     },
     children,
+    onPointerDown,
+    onPointerUp,
+    onClick,
+    onPointerEnter,
+    onPointerLeave,
   };
 }

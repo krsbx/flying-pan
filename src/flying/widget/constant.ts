@@ -74,4 +74,11 @@ export const SpacingType = {
 
 export type SpacingType = (typeof SpacingType)[keyof typeof SpacingType];
 
+export const PointerEvents = {
+  Auto: 'auto',
+  None: 'none',
+} as const;
+
+export type PointerEvents = (typeof PointerEvents)[keyof typeof PointerEvents];
+
 export const ROOT_FONT_SIZE = 16;

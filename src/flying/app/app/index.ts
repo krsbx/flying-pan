@@ -132,6 +132,11 @@ export class App {
             fontManager: this.manager.font,
           });
 
+          this.manager.interaction.dispatch({
+            window,
+            layout,
+          });
+
           paint(window, {
             renderer: this.renderer,
             layout: layout,

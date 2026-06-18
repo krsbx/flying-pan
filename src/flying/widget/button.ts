@@ -1,20 +1,33 @@
+import type { InteractionProps } from '@/flying/interactions/types';
 import { WidgetType } from './constant';
 import type { ViewStyle, WidgetDescriptor, WidgetProps } from './styles';
 
-export interface ButtonProps extends WidgetProps {
-  onClick?: () => void;
-  onHover?: (hovering: boolean) => void;
+export interface ButtonProps extends WidgetProps, InteractionProps {
   style?: ViewStyle;
   children?: WidgetDescriptor[];
 }
 
 export function Button(props: ButtonProps): WidgetDescriptor {
-  const { children, ...rest } = props;
+  const {
+    children,
+    onPointerDown,
+    onPointerUp,
+    onClick,
+    onPointerEnter,
+    onPointerLeave,
+    style,
+    ...rest
+  } = props;
 
   return {
     type: WidgetType.Button,
     props: rest,
-    style: props.style,
+    style,
     children,
+    onPointerDown,
+    onPointerUp,
+    onClick,
+    onPointerEnter,
+    onPointerLeave,
   };
 }
