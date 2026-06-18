@@ -13,6 +13,7 @@ export function Image(props: ImageProps): WidgetDescriptor {
   const {
     onPointerDown,
     onPointerUp,
+    onPointerMove,
     onClick,
     onPointerEnter,
     onPointerLeave,
@@ -26,6 +27,7 @@ export function Image(props: ImageProps): WidgetDescriptor {
     style,
     onPointerDown,
     onPointerUp,
+    onPointerMove,
     onClick,
     onPointerEnter,
     onPointerLeave,

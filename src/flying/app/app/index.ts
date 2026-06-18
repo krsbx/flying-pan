@@ -115,8 +115,6 @@ export class App {
     this._running = true;
 
     while (this._running) {
-      this.manager.input.update();
-
       if (this.activeWindow) {
         const window = this.activeWindow;
 
@@ -150,6 +148,8 @@ export class App {
       if (this.activeWindow) {
         this.renderer.flush(this.activeWindow);
       }
+
+      this.manager.input.update();
 
       this.gl.glfwPollEvents();
       this.manager.window.cleanUp();

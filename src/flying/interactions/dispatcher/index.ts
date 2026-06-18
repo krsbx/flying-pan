@@ -1,20 +1,40 @@
 import type { InputManager } from '@/flying/app';
-import { GLFW_MOUSE_BUTTON_LEFT } from '@/glfw/enums';
+import type { Coordinate2D } from '@/flying/types';
+import {
+  GLFW_MOUSE_BUTTON_LEFT,
+  GLFW_MOUSE_BUTTON_MIDDLE,
+  GLFW_MOUSE_BUTTON_RIGHT,
+} from '@/glfw/enums';
 import type { LayoutNode } from '../../layout';
+import type { WidgetDescriptor } from '../../widget/styles';
 import type { PointerEvent } from '../event/types';
 import { hitTest } from '../utility/hit-test';
-import type { DispatchOptions, PointerEventOptions } from './types';
+import type { DispatchOptions, LastClick, PointerEventOptions } from './types';
+
+const DOUBLE_CLICK_MS = 500;
+
+const TRACKED_BUTTONS = [
+  GLFW_MOUSE_BUTTON_LEFT,
+  GLFW_MOUSE_BUTTON_RIGHT,
+  GLFW_MOUSE_BUTTON_MIDDLE,
+] as const;
 
 export class PointerDispatcher {
   public input: InputManager | null;
 
   protected hoveredNode: LayoutNode | null;
   protected pressedNode: LayoutNode | null;
+  protected pressedButton: number | null;
+  protected previousPosition: Coordinate2D | null;
+  protected lastClick: LastClick | null;
 
   public constructor(input: InputManager | null) {
     this.input = input;
     this.hoveredNode = null;
     this.pressedNode = null;
+    this.pressedButton = null;
+    this.previousPosition = null;
+    this.lastClick = null;
   }
 
   public dispatch(options: DispatchOptions): void {
@@ -33,7 +53,12 @@ export class PointerDispatcher {
       y: position.y,
     });
 
-    if (hit !== this.hoveredNode) {
+    // --- Hover enter / leave (compared by widget identity, not LayoutNode) ---
+
+    const hitWidget = hit?.widget ?? null;
+    const prevWidget = this.hoveredNode?.widget ?? null;
+
+    if (hitWidget !== prevWidget) {
       // Trigger leave previous node
       this.fireLeave({
         window,
@@ -53,48 +78,112 @@ export class PointerDispatcher {
       });
     }
 
-    // --- Pointer down ---
+    // --- Pointer move ---
 
-    if (input.isButtonPressed(GLFW_MOUSE_BUTTON_LEFT)) {
-      hit?.widget.onPointerDown?.({
+    if (this.hasMoved(position) && hit) {
+      hit.widget.onPointerMove?.({
         window,
         node: hit,
         position,
         modifiers,
       });
-
-      this.pressedNode = hit;
     }
 
-    // --- Pointer up + click ---
+    this.previousPosition = {
+      x: position.x,
+      y: position.y,
+    };
 
-    if (input.isButtonReleased(GLFW_MOUSE_BUTTON_LEFT)) {
-      hit?.widget?.onPointerUp?.({
-        window,
-        node: hit,
-        position,
-        modifiers,
-      });
-
-      // Click = pointer down and up on the same widget
-      if (hit && this.sameWidget(hit, this.pressedNode)) {
-        hit.widget.onClick?.({
+    // --- Button events (down, up, click for each tracked button) ---
+    for (const button of TRACKED_BUTTONS) {
+      if (input.isButtonPressed(button)) {
+        hit?.widget.onPointerDown?.({
           window,
           node: hit,
           position,
-          button: GLFW_MOUSE_BUTTON_LEFT,
           modifiers,
-          count: 1,
+          button,
         });
+
+        this.pressedNode = hit;
+        this.pressedButton = button;
       }
 
-      this.pressedNode = null;
+      if (input.isButtonReleased(button)) {
+        hit?.widget?.onPointerUp?.({
+          window,
+          node: hit,
+          position,
+          modifiers,
+          button,
+        });
+
+        // Click = pointer down and up on the same widget with the same button
+        if (
+          hit &&
+          this.sameWidget(hit, this.pressedNode) &&
+          button === this.pressedButton
+        ) {
+          const count = this.getClickCount(hit.widget, button);
+
+          hit.widget.onClick?.({
+            window,
+            node: hit,
+            position,
+            button,
+            modifiers,
+            count,
+          });
+        }
+
+        if (button === this.pressedButton) {
+          this.pressedNode = null;
+          this.pressedButton = null;
+        }
+      }
     }
   }
 
   public reset(): void {
     this.hoveredNode = null;
     this.pressedNode = null;
+    this.pressedButton = null;
+    this.previousPosition = null;
+    this.lastClick = null;
+  }
+
+  protected hasMoved(position: Coordinate2D): boolean {
+    if (!this.previousPosition) return false;
+
+    return (
+      position.x !== this.previousPosition.x ||
+      position.y !== this.previousPosition.y
+    );
+  }
+
+  protected getClickCount(widget: WidgetDescriptor, button: number): number {
+    const now = performance.now();
+
+    if (
+      this.lastClick &&
+      this.lastClick.widget === widget &&
+      this.lastClick.button === button &&
+      now - this.lastClick.time <= DOUBLE_CLICK_MS
+    ) {
+      this.lastClick.count++;
+      this.lastClick.time = now;
+
+      return this.lastClick.count;
+    }
+
+    this.lastClick = {
+      widget,
+      button,
+      time: now,
+      count: 1,
+    };
+
+    return 1;
   }
 
   protected sameWidget(a: LayoutNode | null, b: LayoutNode | null): boolean {

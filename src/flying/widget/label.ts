@@ -11,6 +11,7 @@ export function Label(props: LabelProps): WidgetDescriptor {
   const {
     onPointerDown,
     onPointerUp,
+    onPointerMove,
     onClick,
     onPointerEnter,
     onPointerLeave,
@@ -24,6 +25,7 @@ export function Label(props: LabelProps): WidgetDescriptor {
     style,
     onPointerDown,
     onPointerUp,
+    onPointerMove,
     onClick,
     onPointerEnter,
     onPointerLeave,

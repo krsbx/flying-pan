@@ -92,6 +92,7 @@ export interface FocusEventHandler {
 export interface InteractionProps {
   onPointerDown?: PointerEventHandler;
   onPointerUp?: PointerEventHandler;
+  onPointerMove?: PointerEventHandler;
   onClick?: ClickEventHandler;
   onPointerEnter?: PointerEventHandler;
   onPointerLeave?: PointerEventHandler;

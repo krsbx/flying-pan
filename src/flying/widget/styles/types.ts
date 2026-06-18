@@ -101,6 +101,7 @@ export interface WidgetDescriptor {
   children?: WidgetDescriptor[];
   onPointerDown?: PointerEventHandler;
   onPointerUp?: PointerEventHandler;
+  onPointerMove?: PointerEventHandler;
   onClick?: ClickEventHandler;
   onPointerEnter?: PointerEventHandler;
   onPointerLeave?: PointerEventHandler;
