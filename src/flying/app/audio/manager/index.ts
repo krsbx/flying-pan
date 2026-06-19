@@ -76,13 +76,20 @@ export class AudioManager {
     audio.stop();
   }
 
-  public close(path: string): void {
+  public dispose(path: string): void;
+  public dispose(): void;
+  public dispose(path: string | null = null): void {
+    if (!path) {
+      this.instances.forEach((audio) => audio.destroy());
+      this.instances.clear();
+      return;
+    }
+
     const audio = this.instances.get(path);
 
-    if (!audio) throw new Error('[AudioManager] Audio not found!');
+    if (!audio) return;
 
     audio.destroy();
-
     this.instances.delete(path);
   }
 
@@ -128,10 +135,9 @@ export class AudioManager {
   public destroy(): void {
     if (this._destroyed) return;
 
-    this.instances.forEach((audio) => audio.destroy());
+    this.dispose();
 
     this.miniaudio.ma_engine_uninit({ pEngine: this.engine.$address });
-
     this.miniaudio.close();
 
     this._destroyed = true;

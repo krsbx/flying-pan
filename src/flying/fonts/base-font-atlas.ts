@@ -28,6 +28,7 @@ export interface FontAtlasOptions {
   fontPath: string;
   fontSize: number;
   truetypeLibPath: string;
+  gl: GLFW;
 }
 
 export abstract class BaseFontAtlas implements FontAtlasContract {
@@ -35,33 +36,77 @@ export abstract class BaseFontAtlas implements FontAtlasContract {
   public readonly fontSize: number;
   protected truetype: TrueType;
   protected bakedChars: CStruct;
-  protected glfw: GLFW | null;
+  protected gl: GLFW;
   protected _textureId: number;
   protected ATLAS_SIZE: number;
+  protected _destroyed: boolean;
+  protected _initialized: boolean;
 
   public constructor(options: FontAtlasOptions) {
     this.fontPath = options.fontPath;
     this.fontSize = options.fontSize;
     this.truetype = new TrueType(options.truetypeLibPath);
     this.bakedChars = new CStruct(NUM_CHARS * BAKED_CHAR_SIZE);
-    this.glfw = null;
+    this.gl = options.gl;
     this._textureId = 0;
     this.ATLAS_SIZE = ATLAS_WIDTH * ATLAS_HEIGHT;
+    this._destroyed = false;
+    this._initialized = false;
   }
 
-  public async init(gl: GLFW): Promise<void> {
-    if (this.glfw) {
-      this.destroy(gl);
+  public async init(): Promise<void> {
+    if (this._initialized) {
+      this.destroy();
     }
-
-    this.glfw = gl;
 
     const { rgba } = await this.bakeFontBitmap();
 
-    this.generateOpenGLTexture({
-      gl,
-      rgba,
+    // Generate OpenGL Texture
+    const textureStruct = new CStruct({ length: CStruct.BYTE_SIZE.i32 });
+
+    this.gl.glGenTextures({
+      n: 1,
+      textures: textureStruct.$address,
     });
+
+    this._textureId = textureStruct.getValue(0, 'i32');
+
+    this.gl.glBindTexture({
+      target: GL_TEXTURE_2D,
+      texture: this._textureId,
+    });
+
+    this.gl.glTexImage2D({
+      target: GL_TEXTURE_2D,
+      level: 0,
+      internalformat: GL_RGBA,
+      width: ATLAS_WIDTH,
+      height: ATLAS_HEIGHT,
+      border: 0,
+      format: GL_RGBA,
+      type: GL_UNSIGNED_BYTE,
+      pixels: rgba.$address,
+    });
+
+    this.gl.glTexParameteri({
+      target: GL_TEXTURE_2D,
+      pname: GL_TEXTURE_MIN_FILTER,
+      param: GL_LINEAR,
+    });
+
+    this.gl.glTexParameteri({
+      target: GL_TEXTURE_2D,
+      pname: GL_TEXTURE_MAG_FILTER,
+      param: GL_LINEAR,
+    });
+
+    // Unbind texture
+    this.gl.glBindTexture({
+      target: GL_TEXTURE_2D,
+      texture: 0,
+    });
+
+    this._initialized = true;
   }
 
   protected async bakeFontBitmap() {
@@ -110,53 +155,6 @@ export abstract class BaseFontAtlas implements FontAtlasContract {
     };
   }
 
-  protected generateOpenGLTexture(options: { gl: GLFW; rgba: CStruct }): void {
-    // Generate OpenGL Texture
-    const textureStruct = new CStruct({ length: CStruct.BYTE_SIZE.i32 });
-
-    options.gl.glGenTextures({
-      n: 1,
-      textures: textureStruct.$address,
-    });
-
-    this._textureId = textureStruct.getValue(0, 'i32');
-
-    options.gl.glBindTexture({
-      target: GL_TEXTURE_2D,
-      texture: this._textureId,
-    });
-
-    options.gl.glTexImage2D({
-      target: GL_TEXTURE_2D,
-      level: 0,
-      internalformat: GL_RGBA,
-      width: ATLAS_WIDTH,
-      height: ATLAS_HEIGHT,
-      border: 0,
-      format: GL_RGBA,
-      type: GL_UNSIGNED_BYTE,
-      pixels: options.rgba.$address,
-    });
-
-    options.gl.glTexParameteri({
-      target: GL_TEXTURE_2D,
-      pname: GL_TEXTURE_MIN_FILTER,
-      param: GL_LINEAR,
-    });
-
-    options.gl.glTexParameteri({
-      target: GL_TEXTURE_2D,
-      pname: GL_TEXTURE_MAG_FILTER,
-      param: GL_LINEAR,
-    });
-
-    // Unbind texture
-    options.gl.glBindTexture({
-      target: GL_TEXTURE_2D,
-      texture: 0,
-    });
-  }
-
   public abstract measureText(options: MeasureTextOptions): MeasureTextResult;
 
   public abstract getQuads(options: GetQuadsOptions): TextQuad[];
@@ -165,16 +163,28 @@ export abstract class BaseFontAtlas implements FontAtlasContract {
     return this._textureId;
   }
 
-  public destroy(gl: GLFW | null = this.glfw): void {
-    if (!gl) {
-      throw new Error('GLFW is not initialized');
-    }
+  public get initialized(): boolean {
+    return this._initialized;
+  }
+
+  public get destroyed(): boolean {
+    return this._destroyed;
+  }
+
+  public destroy(): void {
+    if (!this._initialized) return;
+    if (this._destroyed) return;
 
     if (this.textureId) {
-      gl.glDeleteTextures({ n: 1, textures: new Int32Array([this.textureId]) });
+      this.gl.glDeleteTextures({
+        n: 1,
+        textures: new Int32Array([this.textureId]),
+      });
       this._textureId = 0;
     }
 
     this.truetype.close();
+    this._initialized = false;
+    this._destroyed = true;
   }
 }

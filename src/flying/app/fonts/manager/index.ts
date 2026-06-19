@@ -27,6 +27,7 @@ export class FontManager {
             fontPath,
             fontSize,
             truetypeLibPath: libPath,
+            gl: options.gl,
           }),
         ]
       )
@@ -34,7 +35,7 @@ export class FontManager {
   }
 
   public async init(): Promise<void> {
-    await Promise.all(this._fonts.values().map((font) => font.init(this.gl)));
+    await Promise.all(this._fonts.values().map((font) => font.init()));
   }
 
   public async load(config: FontConfig): Promise<void> {
@@ -56,22 +57,23 @@ export class FontManager {
         }
       }
 
-      existing.destroy(this.gl);
+      existing.destroy();
     }
 
     const font = new fontAtlas({
       fontPath,
       fontSize,
       truetypeLibPath: libPath,
+      gl: this.gl,
     });
 
-    await font.init(this.gl);
+    await font.init();
 
     this._fonts.set(identifier, font);
   }
 
   public destroy(): void {
-    this._fonts.forEach((font) => font.destroy(this.gl));
+    this._fonts.forEach((font) => font.destroy());
     this._fonts.clear();
   }
 

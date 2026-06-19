@@ -20,14 +20,14 @@ export interface TextureManagerOptions {
 }
 
 export class TextureManager {
-  protected glfw: GLFW;
+  protected gl: GLFW;
   protected image: Image;
   protected textures: Map<string, Texture>;
   protected infos: Map<string, ImageInfo>;
   protected _destroyed: boolean;
 
   public constructor(options: TextureManagerOptions) {
-    this.glfw = options.gl;
+    this.gl = options.gl;
     this.image = new Image(options.imageLibPath);
     this.textures = new Map();
     this.infos = new Map();
@@ -97,19 +97,19 @@ export class TextureManager {
 
     const textureStruct = new CStruct({ length: CStruct.BYTE_SIZE.i32 });
 
-    this.glfw.glGenTextures({
+    this.gl.glGenTextures({
       n: 1,
       textures: textureStruct.$address,
     });
 
     const textureId = textureStruct.getValue(0, 'i32');
 
-    this.glfw.glBindTexture({
+    this.gl.glBindTexture({
       target: GL_TEXTURE_2D,
       texture: textureId,
     });
 
-    this.glfw.glTexImage2D({
+    this.gl.glTexImage2D({
       target: GL_TEXTURE_2D,
       level: 0,
       internalformat: GL_RGBA,
@@ -121,20 +121,20 @@ export class TextureManager {
       pixels: data.pixels,
     });
 
-    this.glfw.glTexParameteri({
+    this.gl.glTexParameteri({
       target: GL_TEXTURE_2D,
       pname: GL_TEXTURE_MIN_FILTER,
       param: GL_LINEAR,
     });
 
-    this.glfw.glTexParameteri({
+    this.gl.glTexParameteri({
       target: GL_TEXTURE_2D,
       pname: GL_TEXTURE_MAG_FILTER,
       param: GL_LINEAR,
     });
 
     // Unbind so this texture isn't left bound for unrelated GL calls
-    this.glfw.glBindTexture({
+    this.gl.glBindTexture({
       target: GL_TEXTURE_2D,
       texture: 0,
     });
@@ -146,7 +146,7 @@ export class TextureManager {
       id: textureId,
       width: data.width,
       height: data.height,
-      gl: this.glfw,
+      gl: this.gl,
     });
 
     this.textures.set(path, texture);

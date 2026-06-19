@@ -10,7 +10,7 @@ export class Texture {
   public readonly id: number;
   public readonly width: number;
   public readonly height: number;
-  public readonly glfw: GLFW;
+  public readonly gl: GLFW;
 
   protected _destroyed: boolean;
 
@@ -18,7 +18,7 @@ export class Texture {
     this.id = options.id;
     this.width = options.width;
     this.height = options.height;
-    this.glfw = options.gl;
+    this.gl = options.gl;
 
     this._destroyed = false;
   }
@@ -30,7 +30,7 @@ export class Texture {
   public destroy(): void {
     if (this._destroyed) return;
 
-    this.glfw.glDeleteTextures({ n: 1, textures: new Int32Array([this.id]) });
+    this.gl.glDeleteTextures({ n: 1, textures: new Int32Array([this.id]) });
 
     this._destroyed = true;
   }
