@@ -1,8 +1,13 @@
 import type { InputManager } from '@flying/app';
 import { hitTest } from '@flying/interactions/utility/hit-test';
 import type { LayoutNode } from '@flying/layout';
-import type { WidgetDescriptor } from '@flying/widget';
-import { GLFW_KEY_TAB, GLFW_MOUSE_BUTTON_LEFT } from '@glfw/enums';
+import { WidgetType, type WidgetDescriptor } from '@flying/widget';
+import {
+  GLFW_KEY_ENTER,
+  GLFW_KEY_SPACE,
+  GLFW_KEY_TAB,
+  GLFW_MOUSE_BUTTON_LEFT,
+} from '@glfw/enums';
 import { BaseDispatcher } from '../base';
 import type { DispatchOptions } from '../types';
 import type {
@@ -202,15 +207,36 @@ export class FocusDispatcher extends BaseDispatcher {
     for (const key of current) {
       if (key === GLFW_KEY_TAB) continue;
 
-      if (!previous.has(key) || input.isKeyRepeated(key)) {
+      const isFresh = !previous.has(key);
+      const isRepeat = input.isKeyRepeated(key);
+
+      if (isFresh || isRepeat) {
         node.widget.onKeyDown?.({
           window,
           node,
           key,
           scancode: 0,
           modifiers,
-          repeat: input.isKeyRepeated(key),
+          repeat: isRepeat,
         });
+
+        // Activate focused buttons on Enter / Space (HTML semantics).
+        // Only on fresh press — auto-repeat must not re-trigger the click.
+        // Synthesizes a ClickEvent so user handlers don't care about source.
+        if (
+          isFresh &&
+          (key === GLFW_KEY_ENTER || key === GLFW_KEY_SPACE) &&
+          node.widget.type === WidgetType.Button
+        ) {
+          node.widget.onClick?.({
+            window,
+            node,
+            position: input.mousePosition,
+            button: GLFW_MOUSE_BUTTON_LEFT,
+            modifiers,
+            count: 1,
+          });
+        }
       }
     }
 

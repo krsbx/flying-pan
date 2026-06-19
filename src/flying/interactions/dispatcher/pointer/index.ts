@@ -65,6 +65,14 @@ export class PointerDispatcher extends BaseDispatcher {
         modifiers,
       });
 
+      // Press cancellation: if the pointer left the widget it was pressed on
+      // while still held, cancel the press (matches HTML :active — no click
+      // fires on the eventual release, and the pressed style releases now).
+      if (this._pressedNode && this._pressedNode.widget === prevWidget) {
+        this._pressedNode = null;
+        this._pressedButton = null;
+      }
+
       this._hoveredNode = hit;
 
       // Trigger enter new node

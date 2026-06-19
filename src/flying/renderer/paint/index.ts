@@ -14,15 +14,18 @@ import type { PaintOptions } from './types';
 function resolveStyle(
   style: ViewStyle,
   hovered: boolean,
-  focused: boolean
+  focused: boolean,
+  pressed: boolean
 ): ViewStyle {
-  if (!style._hover && !style._focus) return style;
+  if (!style._hover && !style._focus && !style._active) return style;
 
-  const { _hover, _focus, ...base } = style;
+  const { _hover, _focus, _active, ...base } = style;
   let resolved: ViewStyle = base;
 
   if (hovered && _hover) resolved = { ...resolved, ..._hover };
   if (focused && _focus) resolved = { ...resolved, ..._focus };
+  // Pressed wins — matches CSS :active precedence (declared last).
+  if (pressed && _active) resolved = { ...resolved, ..._active };
 
   return resolved;
 }
@@ -34,7 +37,8 @@ export function paint(window: Window, options: PaintOptions) {
 
   const hovered = interactionManager.pointer.hoveredNode?.widget === widget;
   const focused = interactionManager.focus.focusedWidget === widget;
-  const style = resolveStyle(baseStyle, hovered, focused);
+  const pressed = interactionManager.pointer.pressedNode?.widget === widget;
+  const style = resolveStyle(baseStyle, hovered, focused, pressed);
 
   const borderRadius = style.borderRadius;
   const opacity = style.opacity;

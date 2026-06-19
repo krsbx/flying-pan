@@ -114,6 +114,7 @@ export interface ViewStyle {
   pointerEvents?: PointerEvents;
   focusable?: boolean;
 
+  _active?: PseudoStateStyle;
   _focus?: PseudoStateStyle;
   _hover?: PseudoStateStyle;
 
@@ -129,6 +130,8 @@ export interface TextStyle extends ViewStyle {
   lineHeight?: number;
   letterSpacing?: number;
   font: string;
+
+  _active?: TextPseudoStateStyle;
   _focus?: TextPseudoStateStyle;
   _hover?: TextPseudoStateStyle;
 }
