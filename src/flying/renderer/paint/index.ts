@@ -39,6 +39,24 @@ export function paint(window: Window, options: PaintOptions) {
   const borderRadius = style.borderRadius;
   const opacity = style.opacity;
 
+  // Drop shadow first, so its rendered behind the requested
+  if (style.boxShadow) {
+    const shadows = Array.isArray(style.boxShadow)
+      ? style.boxShadow
+      : [style.boxShadow];
+
+    for (const shadow of shadows) {
+      renderer.drawShadow(window, {
+        x,
+        y,
+        width,
+        height,
+        shadow,
+        borderRadius,
+      });
+    }
+  }
+
   // Render the border by drawing a rectangle with a bigger size as the requested
   if (style.borderWidth && style.borderColor) {
     renderer.drawRect(window, {

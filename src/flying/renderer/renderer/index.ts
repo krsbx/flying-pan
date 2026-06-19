@@ -1,7 +1,7 @@
 import type { Rect } from '@/flying/widget';
 import type { GLFW } from '@glfw';
 import type { Window, WindowManager } from '../../app';
-import type { Coordinate2D, Resolution } from '../../types';
+import type { Coordinate2D, Resolution, RGBA } from '../../types';
 import { Color, parseColor } from '../color';
 import {
   GL_BLEND,
@@ -20,6 +20,7 @@ import type {
   DrawRectGLOptions,
   DrawRectOptions,
   DrawRoundedRectOptions,
+  DrawShadowOptions,
   DrawTextOptions,
   DrawTextureOptions,
 } from './types';
@@ -123,6 +124,50 @@ export class Renderer {
         });
       } else {
         this.drawRectGL({ ...options, rgba });
+      }
+    });
+  }
+
+  public drawShadow(window: Window, options: DrawShadowOptions): void {
+    const { x, y, width, height, shadow, borderRadius } = options;
+
+    this.wrap(window, () => {
+      const baseRgba = parseColor(shadow.color);
+      const offsetX = shadow.x ?? 0;
+      const offsetY = shadow.y ?? 0;
+      const blur = shadow.blur ?? 0;
+      const spread = shadow.spread ?? 0;
+      const radius = borderRadius ?? 0;
+
+      const layers = Math.max(1, Math.min(12, Math.round(blur / 2)));
+
+      for (let i = layers; i >= 1; i--) {
+        const t = (i - 1) / layers;
+        const expand = spread + blur * t;
+        const alpha = baseRgba.alpha * (1 - t) * (1 - t);
+
+        if (alpha <= 0) continue;
+
+        const layerRgba: RGBA = { ...baseRgba, alpha };
+
+        if (radius > 0) {
+          this.drawRoundedRect({
+            x: x - expand + offsetX,
+            y: y - expand + offsetY,
+            width: width + expand * 2,
+            height: height + expand * 2,
+            radius: radius + expand,
+            rgba: layerRgba,
+          });
+        } else {
+          this.drawRectGL({
+            x: x - expand + offsetX,
+            y: y - expand + offsetY,
+            width: width + expand * 2,
+            height: height + expand * 2,
+            rgba: layerRgba,
+          });
+        }
       }
     });
   }

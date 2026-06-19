@@ -54,6 +54,24 @@ export function parseColor(color: string): RGBA {
     };
   }
 
+  // rgb() / rgba() — channels 0-255, alpha 0-1 (comma or space separated)
+  const rgbMatch = /^rgba?\(([^)]+)\)$/i.exec(color);
+
+  if (rgbMatch) {
+    const parts = rgbMatch[1]!.split(/[\s,/]+/).filter(Boolean);
+    const channel = (v: string | undefined): number =>
+      Math.max(0, Math.min(1, parseFloat(v ?? '0') / 255));
+    const aPart = parts[3];
+    const alpha = aPart ? Math.max(0, Math.min(1, parseFloat(aPart))) : 1;
+
+    return {
+      red: channel(parts[0]),
+      green: channel(parts[1]),
+      blue: channel(parts[2]),
+      alpha,
+    };
+  }
+
   const hex = Color[color.toLowerCase() as keyof typeof Color];
 
   if (hex) return parseColor(hex.toString());

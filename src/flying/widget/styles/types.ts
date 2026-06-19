@@ -51,6 +51,7 @@ export interface PseudoStateStyle {
   borderWidth?: number;
   borderRadius?: number;
   opacity?: number;
+  boxShadow?: BoxShadow | BoxShadow[];
 }
 
 // Extended pseudo-state for text widgets — paint reads these from the
@@ -59,6 +60,16 @@ export interface TextPseudoStateStyle extends PseudoStateStyle {
   color?: ValidColor;
   letterSpacing?: number;
   lineHeight?: number;
+}
+
+// Drop shadow drawn behind a widget. Stacked layers approximate a Gaussian
+// falloff via the existing rounded-rect primitive.
+export interface BoxShadow {
+  x?: number;
+  y?: number;
+  blur?: number;
+  spread?: number;
+  color: ValidColor;
 }
 
 export interface ViewStyle {
@@ -107,6 +118,8 @@ export interface ViewStyle {
   _hover?: PseudoStateStyle;
 
   overflow?: Overflow;
+
+  boxShadow?: BoxShadow | BoxShadow[];
 }
 
 export interface TextStyle extends ViewStyle {

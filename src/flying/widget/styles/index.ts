@@ -1,4 +1,5 @@
 export type {
+  BoxShadow,
   LayoutConstraints,
   PseudoStateStyle,
   Rect,

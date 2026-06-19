@@ -1,10 +1,16 @@
 import type { BaseFontAtlas } from '@flying/fonts';
 import type { Coordinate2D, RGBA, Size, ValidColor } from '@flying/types';
+import type { BoxShadow } from '@/flying/widget';
 import type { Texture } from '../texture/texture';
 
 export interface DrawRectOptions extends Coordinate2D, Size {
   color: ValidColor;
   opacity?: number;
+  borderRadius?: number | null;
+}
+
+export interface DrawShadowOptions extends Coordinate2D, Size {
+  shadow: BoxShadow;
   borderRadius?: number | null;
 }
 
