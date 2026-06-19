@@ -1,7 +1,8 @@
-import type { GLFW } from '@/library/glfw';
-import { CStruct } from '@/utility/cstruct';
-import { Vector2 } from '@/utility/vectors';
+import { CStruct } from '@cstruct';
+import type { GLFW } from '@glfw';
 import { Image } from '@image';
+import { Vector2 } from '@vectors';
+import type { Pointer } from 'bun:ffi';
 import {
   GL_LINEAR,
   GL_RGBA,
@@ -10,8 +11,8 @@ import {
   GL_TEXTURE_MIN_FILTER,
   GL_UNSIGNED_BYTE,
 } from '../../constant';
+import { ImageInfo } from '../image';
 import { Texture } from '../texture';
-import type { ImageInfo } from './types';
 
 export interface TextureManagerOptions {
   gl: GLFW;
@@ -50,15 +51,39 @@ export class TextureManager {
 
     if (!result) return null;
 
-    const info: ImageInfo = {
-      width: sizeVec.x,
-      height: sizeVec.y,
+    const info = new ImageInfo({
+      path,
+      vector2: sizeVec,
       channel: channelStruct.getValue(0, 'i32'),
-    };
+    });
 
     this.infos.set(path, info);
 
     return info;
+  }
+
+  protected loadFile(
+    path: string
+  ): { width: number; height: number; pixels: Pointer } | null {
+    const info = this.info(path);
+
+    if (!info) return null;
+
+    const pixels = this.image.stbi_load({
+      channels_in_file: info.channelRef,
+      desired_channels: 4,
+      filename: path,
+      x: info.vector2.xRef,
+      y: info.vector2.yRef,
+    });
+
+    if (!pixels) return null;
+
+    return {
+      width: info.width,
+      height: info.height,
+      pixels,
+    };
   }
 
   public load(path: string): Texture | null {
@@ -66,23 +91,7 @@ export class TextureManager {
 
     if (existing) return existing;
 
-    const info = this.info(path);
-
-    if (!info) return null;
-
-    // GL expects bottom-row-first; stb loads top-row-first — flip on decode.
-    // (Global stb flag; re-asserted before every load so order never matters.)
-    this.image.stbi_set_flip_vertically_on_load({
-      flag_true_if_should_flip: 1,
-    });
-
-    const data = this.image.stbi_load({
-      filename: path,
-      x: null,
-      y: null,
-      channels_in_file: null,
-      desired_channels: 4,
-    });
+    const data = this.loadFile(path);
 
     if (!data) return null;
 
@@ -104,12 +113,12 @@ export class TextureManager {
       target: GL_TEXTURE_2D,
       level: 0,
       internalformat: GL_RGBA,
-      width: info.width,
-      height: info.height,
+      width: data.width,
+      height: data.height,
       border: 0,
       format: GL_RGBA,
       type: GL_UNSIGNED_BYTE,
-      pixels: data,
+      pixels: data.pixels,
     });
 
     this.glfw.glTexParameteri({
@@ -131,12 +140,12 @@ export class TextureManager {
     });
 
     // GL has copied the pixel data — release the stb buffer
-    this.image.stbi_image_free({ retval_from_stbi_load: data });
+    this.image.stbi_image_free({ retval_from_stbi_load: data.pixels });
 
     const texture = new Texture({
       id: textureId,
-      width: info.width,
-      height: info.height,
+      width: data.width,
+      height: data.height,
       gl: this.glfw,
     });
 
