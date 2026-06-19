@@ -106,7 +106,7 @@ export class Audio {
     this._destroyed = true;
   }
 
-  public get destroyed() {
+  public get destroyed(): boolean {
     return this._destroyed;
   }
 }
