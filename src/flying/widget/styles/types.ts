@@ -1,5 +1,7 @@
 import type {
   ClickEventHandler,
+  FocusEventHandler,
+  KeyEventHandler,
   PointerEventHandler,
 } from '@flying/interactions';
 import type { ValidColor } from '@flying/types';
@@ -81,6 +83,7 @@ export interface ViewStyle {
 
   // Interaction
   pointerEvents?: PointerEvents;
+  focusable?: boolean;
 }
 
 export interface TextStyle extends ViewStyle {
@@ -105,6 +108,10 @@ export interface WidgetDescriptor {
   onClick?: ClickEventHandler;
   onPointerEnter?: PointerEventHandler;
   onPointerLeave?: PointerEventHandler;
+  onKeyDown?: KeyEventHandler;
+  onKeyUp?: KeyEventHandler;
+  onFocus?: FocusEventHandler;
+  onBlur?: FocusEventHandler;
 }
 
 export interface LayoutConstraintsOptions {

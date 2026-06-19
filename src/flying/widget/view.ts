@@ -15,6 +15,10 @@ export function View(props: ViewProps): WidgetDescriptor {
     onClick,
     onPointerEnter,
     onPointerLeave,
+    onKeyDown,
+    onKeyUp,
+    onFocus,
+    onBlur,
     style,
     ...rest
   } = props;
@@ -30,5 +34,9 @@ export function View(props: ViewProps): WidgetDescriptor {
     onClick,
     onPointerEnter,
     onPointerLeave,
+    onKeyDown,
+    onKeyUp,
+    onFocus,
+    onBlur,
   };
 }

@@ -1,4 +1,4 @@
-import { PointerDispatcher } from '@flying/interactions';
+import { InteractionManager } from '@flying/interactions';
 import type { GLFW } from '@glfw';
 import { FontManager } from '../fonts/manager';
 import { InputManager } from '../input';
@@ -16,7 +16,7 @@ export class AppManager {
   public readonly monitor: MonitorManager;
   public readonly input: InputManager;
   public readonly font: FontManager;
-  public readonly interaction: PointerDispatcher;
+  public readonly interaction: InteractionManager;
 
   public constructor(options: AppManagerOptions) {
     this.window = new WindowManager(options.gl);
@@ -26,6 +26,6 @@ export class AppManager {
       fonts: options.fonts,
       gl: options.gl,
     });
-    this.interaction = new PointerDispatcher(this.input);
+    this.interaction = new InteractionManager(this.input);
   }
 }

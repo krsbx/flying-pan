@@ -20,6 +20,10 @@ export function Flex(props: FlexProps): WidgetDescriptor {
     onClick,
     onPointerEnter,
     onPointerLeave,
+    onKeyDown,
+    onKeyUp,
+    onFocus,
+    onBlur,
     ...rest
   } = props;
 
@@ -40,5 +44,9 @@ export function Flex(props: FlexProps): WidgetDescriptor {
     onClick,
     onPointerEnter,
     onPointerLeave,
+    onKeyDown,
+    onKeyUp,
+    onFocus,
+    onBlur,
   };
 }

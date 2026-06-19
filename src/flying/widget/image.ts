@@ -17,6 +17,10 @@ export function Image(props: ImageProps): WidgetDescriptor {
     onClick,
     onPointerEnter,
     onPointerLeave,
+    onKeyDown,
+    onKeyUp,
+    onFocus,
+    onBlur,
     style,
     ...rest
   } = props;
@@ -31,5 +35,9 @@ export function Image(props: ImageProps): WidgetDescriptor {
     onClick,
     onPointerEnter,
     onPointerLeave,
+    onKeyDown,
+    onKeyUp,
+    onFocus,
+    onBlur,
   };
 }

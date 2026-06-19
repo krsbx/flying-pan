@@ -16,6 +16,10 @@ export function Button(props: ButtonProps): WidgetDescriptor {
     onClick,
     onPointerEnter,
     onPointerLeave,
+    onKeyDown,
+    onKeyUp,
+    onFocus,
+    onBlur,
     style,
     ...rest
   } = props;
@@ -31,5 +35,9 @@ export function Button(props: ButtonProps): WidgetDescriptor {
     onClick,
     onPointerEnter,
     onPointerLeave,
+    onKeyDown,
+    onKeyUp,
+    onFocus,
+    onBlur,
   };
 }

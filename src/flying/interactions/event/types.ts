@@ -58,7 +58,7 @@ export interface KeyEvent extends InteractionEvent {
  * newly focused node (on blur), if any.
  */
 export interface FocusEvent extends InteractionEvent {
-  relatedTarget?: LayoutNode;
+  relatedTarget?: LayoutNode | null;
 }
 
 // #endregion
@@ -96,6 +96,10 @@ export interface InteractionProps {
   onClick?: ClickEventHandler;
   onPointerEnter?: PointerEventHandler;
   onPointerLeave?: PointerEventHandler;
+  onKeyDown?: KeyEventHandler;
+  onKeyUp?: KeyEventHandler;
+  onFocus?: FocusEventHandler;
+  onBlur?: FocusEventHandler;
 }
 
 // #endregion
