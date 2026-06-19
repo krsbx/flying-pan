@@ -1,5 +1,6 @@
 import { InteractionManager } from '@flying/interactions';
 import type { GLFW } from '@glfw';
+import { AudioManager, type AudioManagerOptions } from '../audio';
 import { FontManager } from '../fonts/manager';
 import { InputManager } from '../input';
 import { MonitorManager } from '../monitor';
@@ -9,6 +10,7 @@ import type { FontConfig } from './types';
 export interface AppManagerOptions {
   gl: GLFW;
   fonts: FontConfig[];
+  audio?: AudioManagerOptions | null;
 }
 
 export class AppManager {
@@ -17,6 +19,7 @@ export class AppManager {
   public readonly input: InputManager;
   public readonly font: FontManager;
   public readonly interaction: InteractionManager;
+  public readonly audio: AudioManager | null;
 
   public constructor(options: AppManagerOptions) {
     this.window = new WindowManager(options.gl);
@@ -27,5 +30,6 @@ export class AppManager {
       gl: options.gl,
     });
     this.interaction = new InteractionManager(this.input);
+    this.audio = options.audio ? new AudioManager(options.audio) : null;
   }
 }

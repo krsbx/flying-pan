@@ -1,5 +1,6 @@
 import type { BaseFontAtlas, FontAtlasOptions } from '@flying/fonts';
 import type { App } from '.';
+import type { AudioManagerOptions } from '../audio';
 import type { WindowOptions } from '../window';
 
 export interface FontConfig {
@@ -14,6 +15,7 @@ export interface AppConfig extends WindowOptions {
   libPath: string;
   backgroundColor?: string | null;
   fonts?: FontConfig[] | null;
+  audio?: AudioManagerOptions | null;
   vsync?: boolean;
 }
 

@@ -32,6 +32,7 @@ export class App {
 
     this.manager = new AppManager({
       fonts: options.fonts || [],
+      audio: options.audio,
       gl: this.gl,
     });
     this.renderer = new Renderer({
@@ -168,6 +169,7 @@ export class App {
 
     this.manager.window.destroyAll();
     this.manager.font.destroy();
+    this.manager.audio?.destroy?.();
     this.gl.glfwTerminate();
   }
 }
