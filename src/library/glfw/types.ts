@@ -222,11 +222,11 @@ export type GLFWwindow = Pointer;
 
 export type GLFWcursor = Pointer;
 
-export type GLFWallocatefun = (arg0: bigint, arg1: Pointer) => Pointer;
+export type GLFWallocatefun = (arg0: number, arg1: Pointer) => Pointer;
 
 export type GLFWreallocatefun = (
   arg0: Pointer,
-  arg1: bigint,
+  arg1: number,
   arg2: Pointer
 ) => Pointer;
 

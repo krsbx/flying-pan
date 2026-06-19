@@ -52,12 +52,12 @@ export function glAreTexturesResident(
     textures: Pointer | NodeJS.TypedArray | null;
     residences: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
+): number {
   return this.symbols.glAreTexturesResident(
     options.n,
     options.textures,
     options.residences
-  ) as Pointer | null;
+  ) as number;
 }
 
 export function glArrayElement(
@@ -1486,8 +1486,8 @@ export function glGenLists(
   options: {
     range: number;
   }
-): Pointer | null {
-  return this.symbols.glGenLists(options.range) as Pointer | null;
+): number {
+  return this.symbols.glGenLists(options.range) as number;
 }
 
 export function glGenTextures(
@@ -1624,8 +1624,8 @@ export function glGetDoublev(
   this.symbols.glGetDoublev(options.pname, options.params);
 }
 
-export function glGetError(this: GLFW): Pointer | null {
-  return this.symbols.glGetError() as Pointer | null;
+export function glGetError(this: GLFW): number {
+  return this.symbols.glGetError() as number;
 }
 
 export function glGetFloatv(
@@ -2201,8 +2201,8 @@ export function glIsEnabled(
   options: {
     cap: number;
   }
-): Pointer | null {
-  return this.symbols.glIsEnabled(options.cap) as Pointer | null;
+): number {
+  return this.symbols.glIsEnabled(options.cap) as number;
 }
 
 export function glIsList(
@@ -2210,8 +2210,8 @@ export function glIsList(
   options: {
     list: number;
   }
-): Pointer | null {
-  return this.symbols.glIsList(options.list) as Pointer | null;
+): number {
+  return this.symbols.glIsList(options.list) as number;
 }
 
 export function glIsTexture(
@@ -2219,8 +2219,8 @@ export function glIsTexture(
   options: {
     texture: number;
   }
-): Pointer | null {
-  return this.symbols.glIsTexture(options.texture) as Pointer | null;
+): number {
+  return this.symbols.glIsTexture(options.texture) as number;
 }
 
 export function glLightModelf(
@@ -3320,8 +3320,8 @@ export function glRenderMode(
   options: {
     mode: number;
   }
-): Pointer | null {
-  return this.symbols.glRenderMode(options.mode) as Pointer | null;
+): number {
+  return this.symbols.glRenderMode(options.mode) as number;
 }
 
 export function glResetHistogram(
@@ -5532,8 +5532,8 @@ export function glIsQuery(
   options: {
     id: number;
   }
-): Pointer | null {
-  return this.symbols.glIsQuery(options.id) as Pointer | null;
+): number {
+  return this.symbols.glIsQuery(options.id) as number;
 }
 
 export function glBeginQuery(
@@ -5623,8 +5623,8 @@ export function glIsBuffer(
   options: {
     buffer: number;
   }
-): Pointer | null {
-  return this.symbols.glIsBuffer(options.buffer) as Pointer | null;
+): number {
+  return this.symbols.glIsBuffer(options.buffer) as number;
 }
 
 export function glBufferData(
@@ -5696,8 +5696,8 @@ export function glUnmapBuffer(
   options: {
     target: number;
   }
-): Pointer | null {
-  return this.symbols.glUnmapBuffer(options.target) as Pointer | null;
+): number {
+  return this.symbols.glUnmapBuffer(options.target) as number;
 }
 
 export function glGetBufferParameteriv(
@@ -6268,8 +6268,8 @@ export function glCreateShader(
   options: {
     type: number;
   }
-): Pointer | null {
-  return this.symbols.glCreateShader(options.type) as Pointer | null;
+): number {
+  return this.symbols.glCreateShader(options.type) as number;
 }
 
 export function glShaderSource(
@@ -6298,8 +6298,8 @@ export function glCompileShader(
   this.symbols.glCompileShader(options.shader);
 }
 
-export function glCreateProgram(this: GLFW): Pointer | null {
-  return this.symbols.glCreateProgram() as Pointer | null;
+export function glCreateProgram(this: GLFW): number {
+  return this.symbols.glCreateProgram() as number;
 }
 
 export function glAttachShader(
@@ -6606,8 +6606,8 @@ export function glIsShader(
   options: {
     shader: number;
   }
-): Pointer | null {
-  return this.symbols.glIsShader(options.shader) as Pointer | null;
+): number {
+  return this.symbols.glIsShader(options.shader) as number;
 }
 
 export function glIsProgram(
@@ -6615,8 +6615,8 @@ export function glIsProgram(
   options: {
     program: number;
   }
-): Pointer | null {
-  return this.symbols.glIsProgram(options.program) as Pointer | null;
+): number {
+  return this.symbols.glIsProgram(options.program) as number;
 }
 
 export function glGetShaderiv(
@@ -6698,11 +6698,11 @@ export function glGetUniformLocation(
     program: number;
     name: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
+): number {
   return this.symbols.glGetUniformLocation(
     options.program,
     options.name
-  ) as Pointer | null;
+  ) as number;
 }
 
 export function glGetActiveUniform(
@@ -6819,11 +6819,11 @@ export function glGetAttribLocation(
     program: number;
     name: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
+): number {
   return this.symbols.glGetAttribLocation(
     options.program,
     options.name
-  ) as Pointer | null;
+  ) as number;
 }
 
 export function glStencilFuncSeparate(
@@ -8153,12 +8153,12 @@ export function glfwSetTime(
   this.symbols.glfwSetTime(options.time);
 }
 
-export function glfwGetTimerValue(this: GLFW): Pointer | null {
-  return this.symbols.glfwGetTimerValue() as Pointer | null;
+export function glfwGetTimerValue(this: GLFW): bigint {
+  return this.symbols.glfwGetTimerValue() as bigint;
 }
 
-export function glfwGetTimerFrequency(this: GLFW): Pointer | null {
-  return this.symbols.glfwGetTimerFrequency() as Pointer | null;
+export function glfwGetTimerFrequency(this: GLFW): bigint {
+  return this.symbols.glfwGetTimerFrequency() as bigint;
 }
 
 export function glfwMakeContextCurrent(

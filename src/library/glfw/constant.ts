@@ -14,7 +14,7 @@ export const GLFWDefinition = {
   // glAreTexturesResident
   glAreTexturesResident: {
     args: [FFIType.i32, FFIType.ptr, FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u8,
   },
   // glArrayElement
   glArrayElement: {
@@ -685,7 +685,7 @@ export const GLFWDefinition = {
   // glGenLists
   glGenLists: {
     args: [FFIType.i32],
-    returns: FFIType.ptr,
+    returns: FFIType.u32,
   },
   // glGenTextures
   glGenTextures: {
@@ -740,7 +740,7 @@ export const GLFWDefinition = {
   // glGetError
   glGetError: {
     args: [],
-    returns: FFIType.ptr,
+    returns: FFIType.u32,
   },
   // glGetFloatv
   glGetFloatv: {
@@ -992,17 +992,17 @@ export const GLFWDefinition = {
   // glIsEnabled
   glIsEnabled: {
     args: [FFIType.u32],
-    returns: FFIType.ptr,
+    returns: FFIType.u8,
   },
   // glIsList
   glIsList: {
     args: [FFIType.u32],
-    returns: FFIType.ptr,
+    returns: FFIType.u8,
   },
   // glIsTexture
   glIsTexture: {
     args: [FFIType.u32],
-    returns: FFIType.ptr,
+    returns: FFIType.u8,
   },
   // glLightModelf
   glLightModelf: {
@@ -1577,7 +1577,7 @@ export const GLFWDefinition = {
   // glRenderMode
   glRenderMode: {
     args: [FFIType.u32],
-    returns: FFIType.ptr,
+    returns: FFIType.i32,
   },
   // glResetHistogram
   glResetHistogram: {
@@ -2643,7 +2643,7 @@ export const GLFWDefinition = {
   // glIsQuery
   glIsQuery: {
     args: [FFIType.u32],
-    returns: FFIType.ptr,
+    returns: FFIType.u8,
   },
   // glBeginQuery
   glBeginQuery: {
@@ -2688,7 +2688,7 @@ export const GLFWDefinition = {
   // glIsBuffer
   glIsBuffer: {
     args: [FFIType.u32],
-    returns: FFIType.ptr,
+    returns: FFIType.u8,
   },
   // glBufferData
   glBufferData: {
@@ -2713,7 +2713,7 @@ export const GLFWDefinition = {
   // glUnmapBuffer
   glUnmapBuffer: {
     args: [FFIType.u32],
-    returns: FFIType.ptr,
+    returns: FFIType.u8,
   },
   // glGetBufferParameteriv
   glGetBufferParameteriv: {
@@ -2965,7 +2965,7 @@ export const GLFWDefinition = {
   // glCreateShader
   glCreateShader: {
     args: [FFIType.u32],
-    returns: FFIType.ptr,
+    returns: FFIType.u32,
   },
   // glShaderSource
   glShaderSource: {
@@ -2980,7 +2980,7 @@ export const GLFWDefinition = {
   // glCreateProgram
   glCreateProgram: {
     args: [],
-    returns: FFIType.ptr,
+    returns: FFIType.u32,
   },
   // glAttachShader
   glAttachShader: {
@@ -3105,12 +3105,12 @@ export const GLFWDefinition = {
   // glIsShader
   glIsShader: {
     args: [FFIType.u32],
-    returns: FFIType.ptr,
+    returns: FFIType.u8,
   },
   // glIsProgram
   glIsProgram: {
     args: [FFIType.u32],
-    returns: FFIType.ptr,
+    returns: FFIType.u8,
   },
   // glGetShaderiv
   glGetShaderiv: {
@@ -3140,7 +3140,7 @@ export const GLFWDefinition = {
   // glGetUniformLocation
   glGetUniformLocation: {
     args: [FFIType.u32, FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.i32,
   },
   // glGetActiveUniform
   glGetActiveUniform: {
@@ -3191,7 +3191,7 @@ export const GLFWDefinition = {
   // glGetAttribLocation
   glGetAttribLocation: {
     args: [FFIType.u32, FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.i32,
   },
   // glStencilFuncSeparate
   glStencilFuncSeparate: {
@@ -3799,12 +3799,12 @@ export const GLFWDefinition = {
   // glfwGetTimerValue
   glfwGetTimerValue: {
     args: [],
-    returns: FFIType.ptr,
+    returns: FFIType.u64,
   },
   // glfwGetTimerFrequency
   glfwGetTimerFrequency: {
     args: [],
-    returns: FFIType.ptr,
+    returns: FFIType.u64,
   },
   // glfwMakeContextCurrent
   glfwMakeContextCurrent: {
