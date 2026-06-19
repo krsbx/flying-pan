@@ -24,3 +24,8 @@ export interface RouteKeysOptions {
   node: LayoutNode;
   input: InputManager;
 }
+
+export interface ApplyPendingBlurFocusOptions {
+  window: Window;
+  layout: LayoutNode;
+}

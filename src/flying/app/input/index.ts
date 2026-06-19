@@ -34,8 +34,11 @@ export class InputManager {
   protected onKey({ key, action, mods }: KeyAction): void {
     this._current.modifiers = mods;
 
-    if (action === GLFW_PRESS || action === GLFW_REPEAT) {
+    if (action === GLFW_PRESS) {
       this._current.keys.add(key);
+    } else if (action === GLFW_REPEAT) {
+      this._current.keys.add(key);
+      this._current.repeatedKeys.add(key);
     } else {
       this._current.keys.delete(key);
     }
@@ -62,12 +65,14 @@ export class InputManager {
 
   public update(): void {
     this._previous.keys = new Set(this._current.keys);
+    this._previous.repeatedKeys = new Set(this._current.repeatedKeys);
     this._previous.mouseButtons = new Set(this._current.mouseButtons);
     this._previous.mousePosition = { ...this._current.mousePosition };
     this._previous.modifiers = this._current.modifiers;
     this._previous.scrollDelta = { ...this._current.scrollDelta };
 
     this._current.scrollDelta = { x: 0, y: 0 };
+    this._current.repeatedKeys = new Set();
   }
 
   protected createBindings(): WindowCallbackMap {
@@ -118,6 +123,10 @@ export class InputManager {
 
   public isKeyReleased(key: number): boolean {
     return !this._current.keys.has(key) && this._previous.keys.has(key);
+  }
+
+  public isKeyRepeated(key: number): boolean {
+    return this._current.repeatedKeys.has(key);
   }
 
   public isMouseDown(button: number): boolean {

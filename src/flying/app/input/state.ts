@@ -2,6 +2,7 @@ import type { Coordinate2D } from '@flying/types';
 
 export class InputState {
   public keys: Set<number>;
+  public repeatedKeys: Set<number>;
   public mouseButtons: Set<number>;
   public mousePosition: Coordinate2D;
   public scrollDelta: Coordinate2D;
@@ -9,6 +10,7 @@ export class InputState {
 
   public constructor() {
     this.keys = new Set();
+    this.repeatedKeys = new Set();
     this.mouseButtons = new Set();
     this.mousePosition = { x: 0, y: 0 };
     this.scrollDelta = { x: 0, y: 0 };

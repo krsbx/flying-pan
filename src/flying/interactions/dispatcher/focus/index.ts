@@ -6,6 +6,7 @@ import { GLFW_KEY_TAB, GLFW_MOUSE_BUTTON_LEFT } from '@glfw/enums';
 import { BaseDispatcher } from '../base';
 import type { DispatchOptions } from '../types';
 import type {
+  ApplyPendingBlurFocusOptions,
   HandleClickOptions,
   HandleTabOptions,
   MoveFocusOptions,
@@ -13,14 +14,18 @@ import type {
 } from './types';
 
 export class FocusDispatcher extends BaseDispatcher {
-  protected focusedWidget: WidgetDescriptor | null;
   protected focusableNodes: LayoutNode[];
+  protected _focusedWidget: WidgetDescriptor | null;
+  protected _pendingFocusWidget: WidgetDescriptor | null;
+  protected _pendingBlur: boolean;
 
   public constructor(input: InputManager | null) {
     super(input);
 
-    this.focusedWidget = null;
+    this._focusedWidget = null;
     this.focusableNodes = [];
+    this._pendingFocusWidget = null;
+    this._pendingBlur = false;
   }
 
   public dispatch(options: DispatchOptions): void {
@@ -34,15 +39,18 @@ export class FocusDispatcher extends BaseDispatcher {
     this.collectFocusable(layout);
 
     // 2. Validate current focus — blur if unmounted or no longer focusable
-    if (this.focusedWidget) {
-      const node = this.findNodeForWidget(layout, this.focusedWidget);
+    if (this._focusedWidget) {
+      const node = this.findNodeForWidget(layout, this._focusedWidget);
       const stillFocusable = node?.widget.style?.focusable === true;
 
       if (!node || !stillFocusable) {
-        this.focusedWidget = null;
+        this._focusedWidget = null;
         node?.widget.onBlur?.({ window, node, relatedTarget: null });
       }
     }
+
+    // 2.5. Apply pending blur/focus
+    this.applyPendingBlurFocus({ window, layout });
 
     // 3. Tab cycling
     if (input.isKeyPressed(GLFW_KEY_TAB)) {
@@ -55,8 +63,8 @@ export class FocusDispatcher extends BaseDispatcher {
     }
 
     // 5. Route key events to the (possibly newly) focused widget
-    if (this.focusedWidget) {
-      const node = this.findNodeForWidget(layout, this.focusedWidget);
+    if (this._focusedWidget) {
+      const node = this.findNodeForWidget(layout, this._focusedWidget);
 
       if (node) {
         this.routeKeys({ window, node, input });
@@ -65,8 +73,42 @@ export class FocusDispatcher extends BaseDispatcher {
   }
 
   public reset(): void {
-    this.focusedWidget = null;
+    this._focusedWidget = null;
     this.focusableNodes = [];
+    this._pendingFocusWidget = null;
+    this._pendingBlur = false;
+  }
+
+  protected applyPendingBlurFocus(options: ApplyPendingBlurFocusOptions) {
+    const { window, layout } = options;
+
+    if (this._pendingBlur) {
+      this._pendingBlur = false;
+
+      if (this._focusedWidget) {
+        const oldNode = this.findNodeForWidget(layout, this._focusedWidget);
+
+        this._focusedWidget = null;
+
+        oldNode?.widget.onBlur?.({
+          window,
+          node: oldNode,
+          relatedTarget: null,
+        });
+      }
+    }
+
+    if (this._pendingFocusWidget) {
+      const widget = this._pendingFocusWidget;
+
+      this._pendingFocusWidget = null;
+
+      const node = this.findNodeForWidget(layout, widget);
+
+      if (node && node.widget.style?.focusable === true) {
+        this.moveFocus({ window, layout, target: node });
+      }
+    }
   }
 
   protected handleTab(options: HandleTabOptions): void {
@@ -77,8 +119,8 @@ export class FocusDispatcher extends BaseDispatcher {
     if (list.length === 0) return;
 
     const shift = input.isShiftDown;
-    const currentIdx = this.focusedWidget
-      ? list.findIndex((n) => n.widget === this.focusedWidget)
+    const currentIdx = this._focusedWidget
+      ? list.findIndex((n) => n.widget === this._focusedWidget)
       : -1;
 
     let nextIdx: number;
@@ -108,11 +150,11 @@ export class FocusDispatcher extends BaseDispatcher {
 
     if (target) {
       this.moveFocus({ window, layout, target });
-    } else if (this.focusedWidget) {
+    } else if (this._focusedWidget) {
       // Clicked outside any focusable widget → blur current (HTML semantics)
-      const oldNode = this.findNodeForWidget(layout, this.focusedWidget);
+      const oldNode = this.findNodeForWidget(layout, this._focusedWidget);
 
-      this.focusedWidget = null;
+      this._focusedWidget = null;
 
       oldNode?.widget.onBlur?.({
         window,
@@ -125,14 +167,14 @@ export class FocusDispatcher extends BaseDispatcher {
   protected moveFocus(options: MoveFocusOptions): void {
     const { window, layout, target } = options;
 
-    if (this.focusedWidget === target.widget) return;
+    if (this._focusedWidget === target.widget) return;
 
-    const oldWidget = this.focusedWidget;
+    const oldWidget = this._focusedWidget;
     const oldNode = oldWidget
       ? this.findNodeForWidget(layout, oldWidget)
       : null;
 
-    this.focusedWidget = target.widget;
+    this._focusedWidget = target.widget;
 
     if (oldNode) {
       oldNode.widget.onBlur?.({
@@ -160,14 +202,14 @@ export class FocusDispatcher extends BaseDispatcher {
     for (const key of current) {
       if (key === GLFW_KEY_TAB) continue;
 
-      if (!previous.has(key)) {
+      if (!previous.has(key) || input.isKeyRepeated(key)) {
         node.widget.onKeyDown?.({
           window,
           node,
           key,
           scancode: 0,
           modifiers,
-          repeat: false,
+          repeat: input.isKeyRepeated(key),
         });
       }
     }
@@ -247,5 +289,27 @@ export class FocusDispatcher extends BaseDispatcher {
     path.pop();
 
     return false;
+  }
+
+  public focus(widget: WidgetDescriptor): void {
+    this._pendingFocusWidget = widget;
+    this._pendingBlur = false;
+  }
+
+  public blur(): void {
+    this._pendingBlur = true;
+    this._pendingFocusWidget = null;
+  }
+
+  public get focusedWidget(): WidgetDescriptor | null {
+    return this._focusedWidget;
+  }
+
+  public get pendingFocusWidget(): WidgetDescriptor | null {
+    return this._pendingFocusWidget;
+  }
+
+  public get pendingBlur(): boolean {
+    return this._pendingBlur;
   }
 }
