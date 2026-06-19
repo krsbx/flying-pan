@@ -4,47 +4,61 @@ import {
   WidgetType,
   type LabelProps,
   type TextStyle,
+  type ViewStyle,
 } from '@flying/widget';
 import { Color } from '../color';
 import type { PaintOptions } from './types';
 
+function resolveStyle(
+  style: ViewStyle,
+  hovered: boolean,
+  focused: boolean
+): ViewStyle {
+  if (!style._hover && !style._focus) return style;
+
+  const { _hover, _focus, ...base } = style;
+  let resolved: ViewStyle = base;
+
+  if (hovered && _hover) resolved = { ...resolved, ..._hover };
+  if (focused && _focus) resolved = { ...resolved, ..._focus };
+
+  return resolved;
+}
+
 export function paint(window: Window, options: PaintOptions) {
-  const { renderer, fontManager } = options;
+  const { renderer, fontManager, interactionManager } = options;
   const { widget, x, y, width, height, children } = options.layout;
-  const style = widget.style ?? {};
+  const baseStyle = widget.style ?? ({} as ViewStyle);
 
-  let finalX = x;
-  let finalY = y;
-  let finalWidth = width;
-  let finalHeight = height;
+  const hovered = interactionManager.pointer.hoveredNode?.widget === widget;
+  const focused = interactionManager.focus.focusedWidget === widget;
+  const style = resolveStyle(baseStyle, hovered, focused);
 
-  // Render the border by drawing a rectangle with a same size as the requested but resize the rectangle to fit the border
+  const borderRadius = style.borderRadius;
+  const opacity = style.opacity;
+
+  // Render the border by drawing a rectangle with a bigger size as the requested
   if (style.borderWidth && style.borderColor) {
     renderer.drawRect(window, {
-      x: finalX,
-      y: finalY,
-      width: finalWidth,
-      height: finalHeight,
+      x: x - style.borderWidth / 2,
+      y: y - style.borderWidth / 2,
+      width: width + style.borderWidth,
+      height: height + style.borderWidth,
       color: style.borderColor,
-      borderRadius: style.borderRadius,
-      opacity: style.opacity,
+      borderRadius,
+      opacity,
     });
-
-    finalX += style.borderWidth / 2;
-    finalY += style.borderWidth / 2;
-    finalWidth -= style.borderWidth;
-    finalHeight -= style.borderWidth;
   }
 
   if (style.backgroundColor) {
     renderer.drawRect(window, {
-      x: finalX,
-      y: finalY,
-      width: finalWidth,
-      height: finalHeight,
+      x,
+      y,
+      width,
+      height,
       color: style.backgroundColor,
-      borderRadius: style.borderRadius,
-      opacity: style.opacity,
+      borderRadius,
+      opacity,
     });
   }
 
@@ -87,7 +101,7 @@ export function paint(window: Window, options: PaintOptions) {
         y,
         color,
         atlas: fontAtlas,
-        opacity: style.opacity,
+        opacity,
         letterSpacing: textStyle.letterSpacing,
         lineHeight: textStyle.lineHeight,
       });
@@ -95,6 +109,6 @@ export function paint(window: Window, options: PaintOptions) {
   }
 
   for (const child of children) {
-    paint(window, { renderer, fontManager, layout: child });
+    paint(window, { renderer, fontManager, layout: child, interactionManager });
   }
 }

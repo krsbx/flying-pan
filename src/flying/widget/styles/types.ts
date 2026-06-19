@@ -43,6 +43,23 @@ export type SpacingInput =
   | [SizeInput, SizeInput, SizeInput, SizeInput]
   | Spacing;
 
+// Properties that actually take effect when applied via _hover / _focus.
+export interface PseudoStateStyle {
+  backgroundColor?: ValidColor;
+  borderColor?: ValidColor;
+  borderWidth?: number;
+  borderRadius?: number;
+  opacity?: number;
+}
+
+// Extended pseudo-state for text widgets — paint reads these from the
+// resolved style when rendering a Label, so they respond to hover/focus.
+export interface TextPseudoStateStyle extends PseudoStateStyle {
+  color?: ValidColor;
+  letterSpacing?: number;
+  lineHeight?: number;
+}
+
 export interface ViewStyle {
   // Box model
   padding?: SpacingInput;
@@ -84,6 +101,9 @@ export interface ViewStyle {
   // Interaction
   pointerEvents?: PointerEvents;
   focusable?: boolean;
+
+  _focus?: PseudoStateStyle;
+  _hover?: PseudoStateStyle;
 }
 
 export interface TextStyle extends ViewStyle {
@@ -93,6 +113,8 @@ export interface TextStyle extends ViewStyle {
   lineHeight?: number;
   letterSpacing?: number;
   font: string;
+  _focus?: TextPseudoStateStyle;
+  _hover?: TextPseudoStateStyle;
 }
 
 export type WidgetProps = Record<string, unknown>;

@@ -139,6 +139,7 @@ export class App {
             renderer: this.renderer,
             layout: layout,
             fontManager: this.manager.font,
+            interactionManager: this.manager.interaction,
           });
         }
       }

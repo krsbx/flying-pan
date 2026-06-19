@@ -2,7 +2,6 @@ import type { InputManager } from '@flying/app';
 import type { PointerEvent } from '@flying/interactions/event/types';
 import { hitTest } from '@flying/interactions/utility/hit-test';
 import type { LayoutNode } from '@flying/layout';
-import type { Coordinate2D } from '@flying/types';
 import type { WidgetDescriptor } from '@flying/widget';
 import {
   GLFW_MOUSE_BUTTON_LEFT,
@@ -22,19 +21,17 @@ const TRACKED_BUTTONS = [
 ] as const;
 
 export class PointerDispatcher extends BaseDispatcher {
-  protected hoveredNode: LayoutNode | null;
-  protected pressedNode: LayoutNode | null;
-  protected pressedButton: number | null;
-  protected previousPosition: Coordinate2D | null;
+  protected _hoveredNode: LayoutNode | null;
+  protected _pressedNode: LayoutNode | null;
+  protected _pressedButton: number | null;
   protected lastClick: LastClick | null;
 
   public constructor(input: InputManager | null) {
     super(input);
 
-    this.hoveredNode = null;
-    this.pressedNode = null;
-    this.pressedButton = null;
-    this.previousPosition = null;
+    this._hoveredNode = null;
+    this._pressedNode = null;
+    this._pressedButton = null;
     this.lastClick = null;
   }
 
@@ -57,18 +54,18 @@ export class PointerDispatcher extends BaseDispatcher {
     // --- Hover enter / leave (compared by widget identity, not LayoutNode) ---
 
     const hitWidget = hit?.widget ?? null;
-    const prevWidget = this.hoveredNode?.widget ?? null;
+    const prevWidget = this._hoveredNode?.widget ?? null;
 
     if (hitWidget !== prevWidget) {
       // Trigger leave previous node
       this.fireLeave({
         window,
-        node: this.hoveredNode,
+        node: this._hoveredNode,
         position,
         modifiers,
       });
 
-      this.hoveredNode = hit;
+      this._hoveredNode = hit;
 
       // Trigger enter new node
       this.fireEnter({
@@ -81,7 +78,7 @@ export class PointerDispatcher extends BaseDispatcher {
 
     // --- Pointer move ---
 
-    if (this.hasMoved(position) && hit) {
+    if (this.hasMoved(input) && hit) {
       hit.widget.onPointerMove?.({
         window,
         node: hit,
@@ -89,11 +86,6 @@ export class PointerDispatcher extends BaseDispatcher {
         modifiers,
       });
     }
-
-    this.previousPosition = {
-      x: position.x,
-      y: position.y,
-    };
 
     // --- Button events (down, up, click for each tracked button) ---
     for (const button of TRACKED_BUTTONS) {
@@ -106,8 +98,8 @@ export class PointerDispatcher extends BaseDispatcher {
           button,
         });
 
-        this.pressedNode = hit;
-        this.pressedButton = button;
+        this._pressedNode = hit;
+        this._pressedButton = button;
       }
 
       if (input.isButtonReleased(button)) {
@@ -122,8 +114,8 @@ export class PointerDispatcher extends BaseDispatcher {
         // Click = pointer down and up on the same widget with the same button
         if (
           hit &&
-          this.sameWidget(hit, this.pressedNode) &&
-          button === this.pressedButton
+          this.sameWidget(hit, this._pressedNode) &&
+          button === this._pressedButton
         ) {
           const count = this.getClickCount(hit.widget, button);
 
@@ -137,28 +129,27 @@ export class PointerDispatcher extends BaseDispatcher {
           });
         }
 
-        if (button === this.pressedButton) {
-          this.pressedNode = null;
-          this.pressedButton = null;
+        if (button === this._pressedButton) {
+          this._pressedNode = null;
+          this._pressedButton = null;
         }
       }
     }
   }
 
   public reset(): void {
-    this.hoveredNode = null;
-    this.pressedNode = null;
-    this.pressedButton = null;
-    this.previousPosition = null;
+    this._hoveredNode = null;
+    this._pressedNode = null;
+    this._pressedButton = null;
     this.lastClick = null;
   }
 
-  protected hasMoved(position: Coordinate2D): boolean {
-    if (!this.previousPosition) return false;
+  protected hasMoved(input: InputManager): boolean {
+    const position = input.current.mousePosition;
+    const previousPosition = input.previous.mousePosition;
 
     return (
-      position.x !== this.previousPosition.x ||
-      position.y !== this.previousPosition.y
+      position.x !== previousPosition.x || position.y !== previousPosition.y
     );
   }
 
@@ -201,5 +192,17 @@ export class PointerDispatcher extends BaseDispatcher {
 
   protected assertNode(options: PointerEventOptions): options is PointerEvent {
     return options.node !== null;
+  }
+
+  public get hoveredNode(): LayoutNode | null {
+    return this._hoveredNode;
+  }
+
+  public get pressedNode(): LayoutNode | null {
+    return this._pressedNode;
+  }
+
+  public get pressedButton(): number | null {
+    return this._pressedButton;
   }
 }

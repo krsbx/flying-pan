@@ -13,7 +13,7 @@ import { layoutSingleLine, layoutWrap } from './wrap';
 
 export const layoutFlex: LayoutFlexFn = function (options) {
   const { node, x, y, fontManager, availableWidth, availableHeight } = options;
-  const style: ViewStyle = node.style ?? {};
+  const style = node.style ?? ({} as ViewStyle);
 
   const padding = resolveSpacing(
     node.style?.[SpacingType.Padding],
