@@ -82,3 +82,12 @@ export const PointerEvents = {
 export type PointerEvents = (typeof PointerEvents)[keyof typeof PointerEvents];
 
 export const ROOT_FONT_SIZE = 16;
+
+export const Overflow = {
+  Auto: 'auto',
+  Scroll: 'scroll',
+  Visible: 'visible',
+  Hidden: 'hidden',
+} as const;
+
+export type Overflow = (typeof Overflow)[keyof typeof Overflow];

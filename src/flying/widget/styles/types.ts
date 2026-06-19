@@ -4,12 +4,13 @@ import type {
   KeyEventHandler,
   PointerEventHandler,
 } from '@flying/interactions';
-import type { ValidColor } from '@flying/types';
+import type { Coordinate2D, Size, ValidColor } from '@flying/types';
 import type {
   FlexAlign,
   FlexDirection,
   FlexJustify,
   FlexWrap,
+  Overflow,
   PointerEvents,
   Position,
   SizeUnit,
@@ -104,6 +105,8 @@ export interface ViewStyle {
 
   _focus?: PseudoStateStyle;
   _hover?: PseudoStateStyle;
+
+  overflow?: Overflow;
 }
 
 export interface TextStyle extends ViewStyle {
@@ -149,3 +152,5 @@ export interface LayoutConstraints {
   minHeight: number;
   maxHeight: number;
 }
+
+export interface Rect extends Coordinate2D, Size {}

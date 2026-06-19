@@ -1,6 +1,7 @@
+import type { Rect } from '@/flying/widget';
 import type { GLFW } from '@glfw';
 import type { Window, WindowManager } from '../../app';
-import type { Resolution } from '../../types';
+import type { Coordinate2D, Resolution } from '../../types';
 import { Color, parseColor } from '../color';
 import {
   GL_BLEND,
@@ -9,6 +10,7 @@ import {
   GL_ONE_MINUS_SRC_ALPHA,
   GL_PROJECTION,
   GL_QUADS,
+  GL_SCISSOR_TEST,
   GL_SRC_ALPHA,
   GL_TEXTURE_2D,
   GL_TRIANGLES,
@@ -21,6 +23,7 @@ import type {
   DrawTextOptions,
   DrawTextureOptions,
 } from './types';
+import { intersectRects } from './utility';
 
 export interface RendererOptions {
   gl: GLFW;
@@ -30,10 +33,12 @@ export interface RendererOptions {
 export class Renderer {
   public readonly gl: GLFW;
   public readonly windowManager: WindowManager;
+  protected clipStack: Rect[];
 
   public constructor(options: RendererOptions) {
     this.gl = options.gl;
     this.windowManager = options.windowManager;
+    this.clipStack = [];
   }
 
   // Wrap the function to ensure the context is set correctly
@@ -320,5 +325,56 @@ export class Renderer {
   public flush(window: Window): void {
     this.gl.glFlush();
     this.gl.glfwSwapBuffers({ window: window.$address });
+  }
+
+  public pushClip(window: Window, rect: Rect): void {
+    this.wrap(window, () => {
+      const current = this.clipStack[this.clipStack.length - 1];
+      const intersected = current ? intersectRects(current, rect) : rect;
+
+      this.clipStack.push(intersected);
+      this.applyScissor(window, intersected);
+    });
+  }
+
+  public popClip(window: Window): void {
+    this.wrap(window, () => {
+      this.clipStack.pop();
+
+      const top = this.clipStack[this.clipStack.length - 1];
+
+      if (top) {
+        this.applyScissor(window, top);
+      } else {
+        this.gl.glDisable({ cap: GL_SCISSOR_TEST });
+      }
+    });
+  }
+
+  protected applyScissor(window: Window, rect: Rect): void {
+    const { frameBuffer, size } = window;
+    const scaleX = frameBuffer.width / size.width;
+    const scaleY = frameBuffer.height / size.height;
+
+    this.gl.glEnable({ cap: GL_SCISSOR_TEST });
+    this.gl.glScissor({
+      x: rect.x * scaleX,
+      y: (size.height - rect.y - rect.height) * scaleY,
+      width: rect.width * scaleX,
+      height: rect.height * scaleY,
+    });
+  }
+
+  public pushTranslate(window: Window, offset: Coordinate2D): void {
+    this.wrap(window, () => {
+      this.gl.glPushMatrix();
+      this.gl.glTranslatef({ x: offset.x, y: offset.y, z: 0 });
+    });
+  }
+
+  public popTranslate(window: Window): void {
+    this.wrap(window, () => {
+      this.gl.glPopMatrix();
+    });
   }
 }

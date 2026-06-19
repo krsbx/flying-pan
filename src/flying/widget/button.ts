@@ -27,7 +27,10 @@ export function Button(props: ButtonProps): WidgetDescriptor {
   return {
     type: WidgetType.Button,
     props: rest,
-    style,
+    style: {
+      focusable: true,
+      ...style,
+    },
     children,
     onPointerDown,
     onPointerUp,

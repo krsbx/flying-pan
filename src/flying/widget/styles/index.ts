@@ -1,6 +1,7 @@
 export type {
   LayoutConstraints,
   PseudoStateStyle,
+  Rect,
   ResolvedSpacing,
   SizeInput,
   SizeInputWithUnit,

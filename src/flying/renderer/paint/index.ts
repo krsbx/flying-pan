@@ -1,5 +1,6 @@
 import type { Window } from '@flying/app';
 import {
+  Overflow,
   TextAlign,
   WidgetType,
   type ImageProps,
@@ -125,6 +126,21 @@ export function paint(window: Window, options: PaintOptions) {
     }
   }
 
+  const overflow = style.overflow;
+  const isScrollable =
+    overflow === Overflow.Scroll || overflow === Overflow.Auto;
+  const shouldClip =
+    (overflow === Overflow.Hidden || isScrollable) && children.length > 0;
+
+  if (shouldClip) {
+    renderer.pushClip(window, { x, y, width, height });
+  }
+
+  if (isScrollable && children.length > 0) {
+    const offset = interactionManager.scroll.offset(widget);
+    renderer.pushTranslate(window, { x: -offset.x, y: -offset.y });
+  }
+
   for (const child of children) {
     paint(window, {
       renderer,
@@ -133,5 +149,13 @@ export function paint(window: Window, options: PaintOptions) {
       interactionManager,
       textureManager,
     });
+  }
+
+  if (isScrollable && children.length > 0) {
+    renderer.popTranslate(window);
+  }
+
+  if (shouldClip) {
+    renderer.popClip(window);
   }
 }
