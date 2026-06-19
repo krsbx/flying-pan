@@ -10,6 +10,7 @@ export interface FontManagerOptions {
 export class FontManager {
   public readonly gl: GLFW;
   protected _fonts: Map<string, BaseFontAtlas>;
+  protected _destroyed: boolean;
 
   public constructor(options: FontManagerOptions) {
     this.gl = options.gl;
@@ -32,6 +33,7 @@ export class FontManager {
         ]
       )
     );
+    this._destroyed = false;
   }
 
   public async init(): Promise<void> {
@@ -72,9 +74,33 @@ export class FontManager {
     this._fonts.set(identifier, font);
   }
 
+  public dispose(identifier: string): void;
+  public dispose(): void;
+  public dispose(identifier: string | null = null): void {
+    if (!identifier) {
+      this._fonts.forEach((font) => font.destroy());
+      this._fonts.clear();
+      return;
+    }
+
+    const font = this._fonts.get(identifier);
+
+    if (!font) return;
+
+    font.destroy();
+    this._fonts.delete(identifier);
+  }
+
+  public get destroyed(): boolean {
+    return this._destroyed;
+  }
+
   public destroy(): void {
-    this._fonts.forEach((font) => font.destroy());
-    this._fonts.clear();
+    if (this._destroyed) return;
+
+    this.dispose();
+
+    this._destroyed = true;
   }
 
   public get(identifier: string): BaseFontAtlas {
