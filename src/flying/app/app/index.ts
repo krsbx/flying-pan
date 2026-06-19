@@ -1,6 +1,6 @@
-import { layoutFlex } from '@/flying/layout';
-import { GLFW } from '@/glfw';
-import { paint, Renderer } from '../../renderer';
+import { layoutFlex } from '@flying/layout';
+import { paint, Renderer } from '@flying/renderer';
+import { GLFW } from '@glfw';
 import {
   Window,
   WindowEvent,

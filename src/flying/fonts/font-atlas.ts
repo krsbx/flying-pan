@@ -1,5 +1,5 @@
-import { CStruct } from '@/utility/cstruct';
-import { FVector2 } from '@/utility/vectors';
+import { CStruct } from '@cstruct';
+import { FVector2 } from '@vectors';
 import { AlignedQuad } from './aligned-quad';
 import { BakedChar } from './baked-char';
 import { BaseFontAtlas } from './base-font-atlas';

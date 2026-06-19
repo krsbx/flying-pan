@@ -1,4 +1,4 @@
-import type { BaseFontAtlas, FontAtlasOptions } from '@/flying/fonts';
+import type { BaseFontAtlas, FontAtlasOptions } from '@flying/fonts';
 import type { App } from '.';
 import type { WindowOptions } from '../window';
 

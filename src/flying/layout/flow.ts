@@ -1,5 +1,4 @@
-import { FlexAlign, FlexJustify, Position } from '@/flying/widget/constant';
-import { resolveSize } from '../widget/styles';
+import { FlexAlign, FlexJustify, Position, resolveSize } from '@flying/widget';
 import type { LayoutFlexFn, PositionFlowChildrenOptions } from './types';
 
 export function positionFlowChildren(

@@ -1,7 +1,10 @@
-import type { LabelProps } from '@/flying/widget';
-import { TextAlign, WidgetType } from '@/flying/widget/constant';
-import type { TextStyle } from '@/flying/widget/styles';
-import type { Window } from '../../app';
+import type { Window } from '@flying/app';
+import {
+  TextAlign,
+  WidgetType,
+  type LabelProps,
+  type TextStyle,
+} from '@flying/widget';
 import { Color } from '../color';
 import type { PaintOptions } from './types';
 

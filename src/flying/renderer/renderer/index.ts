@@ -1,4 +1,4 @@
-import type { GLFW } from '@/glfw';
+import type { GLFW } from '@glfw';
 import type { Window, WindowManager } from '../../app';
 import type { Resolution } from '../../types';
 import { Color, parseColor } from '../color';

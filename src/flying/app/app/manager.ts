@@ -1,5 +1,5 @@
-import { PointerDispatcher } from '@/flying/interactions';
-import type { GLFW } from '@/glfw';
+import { PointerDispatcher } from '@flying/interactions';
+import type { GLFW } from '@glfw';
 import { FontManager } from '../fonts/manager';
 import { InputManager } from '../input';
 import { MonitorManager } from '../monitor';

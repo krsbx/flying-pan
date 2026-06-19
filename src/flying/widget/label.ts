@@ -1,4 +1,4 @@
-import type { InteractionProps } from '@/flying/interactions';
+import type { InteractionProps } from '@flying/interactions';
 import { WidgetType } from './constant';
 import type { TextStyle, WidgetDescriptor, WidgetProps } from './styles';
 

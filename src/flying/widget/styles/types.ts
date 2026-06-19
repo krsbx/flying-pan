@@ -1,8 +1,8 @@
 import type {
   ClickEventHandler,
   PointerEventHandler,
-} from '@/flying/interactions';
-import type { ValidColor } from '@/flying/types';
+} from '@flying/interactions';
+import type { ValidColor } from '@flying/types';
 import type {
   FlexAlign,
   FlexDirection,

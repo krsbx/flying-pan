@@ -1,6 +1,11 @@
-import { FlexDirection, FlexWrap, SpacingType } from '@/flying/widget/constant';
-import { resolveSize, resolveSpacing } from '@/flying/widget/styles';
-import type { ViewStyle } from '@/flying/widget/styles/types';
+import {
+  FlexDirection,
+  FlexWrap,
+  resolveSize,
+  resolveSpacing,
+  SpacingType,
+  type ViewStyle,
+} from '@flying/widget';
 import { positionAbsolute } from './absolute';
 import { measureChildsComponent } from './measurement';
 import type { LayoutFlexFn, LayoutNode } from './types';

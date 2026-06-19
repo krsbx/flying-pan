@@ -1,4 +1,4 @@
-import type { RGBA } from '../types';
+import type { RGBA } from '@flying/types';
 
 export const Color = {
   background: '#1a1a2e',

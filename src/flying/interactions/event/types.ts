@@ -1,6 +1,6 @@
-import type { Window } from '../../app';
-import type { LayoutNode } from '../../layout';
-import type { Coordinate2D } from '../../types';
+import type { Window } from '@flying/app';
+import type { LayoutNode } from '@flying/layout';
+import type { Coordinate2D } from '@flying/types';
 
 /**
  * Base shape for every interaction event. Carries the hit-tested layout node

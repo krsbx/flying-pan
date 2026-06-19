@@ -1,5 +1,5 @@
-import type { BaseFontAtlas } from '@/flying/fonts';
-import type { Coordinate2D, RGBA, Size, ValidColor } from '@/flying/types';
+import type { BaseFontAtlas } from '@flying/fonts';
+import type { Coordinate2D, RGBA, Size, ValidColor } from '@flying/types';
 
 export interface DrawRectOptions extends Coordinate2D, Size {
   color: ValidColor;

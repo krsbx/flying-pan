@@ -1,6 +1,4 @@
-import type { GLFW } from '@/glfw';
-import { TrueType } from '@/truetype';
-import { CStruct } from '@/utility/cstruct';
+import { CStruct } from '@cstruct';
 import {
   GL_LINEAR,
   GL_RGBA,
@@ -8,7 +6,9 @@ import {
   GL_TEXTURE_MAG_FILTER,
   GL_TEXTURE_MIN_FILTER,
   GL_UNSIGNED_BYTE,
-} from '../renderer/constant';
+} from '@flying/renderer/constant';
+import type { GLFW } from '@glfw';
+import { TrueType } from '@truetype';
 import {
   ATLAS_HEIGHT,
   ATLAS_WIDTH,

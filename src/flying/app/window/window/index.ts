@@ -1,15 +1,15 @@
-import { Color } from '@/flying/renderer';
+import { CStruct } from '@cstruct';
+import { Color } from '@flying/renderer';
 import type {
   Coordinate2D,
   FrameBufferSize,
   Resolution,
   ValidColor,
-} from '@/flying/types';
-import type { WidgetDescriptor } from '@/flying/widget/styles';
-import type { GLFW } from '@/glfw';
-import { TypedJSCallback } from '@/utility/callback';
-import { CStruct } from '@/utility/cstruct';
-import { FVector2, Vector2 } from '@/utility/vectors';
+} from '@flying/types';
+import type { WidgetDescriptor } from '@flying/widget';
+import type { GLFW } from '@glfw';
+import { TypedJSCallback } from '@tscallback';
+import { FVector2, Vector2 } from '@vectors';
 import { FFIType, type Pointer } from 'bun:ffi';
 import type { Monitor } from '../../monitor';
 import { InputEvent, WindowEvent } from './constant';

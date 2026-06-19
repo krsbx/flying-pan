@@ -1,5 +1,5 @@
-import { BaseFontAtlas, FontAtlas } from '@/flying/fonts';
-import type { GLFW } from '@/glfw';
+import { BaseFontAtlas, FontAtlas } from '@flying/fonts';
+import type { GLFW } from '@glfw';
 import type { FontConfig } from '../../app/types';
 
 export interface FontManagerOptions {

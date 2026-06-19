@@ -1,6 +1,6 @@
-import type { FontManager } from '@/flying/app/fonts/manager';
-import type { LayoutNode } from '@/flying/layout/types';
-import type { Renderer } from '../renderer';
+import type { FontManager } from '@flying/app';
+import type { LayoutNode } from '@flying/layout';
+import type { Renderer } from '@flying/renderer';
 
 export interface PaintOptions {
   renderer: Renderer;

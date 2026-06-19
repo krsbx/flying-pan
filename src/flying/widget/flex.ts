@@ -1,4 +1,4 @@
-import type { InteractionProps } from '@/flying/interactions';
+import type { InteractionProps } from '@flying/interactions';
 import { WidgetType, type FlexDirection } from './constant';
 import type { ViewStyle, WidgetDescriptor, WidgetProps } from './styles';
 

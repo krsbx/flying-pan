@@ -1,4 +1,4 @@
-import { BaseStruct } from '@/utility/base-struct';
+import { BaseStruct } from '@base-struct';
 import { ALIGNED_QUAD_SIZE } from './constant';
 
 export class AlignedQuad extends BaseStruct {

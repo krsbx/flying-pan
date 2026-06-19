@@ -1,4 +1,4 @@
-import type { GLFW } from '@/glfw';
+import type { GLFW } from '@glfw';
 import type { Pointer } from 'bun:ffi';
 import { Window, type WindowOptions } from '../window';
 import { WindowEvent } from '../window/constant';

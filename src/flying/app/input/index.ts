@@ -1,11 +1,11 @@
-import type { Coordinate2D } from '@/flying/types';
+import type { Coordinate2D } from '@flying/types';
 import {
   GLFW_MOD_ALT,
   GLFW_MOD_CONTROL,
   GLFW_MOD_SHIFT,
   GLFW_PRESS,
   GLFW_REPEAT,
-} from '@/glfw/enums';
+} from '@glfw/enums';
 import type { Window } from '../window';
 import { InputEvent } from '../window/window/constant';
 import type { KeyAction, MouseAction } from '../window/window/types';

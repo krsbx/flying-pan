@@ -1,4 +1,4 @@
-import type { Coordinate2D } from '@/flying/types';
+import type { Coordinate2D } from '@flying/types';
 
 export class InputState {
   public keys: Set<number>;

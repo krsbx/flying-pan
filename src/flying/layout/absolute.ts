@@ -1,4 +1,4 @@
-import { resolveSize } from '../widget/styles';
+import { resolveSize } from '@flying/widget';
 import type { LayoutFlexFn, PositionAbsoluteOptions } from './types';
 
 export function positionAbsolute(

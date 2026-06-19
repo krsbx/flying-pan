@@ -1,4 +1,4 @@
-import type { Coordinate2D, FrameBufferSize, Resolution } from '@/flying/types';
+import type { Coordinate2D, FrameBufferSize, Resolution } from '@flying/types';
 import type {
   GLFWcharfun,
   GLFWcursorenterfun,
@@ -16,8 +16,8 @@ import type {
   GLFWwindowposfun,
   GLFWwindowrefreshfun,
   GLFWwindowsizefun,
-} from '@/glfw/types';
-import type { TypedJSCallback } from '@/utility/callback';
+} from '@glfw/types';
+import type { TypedJSCallback } from '@tscallback';
 import type { InputEvent, WindowEvent } from './constant';
 
 export interface BaseInput {

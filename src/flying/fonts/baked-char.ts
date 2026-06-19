@@ -1,4 +1,4 @@
-import { BaseStruct } from '@/utility/base-struct';
+import { BaseStruct } from '@base-struct';
 import { BAKED_CHAR_SIZE } from './constant';
 
 export class BakedChar extends BaseStruct {

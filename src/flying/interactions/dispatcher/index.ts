@@ -1,12 +1,12 @@
-import type { InputManager } from '@/flying/app';
-import type { Coordinate2D } from '@/flying/types';
+import type { InputManager } from '@flying/app';
+import type { LayoutNode } from '@flying/layout';
+import type { Coordinate2D } from '@flying/types';
+import type { WidgetDescriptor } from '@flying/widget';
 import {
   GLFW_MOUSE_BUTTON_LEFT,
   GLFW_MOUSE_BUTTON_MIDDLE,
   GLFW_MOUSE_BUTTON_RIGHT,
-} from '@/glfw/enums';
-import type { LayoutNode } from '../../layout';
-import type { WidgetDescriptor } from '../../widget/styles';
+} from '@glfw/enums';
 import type { PointerEvent } from '../event/types';
 import { hitTest } from '../utility/hit-test';
 import type { DispatchOptions, LastClick, PointerEventOptions } from './types';

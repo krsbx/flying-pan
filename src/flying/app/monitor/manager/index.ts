@@ -1,7 +1,7 @@
-import { GLFW_CONNECTED, GLFW_DISCONNECTED } from '@/flying/renderer/constant';
-import type { GLFW } from '@/glfw';
-import { TypedJSCallback } from '@/utility/callback';
-import { CStruct } from '@/utility/cstruct';
+import { CStruct } from '@cstruct';
+import { GLFW_CONNECTED, GLFW_DISCONNECTED } from '@flying/renderer';
+import type { GLFW } from '@glfw';
+import { TypedJSCallback } from '@tscallback';
 import { FFIType, type Pointer } from 'bun:ffi';
 import { Monitor } from '../monitor';
 import { MonitorEvent } from './constant';

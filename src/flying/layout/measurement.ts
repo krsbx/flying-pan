@@ -1,13 +1,15 @@
 import { clamp } from '@/utility/common';
-import type { LabelProps } from '../widget';
+import type { LabelProps } from '@flying/widget';
 import {
   FlexAlign,
   FlexJustify,
   Position,
+  resolveSize,
+  resolveSpacing,
   SpacingType,
   WidgetType,
-} from '../widget/constant';
-import { resolveSize, resolveSpacing, type TextStyle } from '../widget/styles';
+  type TextStyle,
+} from '@flying/widget';
 import type {
   CalculateMainContentSizeOptions,
   CalculateMainContentSizeResult,

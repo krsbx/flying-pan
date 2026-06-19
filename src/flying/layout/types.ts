@@ -1,11 +1,12 @@
-import type { FontManager } from '../app/fonts/manager';
-import type { Coordinate2D, Size } from '../types';
-import type { FlexAlign, FlexJustify } from '../widget/constant';
+import type { FontManager } from '@flying/app/fonts/manager';
 import type {
+  FlexAlign,
+  FlexJustify,
   ResolvedSpacing,
   ViewStyle,
   WidgetDescriptor,
-} from '../widget/styles';
+} from '@flying/widget';
+import type { Coordinate2D, Size } from '../types';
 
 export interface LayoutNode extends Coordinate2D, Size {
   widget: WidgetDescriptor;

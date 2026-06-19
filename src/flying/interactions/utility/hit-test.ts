@@ -1,5 +1,5 @@
-import type { LayoutNode } from '../../layout';
-import { PointerEvents } from '../../widget/constant';
+import type { LayoutNode } from '@flying/layout';
+import { PointerEvents } from '@flying/widget';
 import type { HitTestOptions } from './types';
 
 export function hitTest(options: HitTestOptions): LayoutNode | null {

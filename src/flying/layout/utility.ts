@@ -1,5 +1,5 @@
 import { clamp } from '@/utility/common';
-import { resolveSize } from '../widget/styles';
+import { resolveSize } from '@flying/widget';
 import { distributeFreeSpace, distributeShrinking } from './calculator';
 import type {
   UpdateChildMeasurementsOptions,

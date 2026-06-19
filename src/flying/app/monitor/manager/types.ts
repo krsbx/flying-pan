@@ -1,5 +1,5 @@
-import type { GLFWmonitorfun } from '@/glfw/types';
-import type { TypedJSCallback } from '@/utility/callback';
+import type { GLFWmonitorfun } from '@glfw/types';
+import type { TypedJSCallback } from '@tscallback';
 import type { Monitor } from '../monitor';
 import type { MonitorEvent } from './constant';
 
