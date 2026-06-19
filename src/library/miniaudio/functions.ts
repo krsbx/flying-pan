@@ -258,8 +258,8 @@ export function ma_biquad_get_latency(
   options: {
     pBQ: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
-  return this.symbols.ma_biquad_get_latency(options.pBQ) as Pointer | null;
+): number {
+  return this.symbols.ma_biquad_get_latency(options.pBQ) as number;
 }
 
 export function ma_lpf1_config_init(
@@ -395,8 +395,8 @@ export function ma_lpf1_get_latency(
   options: {
     pLPF: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
-  return this.symbols.ma_lpf1_get_latency(options.pLPF) as Pointer | null;
+): number {
+  return this.symbols.ma_lpf1_get_latency(options.pLPF) as number;
 }
 
 export function ma_lpf2_get_heap_size(
@@ -496,8 +496,8 @@ export function ma_lpf2_get_latency(
   options: {
     pLPF: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
-  return this.symbols.ma_lpf2_get_latency(options.pLPF) as Pointer | null;
+): number {
+  return this.symbols.ma_lpf2_get_latency(options.pLPF) as number;
 }
 
 export function ma_lpf_config_init(
@@ -616,8 +616,8 @@ export function ma_lpf_get_latency(
   options: {
     pLPF: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
-  return this.symbols.ma_lpf_get_latency(options.pLPF) as Pointer | null;
+): number {
+  return this.symbols.ma_lpf_get_latency(options.pLPF) as number;
 }
 
 export function ma_hpf1_config_init(
@@ -744,8 +744,8 @@ export function ma_hpf1_get_latency(
   options: {
     pHPF: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
-  return this.symbols.ma_hpf1_get_latency(options.pHPF) as Pointer | null;
+): number {
+  return this.symbols.ma_hpf1_get_latency(options.pHPF) as number;
 }
 
 export function ma_hpf2_get_heap_size(
@@ -836,8 +836,8 @@ export function ma_hpf2_get_latency(
   options: {
     pHPF: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
-  return this.symbols.ma_hpf2_get_latency(options.pHPF) as Pointer | null;
+): number {
+  return this.symbols.ma_hpf2_get_latency(options.pHPF) as number;
 }
 
 export function ma_hpf_config_init(
@@ -947,8 +947,8 @@ export function ma_hpf_get_latency(
   options: {
     pHPF: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
-  return this.symbols.ma_hpf_get_latency(options.pHPF) as Pointer | null;
+): number {
+  return this.symbols.ma_hpf_get_latency(options.pHPF) as number;
 }
 
 export function ma_bpf2_config_init(
@@ -1058,8 +1058,8 @@ export function ma_bpf2_get_latency(
   options: {
     pBPF: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
-  return this.symbols.ma_bpf2_get_latency(options.pBPF) as Pointer | null;
+): number {
+  return this.symbols.ma_bpf2_get_latency(options.pBPF) as number;
 }
 
 export function ma_bpf_config_init(
@@ -1169,8 +1169,8 @@ export function ma_bpf_get_latency(
   options: {
     pBPF: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
-  return this.symbols.ma_bpf_get_latency(options.pBPF) as Pointer | null;
+): number {
+  return this.symbols.ma_bpf_get_latency(options.pBPF) as number;
 }
 
 export function ma_notch2_config_init(
@@ -1280,8 +1280,8 @@ export function ma_notch2_get_latency(
   options: {
     pFilter: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
-  return this.symbols.ma_notch2_get_latency(options.pFilter) as Pointer | null;
+): number {
+  return this.symbols.ma_notch2_get_latency(options.pFilter) as number;
 }
 
 export function ma_peak2_config_init(
@@ -1393,8 +1393,8 @@ export function ma_peak2_get_latency(
   options: {
     pFilter: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
-  return this.symbols.ma_peak2_get_latency(options.pFilter) as Pointer | null;
+): number {
+  return this.symbols.ma_peak2_get_latency(options.pFilter) as number;
 }
 
 export function ma_loshelf2_config_init(
@@ -1509,10 +1509,8 @@ export function ma_loshelf2_get_latency(
   options: {
     pFilter: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
-  return this.symbols.ma_loshelf2_get_latency(
-    options.pFilter
-  ) as Pointer | null;
+): number {
+  return this.symbols.ma_loshelf2_get_latency(options.pFilter) as number;
 }
 
 export function ma_hishelf2_config_init(
@@ -1627,10 +1625,8 @@ export function ma_hishelf2_get_latency(
   options: {
     pFilter: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
-  return this.symbols.ma_hishelf2_get_latency(
-    options.pFilter
-  ) as Pointer | null;
+): number {
+  return this.symbols.ma_hishelf2_get_latency(options.pFilter) as number;
 }
 
 export function ma_delay_config_init(
@@ -2338,10 +2334,10 @@ export function ma_spatializer_listener_is_enabled(
   options: {
     pListener: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
+): number {
   return this.symbols.ma_spatializer_listener_is_enabled(
     options.pListener
-  ) as Pointer | null;
+  ) as number;
 }
 
 export function ma_spatializer_config_init(
@@ -2463,10 +2459,10 @@ export function ma_spatializer_get_input_channels(
   options: {
     pSpatializer: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
+): number {
   return this.symbols.ma_spatializer_get_input_channels(
     options.pSpatializer
-  ) as Pointer | null;
+  ) as number;
 }
 
 export function ma_spatializer_get_output_channels(
@@ -2474,10 +2470,10 @@ export function ma_spatializer_get_output_channels(
   options: {
     pSpatializer: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
+): number {
   return this.symbols.ma_spatializer_get_output_channels(
     options.pSpatializer
-  ) as Pointer | null;
+  ) as number;
 }
 
 export function ma_spatializer_set_attenuation_model(
@@ -2956,10 +2952,10 @@ export function ma_linear_resampler_get_input_latency(
   options: {
     pResampler: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
+): bigint {
   return this.symbols.ma_linear_resampler_get_input_latency(
     options.pResampler
-  ) as Pointer | null;
+  ) as bigint;
 }
 
 export function ma_linear_resampler_get_output_latency(
@@ -2967,10 +2963,10 @@ export function ma_linear_resampler_get_output_latency(
   options: {
     pResampler: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
+): bigint {
   return this.symbols.ma_linear_resampler_get_output_latency(
     options.pResampler
-  ) as Pointer | null;
+  ) as bigint;
 }
 
 export function ma_linear_resampler_get_required_input_frame_count(
@@ -3141,10 +3137,10 @@ export function ma_resampler_get_input_latency(
   options: {
     pResampler: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
+): bigint {
   return this.symbols.ma_resampler_get_input_latency(
     options.pResampler
-  ) as Pointer | null;
+  ) as bigint;
 }
 
 export function ma_resampler_get_output_latency(
@@ -3152,10 +3148,10 @@ export function ma_resampler_get_output_latency(
   options: {
     pResampler: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
+): bigint {
   return this.symbols.ma_resampler_get_output_latency(
     options.pResampler
-  ) as Pointer | null;
+  ) as bigint;
 }
 
 export function ma_resampler_get_required_input_frame_count(
@@ -3456,10 +3452,10 @@ export function ma_data_converter_get_input_latency(
   options: {
     pConverter: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
+): bigint {
   return this.symbols.ma_data_converter_get_input_latency(
     options.pConverter
-  ) as Pointer | null;
+  ) as bigint;
 }
 
 export function ma_data_converter_get_output_latency(
@@ -3467,10 +3463,10 @@ export function ma_data_converter_get_output_latency(
   options: {
     pConverter: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
+): bigint {
   return this.symbols.ma_data_converter_get_output_latency(
     options.pConverter
-  ) as Pointer | null;
+  ) as bigint;
 }
 
 export function ma_data_converter_get_required_input_frame_count(
@@ -3973,12 +3969,12 @@ export function ma_channel_map_get_channel(
     channelCount: number;
     channelIndex: number;
   }
-): Pointer | null {
+): number {
   return this.symbols.ma_channel_map_get_channel(
     options.pChannelMap,
     options.channelCount,
     options.channelIndex
-  ) as Pointer | null;
+  ) as number;
 }
 
 export function ma_channel_map_init_blank(
@@ -4042,11 +4038,11 @@ export function ma_channel_map_is_valid(
     pChannelMap: Pointer | NodeJS.TypedArray | null;
     channels: number;
   }
-): Pointer | null {
+): number {
   return this.symbols.ma_channel_map_is_valid(
     options.pChannelMap,
     options.channels
-  ) as Pointer | null;
+  ) as number;
 }
 
 export function ma_channel_map_is_equal(
@@ -4056,12 +4052,12 @@ export function ma_channel_map_is_equal(
     pChannelMapB: Pointer | NodeJS.TypedArray | null;
     channels: number;
   }
-): Pointer | null {
+): number {
   return this.symbols.ma_channel_map_is_equal(
     options.pChannelMapA,
     options.pChannelMapB,
     options.channels
-  ) as Pointer | null;
+  ) as number;
 }
 
 export function ma_channel_map_is_blank(
@@ -4070,11 +4066,11 @@ export function ma_channel_map_is_blank(
     pChannelMap: Pointer | NodeJS.TypedArray | null;
     channels: number;
   }
-): Pointer | null {
+): number {
   return this.symbols.ma_channel_map_is_blank(
     options.pChannelMap,
     options.channels
-  ) as Pointer | null;
+  ) as number;
 }
 
 export function ma_channel_map_contains_channel_position(
@@ -4084,12 +4080,12 @@ export function ma_channel_map_contains_channel_position(
     pChannelMap: Pointer | NodeJS.TypedArray | null;
     channelPosition: number;
   }
-): Pointer | null {
+): number {
   return this.symbols.ma_channel_map_contains_channel_position(
     options.channels,
     options.pChannelMap,
     options.channelPosition
-  ) as Pointer | null;
+  ) as number;
 }
 
 export function ma_channel_map_find_channel_position(
@@ -4100,13 +4096,13 @@ export function ma_channel_map_find_channel_position(
     channelPosition: number;
     pChannelIndex: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
+): number {
   return this.symbols.ma_channel_map_find_channel_position(
     options.channels,
     options.pChannelMap,
     options.channelPosition,
     options.pChannelIndex
-  ) as Pointer | null;
+  ) as number;
 }
 
 export function ma_channel_map_to_string(
@@ -4149,7 +4145,7 @@ export function ma_convert_frames(
     channelsIn: number;
     sampleRateIn: number;
   }
-): Pointer | null {
+): bigint {
   return this.symbols.ma_convert_frames(
     options.pOut,
     options.frameCountOut,
@@ -4161,7 +4157,7 @@ export function ma_convert_frames(
     options.formatIn,
     options.channelsIn,
     options.sampleRateIn
-  ) as Pointer | null;
+  ) as bigint;
 }
 
 export function ma_convert_frames_ex(
@@ -4173,14 +4169,14 @@ export function ma_convert_frames_ex(
     frameCountIn: bigint;
     pConfig: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
+): bigint {
   return this.symbols.ma_convert_frames_ex(
     options.pOut,
     options.frameCountOut,
     options.pIn,
     options.frameCountIn,
     options.pConfig
-  ) as Pointer | null;
+  ) as bigint;
 }
 
 export function ma_data_source_config_init(this: MiniAudio): Pointer | null {
@@ -4373,10 +4369,8 @@ export function ma_data_source_is_looping(
   options: {
     pDataSource: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
-  return this.symbols.ma_data_source_is_looping(
-    options.pDataSource
-  ) as Pointer | null;
+): number {
+  return this.symbols.ma_data_source_is_looping(options.pDataSource) as number;
 }
 
 export function ma_data_source_set_range_in_pcm_frames(
@@ -4562,13 +4556,13 @@ export function ma_audio_buffer_ref_read_pcm_frames(
     frameCount: bigint;
     loop: number;
   }
-): Pointer | null {
+): bigint {
   return this.symbols.ma_audio_buffer_ref_read_pcm_frames(
     options.pAudioBufferRef,
     options.pFramesOut,
     options.frameCount,
     options.loop
-  ) as Pointer | null;
+  ) as bigint;
 }
 
 export function ma_audio_buffer_ref_seek_to_pcm_frame(
@@ -4617,10 +4611,10 @@ export function ma_audio_buffer_ref_at_end(
   options: {
     pAudioBufferRef: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
+): number {
   return this.symbols.ma_audio_buffer_ref_at_end(
     options.pAudioBufferRef
-  ) as Pointer | null;
+  ) as number;
 }
 
 export function ma_audio_buffer_ref_get_cursor_in_pcm_frames(
@@ -4746,13 +4740,13 @@ export function ma_audio_buffer_read_pcm_frames(
     frameCount: bigint;
     loop: number;
   }
-): Pointer | null {
+): bigint {
   return this.symbols.ma_audio_buffer_read_pcm_frames(
     options.pAudioBuffer,
     options.pFramesOut,
     options.frameCount,
     options.loop
-  ) as Pointer | null;
+  ) as bigint;
 }
 
 export function ma_audio_buffer_seek_to_pcm_frame(
@@ -4801,10 +4795,8 @@ export function ma_audio_buffer_at_end(
   options: {
     pAudioBuffer: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
-  return this.symbols.ma_audio_buffer_at_end(
-    options.pAudioBuffer
-  ) as Pointer | null;
+): number {
+  return this.symbols.ma_audio_buffer_at_end(options.pAudioBuffer) as number;
 }
 
 export function ma_audio_buffer_get_cursor_in_pcm_frames(
@@ -5205,8 +5197,8 @@ export function ma_rb_pointer_distance(
   options: {
     pRB: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
-  return this.symbols.ma_rb_pointer_distance(options.pRB) as Pointer | null;
+): number {
+  return this.symbols.ma_rb_pointer_distance(options.pRB) as number;
 }
 
 export function ma_rb_available_read(
@@ -5214,8 +5206,8 @@ export function ma_rb_available_read(
   options: {
     pRB: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
-  return this.symbols.ma_rb_available_read(options.pRB) as Pointer | null;
+): number {
+  return this.symbols.ma_rb_available_read(options.pRB) as number;
 }
 
 export function ma_rb_available_write(
@@ -5223,8 +5215,8 @@ export function ma_rb_available_write(
   options: {
     pRB: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
-  return this.symbols.ma_rb_available_write(options.pRB) as Pointer | null;
+): number {
+  return this.symbols.ma_rb_available_write(options.pRB) as number;
 }
 
 export function ma_rb_get_subbuffer_size(
@@ -5424,8 +5416,8 @@ export function ma_pcm_rb_pointer_distance(
   options: {
     pRB: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
-  return this.symbols.ma_pcm_rb_pointer_distance(options.pRB) as Pointer | null;
+): number {
+  return this.symbols.ma_pcm_rb_pointer_distance(options.pRB) as number;
 }
 
 export function ma_pcm_rb_available_read(
@@ -5433,8 +5425,8 @@ export function ma_pcm_rb_available_read(
   options: {
     pRB: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
-  return this.symbols.ma_pcm_rb_available_read(options.pRB) as Pointer | null;
+): number {
+  return this.symbols.ma_pcm_rb_available_read(options.pRB) as number;
 }
 
 export function ma_pcm_rb_available_write(
@@ -5442,8 +5434,8 @@ export function ma_pcm_rb_available_write(
   options: {
     pRB: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
-  return this.symbols.ma_pcm_rb_available_write(options.pRB) as Pointer | null;
+): number {
+  return this.symbols.ma_pcm_rb_available_write(options.pRB) as number;
 }
 
 export function ma_pcm_rb_get_subbuffer_size(
@@ -5451,10 +5443,8 @@ export function ma_pcm_rb_get_subbuffer_size(
   options: {
     pRB: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
-  return this.symbols.ma_pcm_rb_get_subbuffer_size(
-    options.pRB
-  ) as Pointer | null;
+): number {
+  return this.symbols.ma_pcm_rb_get_subbuffer_size(options.pRB) as number;
 }
 
 export function ma_pcm_rb_get_subbuffer_stride(
@@ -5462,10 +5452,8 @@ export function ma_pcm_rb_get_subbuffer_stride(
   options: {
     pRB: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
-  return this.symbols.ma_pcm_rb_get_subbuffer_stride(
-    options.pRB
-  ) as Pointer | null;
+): number {
+  return this.symbols.ma_pcm_rb_get_subbuffer_stride(options.pRB) as number;
 }
 
 export function ma_pcm_rb_get_subbuffer_offset(
@@ -5474,11 +5462,11 @@ export function ma_pcm_rb_get_subbuffer_offset(
     pRB: Pointer | NodeJS.TypedArray | null;
     subbufferIndex: number;
   }
-): Pointer | null {
+): number {
   return this.symbols.ma_pcm_rb_get_subbuffer_offset(
     options.pRB,
     options.subbufferIndex
-  ) as Pointer | null;
+  ) as number;
 }
 
 export function ma_pcm_rb_get_subbuffer_ptr(
@@ -5510,8 +5498,8 @@ export function ma_pcm_rb_get_channels(
   options: {
     pRB: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
-  return this.symbols.ma_pcm_rb_get_channels(options.pRB) as Pointer | null;
+): number {
+  return this.symbols.ma_pcm_rb_get_channels(options.pRB) as number;
 }
 
 export function ma_pcm_rb_get_sample_rate(
@@ -5519,8 +5507,8 @@ export function ma_pcm_rb_get_sample_rate(
   options: {
     pRB: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
-  return this.symbols.ma_pcm_rb_get_sample_rate(options.pRB) as Pointer | null;
+): number {
+  return this.symbols.ma_pcm_rb_get_sample_rate(options.pRB) as number;
 }
 
 export function ma_pcm_rb_set_sample_rate(
@@ -5683,8 +5671,8 @@ export function ma_get_bytes_per_sample(
   options: {
     format: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
-  return this.symbols.ma_get_bytes_per_sample(options.format) as Pointer | null;
+): number {
+  return this.symbols.ma_get_bytes_per_sample(options.format) as number;
 }
 
 export function ma_log_level_to_string(
@@ -5911,10 +5899,10 @@ export function ma_async_notification_poll_is_signalled(
   options: {
     pNotificationPoll: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
+): number {
   return this.symbols.ma_async_notification_poll_is_signalled(
     options.pNotificationPoll
-  ) as Pointer | null;
+  ) as number;
 }
 
 export function ma_async_notification_event_init(
@@ -6233,11 +6221,8 @@ export function ma_device_id_equal(
     pA: Pointer | NodeJS.TypedArray | null;
     pB: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
-  return this.symbols.ma_device_id_equal(
-    options.pA,
-    options.pB
-  ) as Pointer | null;
+): number {
+  return this.symbols.ma_device_id_equal(options.pA, options.pB) as number;
 }
 
 export function ma_context_config_init(this: MiniAudio): Pointer | null {
@@ -6339,10 +6324,10 @@ export function ma_context_is_loopback_supported(
   options: {
     pContext: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
+): number {
   return this.symbols.ma_context_is_loopback_supported(
     options.pContext
-  ) as Pointer | null;
+  ) as number;
 }
 
 export function ma_device_config_init(
@@ -6474,8 +6459,8 @@ export function ma_device_is_started(
   options: {
     pDevice: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
-  return this.symbols.ma_device_is_started(options.pDevice) as Pointer | null;
+): number {
+  return this.symbols.ma_device_is_started(options.pDevice) as number;
 }
 
 export function ma_device_get_state(
@@ -6580,12 +6565,12 @@ export function ma_calculate_buffer_size_in_frames_from_descriptor(
     nativeSampleRate: number;
     performanceProfile: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
+): number {
   return this.symbols.ma_calculate_buffer_size_in_frames_from_descriptor(
     options.pDescriptor,
     options.nativeSampleRate,
     options.performanceProfile
-  ) as Pointer | null;
+  ) as number;
 }
 
 export function ma_get_backend_name(
@@ -6615,8 +6600,8 @@ export function ma_is_backend_enabled(
   options: {
     backend: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
-  return this.symbols.ma_is_backend_enabled(options.backend) as Pointer | null;
+): number {
+  return this.symbols.ma_is_backend_enabled(options.backend) as number;
 }
 
 export function ma_get_enabled_backends(
@@ -6639,10 +6624,8 @@ export function ma_is_loopback_supported(
   options: {
     backend: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
-  return this.symbols.ma_is_loopback_supported(
-    options.backend
-  ) as Pointer | null;
+): number {
+  return this.symbols.ma_is_loopback_supported(options.backend) as number;
 }
 
 export function ma_calculate_buffer_size_in_milliseconds_from_frames(
@@ -6651,11 +6634,11 @@ export function ma_calculate_buffer_size_in_milliseconds_from_frames(
     bufferSizeInFrames: number;
     sampleRate: number;
   }
-): Pointer | null {
+): number {
   return this.symbols.ma_calculate_buffer_size_in_milliseconds_from_frames(
     options.bufferSizeInFrames,
     options.sampleRate
-  ) as Pointer | null;
+  ) as number;
 }
 
 export function ma_calculate_buffer_size_in_frames_from_milliseconds(
@@ -6664,11 +6647,11 @@ export function ma_calculate_buffer_size_in_frames_from_milliseconds(
     bufferSizeInMilliseconds: number;
     sampleRate: number;
   }
-): Pointer | null {
+): number {
   return this.symbols.ma_calculate_buffer_size_in_frames_from_milliseconds(
     options.bufferSizeInMilliseconds,
     options.sampleRate
-  ) as Pointer | null;
+  ) as number;
 }
 
 export function ma_copy_pcm_frames(
@@ -8711,10 +8694,10 @@ export function ma_resource_manager_data_buffer_is_looping(
   options: {
     pDataBuffer: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
+): number {
   return this.symbols.ma_resource_manager_data_buffer_is_looping(
     options.pDataBuffer
-  ) as Pointer | null;
+  ) as number;
 }
 
 export function ma_resource_manager_data_buffer_get_available_frames(
@@ -8900,10 +8883,10 @@ export function ma_resource_manager_data_stream_is_looping(
   options: {
     pDataStream: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
+): number {
   return this.symbols.ma_resource_manager_data_stream_is_looping(
     options.pDataStream
-  ) as Pointer | null;
+  ) as number;
 }
 
 export function ma_resource_manager_data_stream_get_available_frames(
@@ -9104,10 +9087,10 @@ export function ma_resource_manager_data_source_is_looping(
   options: {
     pDataSource: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
+): number {
   return this.symbols.ma_resource_manager_data_source_is_looping(
     options.pDataSource
-  ) as Pointer | null;
+  ) as number;
 }
 
 export function ma_resource_manager_data_source_get_available_frames(
@@ -9261,10 +9244,8 @@ export function ma_node_get_input_bus_count(
   options: {
     pNode: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
-  return this.symbols.ma_node_get_input_bus_count(
-    options.pNode
-  ) as Pointer | null;
+): number {
+  return this.symbols.ma_node_get_input_bus_count(options.pNode) as number;
 }
 
 export function ma_node_get_output_bus_count(
@@ -9272,10 +9253,8 @@ export function ma_node_get_output_bus_count(
   options: {
     pNode: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
-  return this.symbols.ma_node_get_output_bus_count(
-    options.pNode
-  ) as Pointer | null;
+): number {
+  return this.symbols.ma_node_get_output_bus_count(options.pNode) as number;
 }
 
 export function ma_node_get_input_channels(
@@ -9284,11 +9263,11 @@ export function ma_node_get_input_channels(
     pNode: Pointer | NodeJS.TypedArray | null;
     inputBusIndex: number;
   }
-): Pointer | null {
+): number {
   return this.symbols.ma_node_get_input_channels(
     options.pNode,
     options.inputBusIndex
-  ) as Pointer | null;
+  ) as number;
 }
 
 export function ma_node_get_output_channels(
@@ -9297,11 +9276,11 @@ export function ma_node_get_output_channels(
     pNode: Pointer | NodeJS.TypedArray | null;
     outputBusIndex: number;
   }
-): Pointer | null {
+): number {
   return this.symbols.ma_node_get_output_channels(
     options.pNode,
     options.outputBusIndex
-  ) as Pointer | null;
+  ) as number;
 }
 
 export function ma_node_attach_output_bus(
@@ -9416,11 +9395,11 @@ export function ma_node_get_state_time(
     pNode: Pointer | NodeJS.TypedArray | null;
     state: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
+): bigint {
   return this.symbols.ma_node_get_state_time(
     options.pNode,
     options.state
-  ) as Pointer | null;
+  ) as bigint;
 }
 
 export function ma_node_get_state_by_time(
@@ -9456,8 +9435,8 @@ export function ma_node_get_time(
   options: {
     pNode: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
-  return this.symbols.ma_node_get_time(options.pNode) as Pointer | null;
+): bigint {
+  return this.symbols.ma_node_get_time(options.pNode) as bigint;
 }
 
 export function ma_node_set_time(
@@ -9545,10 +9524,8 @@ export function ma_node_graph_get_channels(
   options: {
     pNodeGraph: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
-  return this.symbols.ma_node_graph_get_channels(
-    options.pNodeGraph
-  ) as Pointer | null;
+): number {
+  return this.symbols.ma_node_graph_get_channels(options.pNodeGraph) as number;
 }
 
 export function ma_node_graph_get_time(
@@ -9556,10 +9533,8 @@ export function ma_node_graph_get_time(
   options: {
     pNodeGraph: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
-  return this.symbols.ma_node_graph_get_time(
-    options.pNodeGraph
-  ) as Pointer | null;
+): bigint {
+  return this.symbols.ma_node_graph_get_time(options.pNodeGraph) as bigint;
 }
 
 export function ma_node_graph_set_time(
@@ -9580,10 +9555,10 @@ export function ma_node_graph_get_processing_size_in_frames(
   options: {
     pNodeGraph: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
+): number {
   return this.symbols.ma_node_graph_get_processing_size_in_frames(
     options.pNodeGraph
-  ) as Pointer | null;
+  ) as number;
 }
 
 export function ma_data_source_node_config_init(
@@ -9645,10 +9620,10 @@ export function ma_data_source_node_is_looping(
   options: {
     pDataSourceNode: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
+): number {
   return this.symbols.ma_data_source_node_is_looping(
     options.pDataSourceNode
-  ) as Pointer | null;
+  ) as number;
 }
 
 export function ma_splitter_node_config_init(
@@ -10472,10 +10447,10 @@ export function ma_engine_get_time_in_pcm_frames(
   options: {
     pEngine: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
+): bigint {
   return this.symbols.ma_engine_get_time_in_pcm_frames(
     options.pEngine
-  ) as Pointer | null;
+  ) as bigint;
 }
 
 export function ma_engine_get_time_in_milliseconds(
@@ -10483,10 +10458,10 @@ export function ma_engine_get_time_in_milliseconds(
   options: {
     pEngine: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
+): bigint {
   return this.symbols.ma_engine_get_time_in_milliseconds(
     options.pEngine
-  ) as Pointer | null;
+  ) as bigint;
 }
 
 export function ma_engine_set_time_in_pcm_frames(
@@ -10520,8 +10495,8 @@ export function ma_engine_get_time(
   options: {
     pEngine: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
-  return this.symbols.ma_engine_get_time(options.pEngine) as Pointer | null;
+): bigint {
+  return this.symbols.ma_engine_get_time(options.pEngine) as bigint;
 }
 
 export function ma_engine_set_time(
@@ -10542,8 +10517,8 @@ export function ma_engine_get_channels(
   options: {
     pEngine: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
-  return this.symbols.ma_engine_get_channels(options.pEngine) as Pointer | null;
+): number {
+  return this.symbols.ma_engine_get_channels(options.pEngine) as number;
 }
 
 export function ma_engine_get_sample_rate(
@@ -10551,10 +10526,8 @@ export function ma_engine_get_sample_rate(
   options: {
     pEngine: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
-  return this.symbols.ma_engine_get_sample_rate(
-    options.pEngine
-  ) as Pointer | null;
+): number {
+  return this.symbols.ma_engine_get_sample_rate(options.pEngine) as number;
 }
 
 export function ma_engine_start(
@@ -10624,10 +10597,8 @@ export function ma_engine_get_listener_count(
   options: {
     pEngine: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
-  return this.symbols.ma_engine_get_listener_count(
-    options.pEngine
-  ) as Pointer | null;
+): number {
+  return this.symbols.ma_engine_get_listener_count(options.pEngine) as number;
 }
 
 export function ma_engine_find_closest_listener(
@@ -10638,13 +10609,13 @@ export function ma_engine_find_closest_listener(
     absolutePosY: number;
     absolutePosZ: number;
   }
-): Pointer | null {
+): number {
   return this.symbols.ma_engine_find_closest_listener(
     options.pEngine,
     options.absolutePosX,
     options.absolutePosY,
     options.absolutePosZ
-  ) as Pointer | null;
+  ) as number;
 }
 
 export function ma_engine_listener_set_position(
@@ -10834,11 +10805,11 @@ export function ma_engine_listener_is_enabled(
     pEngine: Pointer | NodeJS.TypedArray | null;
     listenerIndex: number;
   }
-): Pointer | null {
+): number {
   return this.symbols.ma_engine_listener_is_enabled(
     options.pEngine,
     options.listenerIndex
-  ) as Pointer | null;
+  ) as number;
 }
 
 export function ma_engine_play_sound_ex(
@@ -11171,10 +11142,10 @@ export function ma_sound_is_spatialization_enabled(
   options: {
     pSound: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
+): number {
   return this.symbols.ma_sound_is_spatialization_enabled(
     options.pSound
-  ) as Pointer | null;
+  ) as number;
 }
 
 export function ma_sound_set_pinned_listener_index(
@@ -11195,10 +11166,10 @@ export function ma_sound_get_pinned_listener_index(
   options: {
     pSound: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
+): number {
   return this.symbols.ma_sound_get_pinned_listener_index(
     options.pSound
-  ) as Pointer | null;
+  ) as number;
 }
 
 export function ma_sound_get_listener_index(
@@ -11206,10 +11177,8 @@ export function ma_sound_get_listener_index(
   options: {
     pSound: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
-  return this.symbols.ma_sound_get_listener_index(
-    options.pSound
-  ) as Pointer | null;
+): number {
+  return this.symbols.ma_sound_get_listener_index(options.pSound) as number;
 }
 
 export function ma_sound_get_direction_to_listener(
@@ -11691,8 +11660,8 @@ export function ma_sound_is_playing(
   options: {
     pSound: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
-  return this.symbols.ma_sound_is_playing(options.pSound) as Pointer | null;
+): number {
+  return this.symbols.ma_sound_is_playing(options.pSound) as number;
 }
 
 export function ma_sound_get_time_in_pcm_frames(
@@ -11700,10 +11669,8 @@ export function ma_sound_get_time_in_pcm_frames(
   options: {
     pSound: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
-  return this.symbols.ma_sound_get_time_in_pcm_frames(
-    options.pSound
-  ) as Pointer | null;
+): bigint {
+  return this.symbols.ma_sound_get_time_in_pcm_frames(options.pSound) as bigint;
 }
 
 export function ma_sound_get_time_in_milliseconds(
@@ -11711,10 +11678,10 @@ export function ma_sound_get_time_in_milliseconds(
   options: {
     pSound: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
+): bigint {
   return this.symbols.ma_sound_get_time_in_milliseconds(
     options.pSound
-  ) as Pointer | null;
+  ) as bigint;
 }
 
 export function ma_sound_set_looping(
@@ -11732,8 +11699,8 @@ export function ma_sound_is_looping(
   options: {
     pSound: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
-  return this.symbols.ma_sound_is_looping(options.pSound) as Pointer | null;
+): number {
+  return this.symbols.ma_sound_is_looping(options.pSound) as number;
 }
 
 export function ma_sound_at_end(
@@ -11741,8 +11708,8 @@ export function ma_sound_at_end(
   options: {
     pSound: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
-  return this.symbols.ma_sound_at_end(options.pSound) as Pointer | null;
+): number {
+  return this.symbols.ma_sound_at_end(options.pSound) as number;
 }
 
 export function ma_sound_seek_to_pcm_frame(
@@ -12025,10 +11992,10 @@ export function ma_sound_group_is_spatialization_enabled(
   options: {
     pGroup: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
+): number {
   return this.symbols.ma_sound_group_is_spatialization_enabled(
     options.pGroup
-  ) as Pointer | null;
+  ) as number;
 }
 
 export function ma_sound_group_set_pinned_listener_index(
@@ -12049,10 +12016,10 @@ export function ma_sound_group_get_pinned_listener_index(
   options: {
     pGroup: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
+): number {
   return this.symbols.ma_sound_group_get_pinned_listener_index(
     options.pGroup
-  ) as Pointer | null;
+  ) as number;
 }
 
 export function ma_sound_group_get_listener_index(
@@ -12060,10 +12027,10 @@ export function ma_sound_group_get_listener_index(
   options: {
     pGroup: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
+): number {
   return this.symbols.ma_sound_group_get_listener_index(
     options.pGroup
-  ) as Pointer | null;
+  ) as number;
 }
 
 export function ma_sound_group_get_direction_to_listener(
@@ -12494,10 +12461,8 @@ export function ma_sound_group_is_playing(
   options: {
     pGroup: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
-  return this.symbols.ma_sound_group_is_playing(
-    options.pGroup
-  ) as Pointer | null;
+): number {
+  return this.symbols.ma_sound_group_is_playing(options.pGroup) as number;
 }
 
 export function ma_sound_group_get_time_in_pcm_frames(
@@ -12505,8 +12470,8 @@ export function ma_sound_group_get_time_in_pcm_frames(
   options: {
     pGroup: Pointer | NodeJS.TypedArray | null;
   }
-): Pointer | null {
+): bigint {
   return this.symbols.ma_sound_group_get_time_in_pcm_frames(
     options.pGroup
-  ) as Pointer | null;
+  ) as bigint;
 }

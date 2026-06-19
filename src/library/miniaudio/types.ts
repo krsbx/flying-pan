@@ -86,7 +86,7 @@ export type ma_semaphore = Pointer;
 
 export type ma_log_callback_proc = (
   arg0: Pointer,
-  arg1: Pointer,
+  arg1: number,
   arg2: string
 ) => Pointer | null;
 
@@ -296,7 +296,7 @@ export type ma_device_data_proc = (
   arg0: Pointer,
   arg1: Pointer,
   arg2: Pointer,
-  arg3: Pointer
+  arg3: number
 ) => Pointer | null;
 
 export type ma_stop_proc = (arg0: Pointer) => Pointer | null;
@@ -340,7 +340,7 @@ export type ma_enum_devices_callback_proc = (
   arg1: Pointer,
   arg2: Pointer,
   arg3: Pointer
-) => Pointer;
+) => number;
 
 export type ma_device_descriptor = Pointer;
 
@@ -369,7 +369,7 @@ export type ma_read_proc = (
 
 export type ma_seek_proc = (
   arg0: Pointer,
-  arg1: Pointer,
+  arg1: bigint,
   arg2: Pointer
 ) => Pointer;
 
@@ -392,7 +392,7 @@ export type ma_decoder_read_proc = (
 
 export type ma_decoder_seek_proc = (
   arg0: Pointer,
-  arg1: Pointer,
+  arg1: bigint,
   arg2: Pointer
 ) => Pointer;
 
@@ -411,7 +411,7 @@ export type ma_encoder_write_proc = (
 
 export type ma_encoder_seek_proc = (
   arg0: Pointer,
-  arg1: Pointer,
+  arg1: bigint,
   arg2: Pointer
 ) => Pointer;
 
@@ -422,7 +422,7 @@ export type ma_encoder_uninit_proc = (arg0: Pointer) => Pointer | null;
 export type ma_encoder_write_pcm_frames_proc = (
   arg0: Pointer,
   arg1: Pointer,
-  arg2: Pointer,
+  arg2: bigint,
   arg3: Pointer
 ) => Pointer;
 
@@ -562,7 +562,7 @@ export type ma_sound_group_config = Pointer;
 export type ma_engine_process_proc = (
   arg0: Pointer,
   arg1: Pointer,
-  arg2: Pointer
+  arg2: bigint
 ) => Pointer | null;
 
 export type ma_engine_config = Pointer;

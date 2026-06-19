@@ -103,7 +103,7 @@ export const MiniAudioDefinition = {
   // ma_biquad_get_latency
   ma_biquad_get_latency: {
     args: [FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u32,
   },
   // ma_lpf1_config_init
   ma_lpf1_config_init: {
@@ -153,7 +153,7 @@ export const MiniAudioDefinition = {
   // ma_lpf1_get_latency
   ma_lpf1_get_latency: {
     args: [FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u32,
   },
   // ma_lpf2_get_heap_size
   ma_lpf2_get_heap_size: {
@@ -193,7 +193,7 @@ export const MiniAudioDefinition = {
   // ma_lpf2_get_latency
   ma_lpf2_get_latency: {
     args: [FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u32,
   },
   // ma_lpf_config_init
   ma_lpf_config_init: {
@@ -238,7 +238,7 @@ export const MiniAudioDefinition = {
   // ma_lpf_get_latency
   ma_lpf_get_latency: {
     args: [FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u32,
   },
   // ma_hpf1_config_init
   ma_hpf1_config_init: {
@@ -283,7 +283,7 @@ export const MiniAudioDefinition = {
   // ma_hpf1_get_latency
   ma_hpf1_get_latency: {
     args: [FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u32,
   },
   // ma_hpf2_get_heap_size
   ma_hpf2_get_heap_size: {
@@ -318,7 +318,7 @@ export const MiniAudioDefinition = {
   // ma_hpf2_get_latency
   ma_hpf2_get_latency: {
     args: [FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u32,
   },
   // ma_hpf_config_init
   ma_hpf_config_init: {
@@ -358,7 +358,7 @@ export const MiniAudioDefinition = {
   // ma_hpf_get_latency
   ma_hpf_get_latency: {
     args: [FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u32,
   },
   // ma_bpf2_config_init
   ma_bpf2_config_init: {
@@ -398,7 +398,7 @@ export const MiniAudioDefinition = {
   // ma_bpf2_get_latency
   ma_bpf2_get_latency: {
     args: [FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u32,
   },
   // ma_bpf_config_init
   ma_bpf_config_init: {
@@ -438,7 +438,7 @@ export const MiniAudioDefinition = {
   // ma_bpf_get_latency
   ma_bpf_get_latency: {
     args: [FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u32,
   },
   // ma_notch2_config_init
   ma_notch2_config_init: {
@@ -478,7 +478,7 @@ export const MiniAudioDefinition = {
   // ma_notch2_get_latency
   ma_notch2_get_latency: {
     args: [FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u32,
   },
   // ma_peak2_config_init
   ma_peak2_config_init: {
@@ -525,7 +525,7 @@ export const MiniAudioDefinition = {
   // ma_peak2_get_latency
   ma_peak2_get_latency: {
     args: [FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u32,
   },
   // ma_loshelf2_config_init
   ma_loshelf2_config_init: {
@@ -572,7 +572,7 @@ export const MiniAudioDefinition = {
   // ma_loshelf2_get_latency
   ma_loshelf2_get_latency: {
     args: [FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u32,
   },
   // ma_hishelf2_config_init
   ma_hishelf2_config_init: {
@@ -619,7 +619,7 @@ export const MiniAudioDefinition = {
   // ma_hishelf2_get_latency
   ma_hishelf2_get_latency: {
     args: [FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u32,
   },
   // ma_delay_config_init
   ma_delay_config_init: {
@@ -889,7 +889,7 @@ export const MiniAudioDefinition = {
   // ma_spatializer_listener_is_enabled
   ma_spatializer_listener_is_enabled: {
     args: [FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u32,
   },
   // ma_spatializer_config_init
   ma_spatializer_config_init: {
@@ -934,12 +934,12 @@ export const MiniAudioDefinition = {
   // ma_spatializer_get_input_channels
   ma_spatializer_get_input_channels: {
     args: [FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u32,
   },
   // ma_spatializer_get_output_channels
   ma_spatializer_get_output_channels: {
     args: [FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u32,
   },
   // ma_spatializer_set_attenuation_model
   ma_spatializer_set_attenuation_model: {
@@ -1119,12 +1119,12 @@ export const MiniAudioDefinition = {
   // ma_linear_resampler_get_input_latency
   ma_linear_resampler_get_input_latency: {
     args: [FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u64,
   },
   // ma_linear_resampler_get_output_latency
   ma_linear_resampler_get_output_latency: {
     args: [FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u64,
   },
   // ma_linear_resampler_get_required_input_frame_count
   ma_linear_resampler_get_required_input_frame_count: {
@@ -1184,12 +1184,12 @@ export const MiniAudioDefinition = {
   // ma_resampler_get_input_latency
   ma_resampler_get_input_latency: {
     args: [FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u64,
   },
   // ma_resampler_get_output_latency
   ma_resampler_get_output_latency: {
     args: [FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u64,
   },
   // ma_resampler_get_required_input_frame_count
   ma_resampler_get_required_input_frame_count: {
@@ -1308,12 +1308,12 @@ export const MiniAudioDefinition = {
   // ma_data_converter_get_input_latency
   ma_data_converter_get_input_latency: {
     args: [FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u64,
   },
   // ma_data_converter_get_output_latency
   ma_data_converter_get_output_latency: {
     args: [FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u64,
   },
   // ma_data_converter_get_required_input_frame_count
   ma_data_converter_get_required_input_frame_count: {
@@ -1478,7 +1478,7 @@ export const MiniAudioDefinition = {
   // ma_channel_map_get_channel
   ma_channel_map_get_channel: {
     args: [FFIType.ptr, FFIType.u32, FFIType.u32],
-    returns: FFIType.ptr,
+    returns: FFIType.u8,
   },
   // ma_channel_map_init_blank
   ma_channel_map_init_blank: {
@@ -1503,27 +1503,27 @@ export const MiniAudioDefinition = {
   // ma_channel_map_is_valid
   ma_channel_map_is_valid: {
     args: [FFIType.ptr, FFIType.u32],
-    returns: FFIType.ptr,
+    returns: FFIType.u32,
   },
   // ma_channel_map_is_equal
   ma_channel_map_is_equal: {
     args: [FFIType.ptr, FFIType.ptr, FFIType.u32],
-    returns: FFIType.ptr,
+    returns: FFIType.u32,
   },
   // ma_channel_map_is_blank
   ma_channel_map_is_blank: {
     args: [FFIType.ptr, FFIType.u32],
-    returns: FFIType.ptr,
+    returns: FFIType.u32,
   },
   // ma_channel_map_contains_channel_position
   ma_channel_map_contains_channel_position: {
     args: [FFIType.u32, FFIType.ptr, FFIType.u8],
-    returns: FFIType.ptr,
+    returns: FFIType.u32,
   },
   // ma_channel_map_find_channel_position
   ma_channel_map_find_channel_position: {
     args: [FFIType.u32, FFIType.ptr, FFIType.u8, FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u32,
   },
   // ma_channel_map_to_string
   ma_channel_map_to_string: {
@@ -1549,12 +1549,12 @@ export const MiniAudioDefinition = {
       FFIType.u32,
       FFIType.u32,
     ],
-    returns: FFIType.ptr,
+    returns: FFIType.u64,
   },
   // ma_convert_frames_ex
   ma_convert_frames_ex: {
     args: [FFIType.ptr, FFIType.u64, FFIType.ptr, FFIType.u64, FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u64,
   },
   // ma_data_source_config_init
   ma_data_source_config_init: {
@@ -1636,7 +1636,7 @@ export const MiniAudioDefinition = {
   // ma_data_source_is_looping
   ma_data_source_is_looping: {
     args: [FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u32,
   },
   // ma_data_source_set_range_in_pcm_frames
   ma_data_source_set_range_in_pcm_frames: {
@@ -1706,7 +1706,7 @@ export const MiniAudioDefinition = {
   // ma_audio_buffer_ref_read_pcm_frames
   ma_audio_buffer_ref_read_pcm_frames: {
     args: [FFIType.ptr, FFIType.ptr, FFIType.u64, FFIType.u32],
-    returns: FFIType.ptr,
+    returns: FFIType.u64,
   },
   // ma_audio_buffer_ref_seek_to_pcm_frame
   ma_audio_buffer_ref_seek_to_pcm_frame: {
@@ -1726,7 +1726,7 @@ export const MiniAudioDefinition = {
   // ma_audio_buffer_ref_at_end
   ma_audio_buffer_ref_at_end: {
     args: [FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u32,
   },
   // ma_audio_buffer_ref_get_cursor_in_pcm_frames
   ma_audio_buffer_ref_get_cursor_in_pcm_frames: {
@@ -1776,7 +1776,7 @@ export const MiniAudioDefinition = {
   // ma_audio_buffer_read_pcm_frames
   ma_audio_buffer_read_pcm_frames: {
     args: [FFIType.ptr, FFIType.ptr, FFIType.u64, FFIType.u32],
-    returns: FFIType.ptr,
+    returns: FFIType.u64,
   },
   // ma_audio_buffer_seek_to_pcm_frame
   ma_audio_buffer_seek_to_pcm_frame: {
@@ -1796,7 +1796,7 @@ export const MiniAudioDefinition = {
   // ma_audio_buffer_at_end
   ma_audio_buffer_at_end: {
     args: [FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u32,
   },
   // ma_audio_buffer_get_cursor_in_pcm_frames
   ma_audio_buffer_get_cursor_in_pcm_frames: {
@@ -1953,17 +1953,17 @@ export const MiniAudioDefinition = {
   // ma_rb_pointer_distance
   ma_rb_pointer_distance: {
     args: [FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.i32,
   },
   // ma_rb_available_read
   ma_rb_available_read: {
     args: [FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u32,
   },
   // ma_rb_available_write
   ma_rb_available_write: {
     args: [FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u32,
   },
   // ma_rb_get_subbuffer_size
   ma_rb_get_subbuffer_size: {
@@ -2054,32 +2054,32 @@ export const MiniAudioDefinition = {
   // ma_pcm_rb_pointer_distance
   ma_pcm_rb_pointer_distance: {
     args: [FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.i32,
   },
   // ma_pcm_rb_available_read
   ma_pcm_rb_available_read: {
     args: [FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u32,
   },
   // ma_pcm_rb_available_write
   ma_pcm_rb_available_write: {
     args: [FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u32,
   },
   // ma_pcm_rb_get_subbuffer_size
   ma_pcm_rb_get_subbuffer_size: {
     args: [FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u32,
   },
   // ma_pcm_rb_get_subbuffer_stride
   ma_pcm_rb_get_subbuffer_stride: {
     args: [FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u32,
   },
   // ma_pcm_rb_get_subbuffer_offset
   ma_pcm_rb_get_subbuffer_offset: {
     args: [FFIType.ptr, FFIType.u32],
-    returns: FFIType.ptr,
+    returns: FFIType.u32,
   },
   // ma_pcm_rb_get_subbuffer_ptr
   ma_pcm_rb_get_subbuffer_ptr: {
@@ -2094,12 +2094,12 @@ export const MiniAudioDefinition = {
   // ma_pcm_rb_get_channels
   ma_pcm_rb_get_channels: {
     args: [FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u32,
   },
   // ma_pcm_rb_get_sample_rate
   ma_pcm_rb_get_sample_rate: {
     args: [FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u32,
   },
   // ma_pcm_rb_set_sample_rate
   ma_pcm_rb_set_sample_rate: {
@@ -2172,7 +2172,7 @@ export const MiniAudioDefinition = {
   // ma_get_bytes_per_sample
   ma_get_bytes_per_sample: {
     args: [FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u32,
   },
   // ma_log_level_to_string
   ma_log_level_to_string: {
@@ -2292,7 +2292,7 @@ export const MiniAudioDefinition = {
   // ma_async_notification_poll_is_signalled
   ma_async_notification_poll_is_signalled: {
     args: [FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u32,
   },
   // ma_async_notification_event_init
   ma_async_notification_event_init: {
@@ -2422,7 +2422,7 @@ export const MiniAudioDefinition = {
   // ma_device_id_equal
   ma_device_id_equal: {
     args: [FFIType.ptr, FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u32,
   },
   // ma_context_config_init
   ma_context_config_init: {
@@ -2467,7 +2467,7 @@ export const MiniAudioDefinition = {
   // ma_context_is_loopback_supported
   ma_context_is_loopback_supported: {
     args: [FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u32,
   },
   // ma_device_config_init
   ma_device_config_init: {
@@ -2522,7 +2522,7 @@ export const MiniAudioDefinition = {
   // ma_device_is_started
   ma_device_is_started: {
     args: [FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u32,
   },
   // ma_device_get_state
   ma_device_get_state: {
@@ -2562,7 +2562,7 @@ export const MiniAudioDefinition = {
   // ma_calculate_buffer_size_in_frames_from_descriptor
   ma_calculate_buffer_size_in_frames_from_descriptor: {
     args: [FFIType.ptr, FFIType.u32, FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u32,
   },
   // ma_get_backend_name
   ma_get_backend_name: {
@@ -2577,7 +2577,7 @@ export const MiniAudioDefinition = {
   // ma_is_backend_enabled
   ma_is_backend_enabled: {
     args: [FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u32,
   },
   // ma_get_enabled_backends
   ma_get_enabled_backends: {
@@ -2587,17 +2587,17 @@ export const MiniAudioDefinition = {
   // ma_is_loopback_supported
   ma_is_loopback_supported: {
     args: [FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u32,
   },
   // ma_calculate_buffer_size_in_milliseconds_from_frames
   ma_calculate_buffer_size_in_milliseconds_from_frames: {
     args: [FFIType.u32, FFIType.u32],
-    returns: FFIType.ptr,
+    returns: FFIType.u32,
   },
   // ma_calculate_buffer_size_in_frames_from_milliseconds
   ma_calculate_buffer_size_in_frames_from_milliseconds: {
     args: [FFIType.u32, FFIType.u32],
-    returns: FFIType.ptr,
+    returns: FFIType.u32,
   },
   // ma_copy_pcm_frames
   ma_copy_pcm_frames: {
@@ -3330,7 +3330,7 @@ export const MiniAudioDefinition = {
   // ma_resource_manager_data_buffer_is_looping
   ma_resource_manager_data_buffer_is_looping: {
     args: [FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u32,
   },
   // ma_resource_manager_data_buffer_get_available_frames
   ma_resource_manager_data_buffer_get_available_frames: {
@@ -3402,7 +3402,7 @@ export const MiniAudioDefinition = {
   // ma_resource_manager_data_stream_is_looping
   ma_resource_manager_data_stream_is_looping: {
     args: [FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u32,
   },
   // ma_resource_manager_data_stream_get_available_frames
   ma_resource_manager_data_stream_get_available_frames: {
@@ -3479,7 +3479,7 @@ export const MiniAudioDefinition = {
   // ma_resource_manager_data_source_is_looping
   ma_resource_manager_data_source_is_looping: {
     args: [FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u32,
   },
   // ma_resource_manager_data_source_get_available_frames
   ma_resource_manager_data_source_get_available_frames: {
@@ -3544,22 +3544,22 @@ export const MiniAudioDefinition = {
   // ma_node_get_input_bus_count
   ma_node_get_input_bus_count: {
     args: [FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u32,
   },
   // ma_node_get_output_bus_count
   ma_node_get_output_bus_count: {
     args: [FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u32,
   },
   // ma_node_get_input_channels
   ma_node_get_input_channels: {
     args: [FFIType.ptr, FFIType.u32],
-    returns: FFIType.ptr,
+    returns: FFIType.u32,
   },
   // ma_node_get_output_channels
   ma_node_get_output_channels: {
     args: [FFIType.ptr, FFIType.u32],
-    returns: FFIType.ptr,
+    returns: FFIType.u32,
   },
   // ma_node_attach_output_bus
   ma_node_attach_output_bus: {
@@ -3604,7 +3604,7 @@ export const MiniAudioDefinition = {
   // ma_node_get_state_time
   ma_node_get_state_time: {
     args: [FFIType.ptr, FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u64,
   },
   // ma_node_get_state_by_time
   ma_node_get_state_by_time: {
@@ -3619,7 +3619,7 @@ export const MiniAudioDefinition = {
   // ma_node_get_time
   ma_node_get_time: {
     args: [FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u64,
   },
   // ma_node_set_time
   ma_node_set_time: {
@@ -3654,12 +3654,12 @@ export const MiniAudioDefinition = {
   // ma_node_graph_get_channels
   ma_node_graph_get_channels: {
     args: [FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u32,
   },
   // ma_node_graph_get_time
   ma_node_graph_get_time: {
     args: [FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u64,
   },
   // ma_node_graph_set_time
   ma_node_graph_set_time: {
@@ -3669,7 +3669,7 @@ export const MiniAudioDefinition = {
   // ma_node_graph_get_processing_size_in_frames
   ma_node_graph_get_processing_size_in_frames: {
     args: [FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u32,
   },
   // ma_data_source_node_config_init
   ma_data_source_node_config_init: {
@@ -3694,7 +3694,7 @@ export const MiniAudioDefinition = {
   // ma_data_source_node_is_looping
   ma_data_source_node_is_looping: {
     args: [FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u32,
   },
   // ma_splitter_node_config_init
   ma_splitter_node_config_init: {
@@ -4017,12 +4017,12 @@ export const MiniAudioDefinition = {
   // ma_engine_get_time_in_pcm_frames
   ma_engine_get_time_in_pcm_frames: {
     args: [FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u64,
   },
   // ma_engine_get_time_in_milliseconds
   ma_engine_get_time_in_milliseconds: {
     args: [FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u64,
   },
   // ma_engine_set_time_in_pcm_frames
   ma_engine_set_time_in_pcm_frames: {
@@ -4037,7 +4037,7 @@ export const MiniAudioDefinition = {
   // ma_engine_get_time
   ma_engine_get_time: {
     args: [FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u64,
   },
   // ma_engine_set_time
   ma_engine_set_time: {
@@ -4047,12 +4047,12 @@ export const MiniAudioDefinition = {
   // ma_engine_get_channels
   ma_engine_get_channels: {
     args: [FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u32,
   },
   // ma_engine_get_sample_rate
   ma_engine_get_sample_rate: {
     args: [FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u32,
   },
   // ma_engine_start
   ma_engine_start: {
@@ -4087,12 +4087,12 @@ export const MiniAudioDefinition = {
   // ma_engine_get_listener_count
   ma_engine_get_listener_count: {
     args: [FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u32,
   },
   // ma_engine_find_closest_listener
   ma_engine_find_closest_listener: {
     args: [FFIType.ptr, FFIType.f32, FFIType.f32, FFIType.f32],
-    returns: FFIType.ptr,
+    returns: FFIType.u32,
   },
   // ma_engine_listener_set_position
   ma_engine_listener_set_position: {
@@ -4152,7 +4152,7 @@ export const MiniAudioDefinition = {
   // ma_engine_listener_is_enabled
   ma_engine_listener_is_enabled: {
     args: [FFIType.ptr, FFIType.u32],
-    returns: FFIType.ptr,
+    returns: FFIType.u32,
   },
   // ma_engine_play_sound_ex
   ma_engine_play_sound_ex: {
@@ -4306,7 +4306,7 @@ export const MiniAudioDefinition = {
   // ma_sound_is_spatialization_enabled
   ma_sound_is_spatialization_enabled: {
     args: [FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u32,
   },
   // ma_sound_set_pinned_listener_index
   ma_sound_set_pinned_listener_index: {
@@ -4316,12 +4316,12 @@ export const MiniAudioDefinition = {
   // ma_sound_get_pinned_listener_index
   ma_sound_get_pinned_listener_index: {
     args: [FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u32,
   },
   // ma_sound_get_listener_index
   ma_sound_get_listener_index: {
     args: [FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u32,
   },
   // ma_sound_get_direction_to_listener
   ma_sound_get_direction_to_listener: {
@@ -4516,17 +4516,17 @@ export const MiniAudioDefinition = {
   // ma_sound_is_playing
   ma_sound_is_playing: {
     args: [FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u32,
   },
   // ma_sound_get_time_in_pcm_frames
   ma_sound_get_time_in_pcm_frames: {
     args: [FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u64,
   },
   // ma_sound_get_time_in_milliseconds
   ma_sound_get_time_in_milliseconds: {
     args: [FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u64,
   },
   // ma_sound_set_looping
   ma_sound_set_looping: {
@@ -4536,12 +4536,12 @@ export const MiniAudioDefinition = {
   // ma_sound_is_looping
   ma_sound_is_looping: {
     args: [FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u32,
   },
   // ma_sound_at_end
   ma_sound_at_end: {
     args: [FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u32,
   },
   // ma_sound_seek_to_pcm_frame
   ma_sound_seek_to_pcm_frame: {
@@ -4668,7 +4668,7 @@ export const MiniAudioDefinition = {
   // ma_sound_group_is_spatialization_enabled
   ma_sound_group_is_spatialization_enabled: {
     args: [FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u32,
   },
   // ma_sound_group_set_pinned_listener_index
   ma_sound_group_set_pinned_listener_index: {
@@ -4678,12 +4678,12 @@ export const MiniAudioDefinition = {
   // ma_sound_group_get_pinned_listener_index
   ma_sound_group_get_pinned_listener_index: {
     args: [FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u32,
   },
   // ma_sound_group_get_listener_index
   ma_sound_group_get_listener_index: {
     args: [FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u32,
   },
   // ma_sound_group_get_direction_to_listener
   ma_sound_group_get_direction_to_listener: {
@@ -4858,11 +4858,11 @@ export const MiniAudioDefinition = {
   // ma_sound_group_is_playing
   ma_sound_group_is_playing: {
     args: [FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u32,
   },
   // ma_sound_group_get_time_in_pcm_frames
   ma_sound_group_get_time_in_pcm_frames: {
     args: [FFIType.ptr],
-    returns: FFIType.ptr,
+    returns: FFIType.u64,
   },
 } satisfies Record<string, FFIFunction>;
