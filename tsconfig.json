@@ -29,6 +29,10 @@
 
     "paths": {
       "@/*": ["./src/*"],
+      "@glfw": ["./src/library/glfw/*"],
+      "@image": ["./src/library/image/*"],
+      "@miniaudio": ["./src/library/miniaudio/*"],
+      "@truetype": ["./src/library/truetype/*"],
       "@cstruct": ["./src/utility/cstruct/index.ts"],
       "@cwstring": ["./src/utility/cwstring.ts"],
       "@basestruct": ["./src/utility/base-struct.ts"],

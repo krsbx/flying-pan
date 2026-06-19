@@ -11,7 +11,7 @@ const parsed = await parser.parse({
 
 const generator = new FFICodeGenerator({
   libName: 'Image',
-  outputDir: path.join(import.meta.dir, '../src/image'),
+  outputDir: path.join(import.meta.dir, '../src/library/image'),
   macroFile: path.join(import.meta.dir, '../assets/stb_image.macros'),
   macroPrefix: 'STBI_',
 });

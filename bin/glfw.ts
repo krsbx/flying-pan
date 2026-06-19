@@ -9,7 +9,7 @@ const parsed = await parser.parse();
 
 const generator = new FFICodeGenerator({
   libName: 'GLFW',
-  outputDir: path.join(import.meta.dir, '../src/glfw'),
+  outputDir: path.join(import.meta.dir, '../src/library/glfw'),
   macroFile: path.join(import.meta.dir, '../assets/glfw3.macros'),
   macroPrefix: 'GLFW_',
 });
