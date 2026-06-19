@@ -13,6 +13,7 @@ export function positionAbsolute(
     x,
     y,
     fontManager,
+    textureManager,
     children,
   } = options;
   const childStyle = m.widget.style;
@@ -52,6 +53,7 @@ export function positionAbsolute(
       availableWidth: absWidth,
       availableHeight: absHeight,
       fontManager,
+      textureManager,
     })
   );
 }

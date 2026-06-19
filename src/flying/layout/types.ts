@@ -6,6 +6,7 @@ import type {
   ViewStyle,
   WidgetDescriptor,
 } from '@flying/widget';
+import type { TextureManager } from '../renderer/texture/manager';
 import type { Coordinate2D, Size } from '../types';
 
 export interface LayoutNode extends Coordinate2D, Size {
@@ -18,6 +19,7 @@ export interface LayoutFlexOptions extends Coordinate2D {
   availableWidth: number;
   availableHeight: number;
   fontManager: FontManager;
+  textureManager: TextureManager | null;
 }
 
 export interface LayoutFlexFn {
@@ -34,6 +36,7 @@ export interface ChildMeasurements extends Size {
 export interface MeasureChildsComponentOptions {
   children: WidgetDescriptor[];
   fontManager: FontManager;
+  textureManager: TextureManager | null;
   parentWidth: number;
   parentHeight: number;
 }
@@ -102,6 +105,7 @@ export interface LayoutLineOptions {
   x: number;
   y: number;
   fontManager: FontManager;
+  textureManager: TextureManager | null;
   children: LayoutNode[];
 }
 
@@ -119,6 +123,7 @@ export interface PositionFlowChildrenOptions {
   y: number;
   gap: number;
   fontManager: FontManager;
+  textureManager: TextureManager | null;
   children: LayoutNode[];
 }
 
@@ -130,5 +135,6 @@ export interface PositionAbsoluteOptions {
   x: number;
   y: number;
   fontManager: FontManager;
+  textureManager: TextureManager | null;
   children: LayoutNode[];
 }

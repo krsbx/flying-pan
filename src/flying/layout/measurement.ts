@@ -1,5 +1,5 @@
 import { clamp } from '@/utility/common';
-import type { LabelProps } from '@flying/widget';
+import type { ImageProps, LabelProps } from '@flying/widget';
 import {
   FlexAlign,
   FlexJustify,
@@ -23,7 +23,7 @@ import type {
 export function measureChildsComponent(
   options: MeasureChildsComponentOptions
 ): MeasureChildsComponentResult {
-  const { parentWidth, parentHeight } = options;
+  const { parentWidth, parentHeight, textureManager } = options;
   const flow: ChildMeasurements[] = [];
   const absolute: ChildMeasurements[] = [];
 
@@ -42,6 +42,16 @@ export function measureChildsComponent(
 
     let width = resolveSize(child.style?.width, parentWidth);
     let height = resolveSize(child.style?.height, parentHeight);
+
+    if (child.type === WidgetType.Image && !width && !height) {
+      const props = child.props as ImageProps;
+      const info = textureManager?.info?.(props.src);
+
+      if (info) {
+        width ||= props.width || info.width;
+        height ||= props.height || info.height;
+      }
+    }
 
     if (child.type === WidgetType.Label) {
       const style = child.style as TextStyle;

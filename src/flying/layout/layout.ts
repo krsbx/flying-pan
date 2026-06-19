@@ -12,7 +12,15 @@ import type { LayoutFlexFn, LayoutNode } from './types';
 import { layoutSingleLine, layoutWrap } from './wrap';
 
 export const layoutFlex: LayoutFlexFn = function (options) {
-  const { node, x, y, fontManager, availableWidth, availableHeight } = options;
+  const {
+    node,
+    x,
+    y,
+    fontManager,
+    textureManager,
+    availableWidth,
+    availableHeight,
+  } = options;
   const style = node.style ?? ({} as ViewStyle);
 
   const padding = resolveSpacing(
@@ -48,6 +56,7 @@ export const layoutFlex: LayoutFlexFn = function (options) {
     fontManager,
     parentWidth: contentWidth,
     parentHeight: contentHeight,
+    textureManager: textureManager,
   });
 
   const lineOptions = {
@@ -62,6 +71,7 @@ export const layoutFlex: LayoutFlexFn = function (options) {
     y,
     fontManager,
     children,
+    textureManager,
   };
 
   if (flow.length > 0) {

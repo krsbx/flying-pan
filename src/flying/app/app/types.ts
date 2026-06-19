@@ -16,6 +16,7 @@ export interface AppConfig extends WindowOptions {
   backgroundColor?: string | null;
   fonts?: FontConfig[] | null;
   audio?: AudioManagerOptions | null;
+  texture?: string | null;
   vsync?: boolean;
 }
 

@@ -2,6 +2,7 @@ import type { Window } from '@flying/app';
 import {
   TextAlign,
   WidgetType,
+  type ImageProps,
   type LabelProps,
   type TextStyle,
   type ViewStyle,
@@ -26,7 +27,7 @@ function resolveStyle(
 }
 
 export function paint(window: Window, options: PaintOptions) {
-  const { renderer, fontManager, interactionManager } = options;
+  const { renderer, fontManager, interactionManager, textureManager } = options;
   const { widget, x, y, width, height, children } = options.layout;
   const baseStyle = widget.style ?? ({} as ViewStyle);
 
@@ -60,6 +61,22 @@ export function paint(window: Window, options: PaintOptions) {
       borderRadius,
       opacity,
     });
+  }
+
+  if (widget.type === WidgetType.Image) {
+    const src = (widget.props as ImageProps).src;
+    const texture = textureManager?.get?.(src);
+
+    if (texture) {
+      renderer.drawTexture(window, {
+        texture,
+        x,
+        y,
+        width,
+        height,
+        opacity,
+      });
+    }
   }
 
   if (widget.type === WidgetType.Label) {
@@ -109,6 +126,12 @@ export function paint(window: Window, options: PaintOptions) {
   }
 
   for (const child of children) {
-    paint(window, { renderer, fontManager, layout: child, interactionManager });
+    paint(window, {
+      renderer,
+      fontManager,
+      layout: child,
+      interactionManager,
+      textureManager,
+    });
   }
 }

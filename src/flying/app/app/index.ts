@@ -32,7 +32,8 @@ export class App {
 
     this.manager = new AppManager({
       fonts: options.fonts || [],
-      audio: options.audio,
+      audio: options.audio || null,
+      texture: options.texture || null,
       gl: this.gl,
     });
     this.renderer = new Renderer({
@@ -129,6 +130,7 @@ export class App {
             availableWidth: window.size.width,
             availableHeight: window.size.height,
             fontManager: this.manager.font,
+            textureManager: this.manager.texture,
           });
 
           this.manager.interaction.dispatch({
@@ -141,6 +143,7 @@ export class App {
             layout: layout,
             fontManager: this.manager.font,
             interactionManager: this.manager.interaction,
+            textureManager: this.manager.texture,
           });
         }
       }
@@ -170,6 +173,7 @@ export class App {
     this.manager.window.destroyAll();
     this.manager.font.destroy();
     this.manager.audio?.destroy?.();
+    this.manager.texture?.destroy();
     this.gl.glfwTerminate();
   }
 }

@@ -1,5 +1,6 @@
 import type { BaseFontAtlas } from '@flying/fonts';
 import type { Coordinate2D, RGBA, Size, ValidColor } from '@flying/types';
+import type { Texture } from '../texture/texture';
 
 export interface DrawRectOptions extends Coordinate2D, Size {
   color: ValidColor;
@@ -42,4 +43,9 @@ export interface DrawTextOptions extends Coordinate2D {
   opacity?: number;
   letterSpacing?: number;
   lineHeight?: number;
+}
+
+export interface DrawTextureOptions extends Coordinate2D, Size {
+  texture: Texture;
+  opacity?: number;
 }

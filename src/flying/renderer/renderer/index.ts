@@ -19,6 +19,7 @@ import type {
   DrawRectOptions,
   DrawRoundedRectOptions,
   DrawTextOptions,
+  DrawTextureOptions,
 } from './types';
 
 export interface RendererOptions {
@@ -83,7 +84,7 @@ export class Renderer {
     });
   }
 
-  public resize(window: Window, options: Resolution) {
+  public resize(window: Window, options: Resolution): void {
     window.size = {
       height: options.height,
       width: options.width,
@@ -101,7 +102,7 @@ export class Renderer {
     });
   }
 
-  public drawRect(window: Window, options: DrawRectOptions) {
+  public drawRect(window: Window, options: DrawRectOptions): void {
     this.wrap(window, () => {
       const rgba = parseColor(options.color);
 
@@ -121,7 +122,7 @@ export class Renderer {
     });
   }
 
-  protected drawRectGL(options: DrawRectGLOptions) {
+  protected drawRectGL(options: DrawRectGLOptions): void {
     const { x, y, width, height, rgba } = options;
 
     this.gl.glColor4f(rgba);
@@ -139,7 +140,7 @@ export class Renderer {
     this.gl.glEnd();
   }
 
-  protected drawRoundedRect(options: DrawRoundedRectOptions) {
+  protected drawRoundedRect(options: DrawRoundedRectOptions): void {
     const { x, y, width, height, rgba, radius } = options;
 
     // Clamp radius
@@ -216,7 +217,7 @@ export class Renderer {
     });
   }
 
-  protected drawCornerArc(options: DrawCornerArcOptions) {
+  protected drawCornerArc(options: DrawCornerArcOptions): void {
     const { cx, cy, radius, startAngle, endAngle, segments, rgba } = options;
     const step = (endAngle - startAngle) / segments;
 
@@ -241,7 +242,7 @@ export class Renderer {
     this.gl.glEnd();
   }
 
-  public drawText(window: Window, options: DrawTextOptions) {
+  public drawText(window: Window, options: DrawTextOptions): void {
     this.wrap(window, () => {
       const rgba = parseColor(options.color);
 
@@ -275,6 +276,38 @@ export class Renderer {
         this.gl.glTexCoord2f({ s: q.s1, t: q.t0 });
         this.gl.glVertex2f({ x: q.x1, y: q.y0 });
       }
+
+      this.gl.glEnd();
+
+      // Disable texturing
+      this.gl.glBindTexture({ target: GL_TEXTURE_2D, texture: 0 });
+      this.gl.glDisable({ cap: GL_TEXTURE_2D });
+    });
+  }
+
+  public drawTexture(window: Window, options: DrawTextureOptions): void {
+    this.wrap(window, () => {
+      const { texture, x, y, width, height, opacity } = options;
+
+      // Enable texturing
+      this.gl.glEnable({ cap: GL_TEXTURE_2D });
+      this.gl.glBindTexture({ target: GL_TEXTURE_2D, texture: texture.id });
+      this.gl.glColor4f({ red: 1, green: 1, blue: 1, alpha: opacity ?? 1 });
+
+      this.gl.glBegin({ mode: GL_QUADS });
+
+      // Top-left
+      this.gl.glTexCoord2f({ s: 0, t: 0 });
+      this.gl.glVertex2f({ x, y });
+      // Bottom-left
+      this.gl.glTexCoord2f({ s: 0, t: 1 });
+      this.gl.glVertex2f({ x, y: y + height });
+      // Bottom-right
+      this.gl.glTexCoord2f({ s: 1, t: 1 });
+      this.gl.glVertex2f({ x: x + width, y: y + height });
+      // Top-right
+      this.gl.glTexCoord2f({ s: 1, t: 0 });
+      this.gl.glVertex2f({ x: x + width, y });
 
       this.gl.glEnd();
 

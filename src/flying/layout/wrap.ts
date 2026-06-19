@@ -18,6 +18,7 @@ export function layoutSingleLine(
     x,
     y,
     fontManager,
+    textureManager,
     children,
   } = options;
 
@@ -60,6 +61,7 @@ export function layoutSingleLine(
       y,
       gap,
       fontManager,
+      textureManager,
       children,
     },
     layoutFlex
@@ -81,6 +83,7 @@ export function layoutWrap(
     x,
     y,
     fontManager,
+    textureManager,
     children,
   } = options;
 
@@ -142,6 +145,7 @@ export function layoutWrap(
         y,
         gap,
         fontManager,
+        textureManager,
         children,
       },
       layoutFlex
