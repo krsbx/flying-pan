@@ -1,5 +1,5 @@
 import type { CStructLikeDecl, CodeGenResult } from '../../types';
-import { TypeScriptType } from '../../utility';
+import { type PrimitiveAliasMap, TypeScriptType } from '../../utility';
 import {
   computeLayout,
   generateBitField,
@@ -10,6 +10,7 @@ import {
 export function generateStructCode(options: {
   decl: CStructLikeDecl;
   structNames: Set<string>;
+  aliases?: PrimitiveAliasMap;
 }): CodeGenResult {
   if (options.decl.isOpaque || options.decl.fields.length === 0) {
     return {
@@ -45,7 +46,7 @@ export function generateStructCode(options: {
       lines.push(...generateBitField(field));
     } else {
       // Regular field
-      lines.push(...generateRegularField(field));
+      lines.push(...generateRegularField(field, options.aliases));
     }
   }
 

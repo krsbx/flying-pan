@@ -1,14 +1,17 @@
 import type { CFunctionDecl } from '../../../ast';
 import type { FFISymbolDef } from '../../types';
-import { CType, TypeScriptType } from '../../utility/constant';
+import { type PrimitiveAliasMap, CType, TypeScriptType } from '../../utility';
 import { cTypeToFFI } from '../../utility/conversion';
 import { resolveParamType, resolveReturnType } from './helper';
 
-export function generateFFIDefinition(decl: CFunctionDecl): FFISymbolDef {
+export function generateFFIDefinition(
+  decl: CFunctionDecl,
+  aliases?: PrimitiveAliasMap
+): FFISymbolDef {
   return {
     name: decl.name,
-    returns: cTypeToFFI(decl.returnType),
-    args: decl.params.map((p) => cTypeToFFI(p.type)),
+    returns: cTypeToFFI(decl.returnType, aliases),
+    args: decl.params.map((p) => cTypeToFFI(p.type, aliases)),
   };
 }
 
@@ -23,10 +26,12 @@ export function generateFunctionCode(options: {
   decl: CFunctionDecl;
   libName: string;
   enumNames: Set<string>;
+  aliases?: PrimitiveAliasMap;
 }): FunctionCodeGenResult {
   const returnType = resolveReturnType({
     cType: options.decl.returnType,
     enumNames: options.enumNames,
+    aliases: options.aliases,
   });
 
   if (options.decl.params.length === 0) {
@@ -47,7 +52,11 @@ export function generateFunctionCode(options: {
   }
 
   const resolvedParams = options.decl.params.map((p) => ({
-    ...resolveParamType({ cType: p.type, enumNames: options.enumNames }),
+    ...resolveParamType({
+      cType: p.type,
+      enumNames: options.enumNames,
+      aliases: options.aliases,
+    }),
     name: p.name,
   }));
 

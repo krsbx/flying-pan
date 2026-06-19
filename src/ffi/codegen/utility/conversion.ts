@@ -10,7 +10,12 @@ import {
 } from './constant';
 import { normalizeTypeName } from './helper';
 
-export function cTypeToTsType(cType: CTypeDecl): TypeScriptType {
+export type PrimitiveAliasMap = Map<string, string>;
+
+export function cTypeToTsType(
+  cType: CTypeDecl,
+  aliases?: PrimitiveAliasMap
+): TypeScriptType {
   const baseName = normalizeTypeName(cType.name);
 
   if (cType.pointerDepth > 0) {
@@ -29,12 +34,16 @@ export function cTypeToTsType(cType: CTypeDecl): TypeScriptType {
     return TypeScriptType.VOID;
   }
 
-  const primitive = PrimitiveMap[baseName as CType];
+  const resolved = aliases?.get(baseName) ?? baseName;
+  const primitive = PrimitiveMap[resolved as CType];
 
   return primitive?.tsType ?? TypeScriptType.POINTER;
 }
 
-export function cTypeToFFI(cType: CTypeDecl): keyof FFITypeStringToType {
+export function cTypeToFFI(
+  cType: CTypeDecl,
+  aliases?: PrimitiveAliasMap
+): keyof FFITypeStringToType {
   const baseName = normalizeTypeName(cType.name);
 
   if (cType.pointerDepth > 0) {
@@ -49,10 +58,15 @@ export function cTypeToFFI(cType: CTypeDecl): keyof FFITypeStringToType {
     return 'ptr';
   }
 
-  return CTypeToFFIType[baseName as CType] ?? 'ptr';
+  const resolved = aliases?.get(baseName) ?? baseName;
+
+  return CTypeToFFIType[resolved as CType] ?? 'ptr';
 }
 
-export function cTypeToViewMethod(cType: CTypeDecl): DataViewMethodInfo | null {
+export function cTypeToViewMethod(
+  cType: CTypeDecl,
+  aliases?: PrimitiveAliasMap
+): DataViewMethodInfo | null {
   if (cType.pointerDepth > 0) {
     return {
       getter: 'getBigInt64',
@@ -65,7 +79,9 @@ export function cTypeToViewMethod(cType: CTypeDecl): DataViewMethodInfo | null {
     return null;
   }
 
-  const primitive = PrimitiveMap[normalizeTypeName(cType.name) as CType];
+  const baseName = normalizeTypeName(cType.name);
+  const resolved = aliases?.get(baseName) ?? baseName;
+  const primitive = PrimitiveMap[resolved as CType];
 
   if (primitive) {
     return {

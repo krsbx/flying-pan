@@ -19,7 +19,13 @@ import {
   generateStructCode,
   generateTypedefCode,
 } from './codegen';
+import { isFuncPointerDecl } from './codegen/typedef.codegen/helper';
 import type { CodeGenpart } from './types';
+import {
+  PrimitiveMap,
+  normalizeTypeName,
+  type PrimitiveAliasMap,
+} from './utility';
 
 export interface FFICodeGeneratorOptions {
   /** Name of the library, will be use to name the class */
@@ -90,6 +96,23 @@ export class FFICodeGenerator {
       DeclarationKind.UNION,
     ]);
 
+    // Collect typedef aliases to primitives (e.g. ma_bool32 → unsigned int)
+    const primitiveAliases: PrimitiveAliasMap = new Map();
+
+    for (const decl of parsed.declarations) {
+      if (decl.kind !== DeclarationKind.TYPEDEF) continue;
+
+      const typedef = decl as CTypedefDecl;
+
+      if (isFuncPointerDecl(typedef.underlyingType)) continue;
+
+      const underlyingName = normalizeTypeName(typedef.underlyingType.name);
+
+      if (underlyingName in PrimitiveMap) {
+        primitiveAliases.set(typedef.name, underlyingName);
+      }
+    }
+
     const { libName, outputDir } = this.options;
     const className = libName;
 
@@ -112,6 +135,7 @@ export class FFICodeGenerator {
           const { isType, code } = generateStructCode({
             decl: decl as CStructDecl,
             structNames,
+            aliases: primitiveAliases,
           });
 
           if (isType) {
@@ -144,9 +168,10 @@ export class FFICodeGenerator {
             decl: funcDecl,
             enumNames,
             libName,
+            aliases: primitiveAliases,
           });
 
-          const ffi = generateFFIDefinition(funcDecl);
+          const ffi = generateFFIDefinition(funcDecl, primitiveAliases);
 
           parts.ffiSymbols.push(ffi);
           parts.functions.push(generated.code);
@@ -159,7 +184,8 @@ export class FFICodeGenerator {
 
         case DeclarationKind.FUNCTION_POINTER: {
           const { isType, code } = generateCallbackCode(
-            decl as CFunctionPointerDecl
+            decl as CFunctionPointerDecl,
+            primitiveAliases
           );
 
           if (isType) {

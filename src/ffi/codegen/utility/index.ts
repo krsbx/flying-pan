@@ -5,5 +5,10 @@ export {
   PrimitiveMap,
   TypeScriptType,
 } from './constant';
-export { cTypeToFFI, cTypeToTsType, cTypeToViewMethod } from './conversion';
+export {
+  cTypeToFFI,
+  cTypeToTsType,
+  cTypeToViewMethod,
+  type PrimitiveAliasMap,
+} from './conversion';
 export { cTypeSize, normalizeTypeName, primitiveSize } from './helper';

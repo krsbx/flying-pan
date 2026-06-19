@@ -1,6 +1,7 @@
 import { type CStructField, type CTypeDecl } from '../../../ast/types';
 import { DeclarationKind } from '../../../ast/utility';
 import {
+  type PrimitiveAliasMap,
   cTypeSize,
   cTypeToTsType,
   cTypeToViewMethod,
@@ -85,9 +86,12 @@ export function computeLayout(decl: CStructLikeDecl): LayoutResult {
   return computeStructLayout(decl.fields);
 }
 
-export function generateRegularField(field: FieldLayout): string[] {
-  const viewInfo = cTypeToViewMethod(field.type);
-  const tsType = cTypeToTsType(field.type);
+export function generateRegularField(
+  field: FieldLayout,
+  aliases?: PrimitiveAliasMap
+): string[] {
+  const viewInfo = cTypeToViewMethod(field.type, aliases);
+  const tsType = cTypeToTsType(field.type, aliases);
 
   if (!viewInfo) {
     // Array or unsupported — return pointer

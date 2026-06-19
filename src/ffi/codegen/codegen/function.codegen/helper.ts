@@ -1,5 +1,6 @@
 import type { CTypeDecl } from '../../../ast/types';
 import {
+  type PrimitiveAliasMap,
   CType,
   TypeScriptType,
   cTypeToTsType,
@@ -17,6 +18,7 @@ const pointerParamType = [
 export function resolveReturnType(options: {
   cType: CTypeDecl;
   enumNames: Set<string>;
+  aliases?: PrimitiveAliasMap;
 }): string {
   const baseName = normalizeTypeName(options.cType.name);
 
@@ -29,7 +31,7 @@ export function resolveReturnType(options: {
   }
 
   if (options.cType.pointerDepth > 0 || options.cType.arraySize !== null) {
-    const tsType = cTypeToTsType(options.cType);
+    const tsType = cTypeToTsType(options.cType, options.aliases);
 
     return tsType === TypeScriptType.POINTER
       ? pointerReturnType.join(' | ')
@@ -40,7 +42,7 @@ export function resolveReturnType(options: {
     return baseName;
   }
 
-  const tsType = cTypeToTsType(options.cType);
+  const tsType = cTypeToTsType(options.cType, options.aliases);
 
   return tsType === TypeScriptType.POINTER
     ? pointerReturnType.join(' | ')
@@ -57,6 +59,7 @@ export interface ResolvedParam {
 export function resolveParamType(options: {
   cType: CTypeDecl;
   enumNames: Set<string>;
+  aliases?: PrimitiveAliasMap;
 }): ResolvedParam {
   if (options.cType.isFunctionPointer) {
     return {
@@ -68,7 +71,7 @@ export function resolveParamType(options: {
   const baseName = normalizeTypeName(options.cType.name);
 
   if (options.cType.pointerDepth > 0 || options.cType.arraySize !== null) {
-    const tsType = cTypeToTsType(options.cType);
+    const tsType = cTypeToTsType(options.cType, options.aliases);
 
     if (tsType === TypeScriptType.POINTER) {
       return {
@@ -90,7 +93,7 @@ export function resolveParamType(options: {
     };
   }
 
-  const tsType = cTypeToTsType(options.cType);
+  const tsType = cTypeToTsType(options.cType, options.aliases);
 
   if (tsType === TypeScriptType.POINTER) {
     return {
