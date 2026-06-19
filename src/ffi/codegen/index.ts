@@ -258,7 +258,7 @@ export class FFICodeGenerator {
 
       if (neededTypes.size > 0) {
         functionImports.push(
-          `import type { TypedJSCallback } from '@utility/callback'`,
+          `import type { TypedJSCallback } from '@tscallback'`,
           `import type { ${[...neededTypes].join(', ')} } from './types'`
         );
       }

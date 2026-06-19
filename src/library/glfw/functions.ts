@@ -1,4 +1,4 @@
-import type { TypedJSCallback } from '@utility/callback';
+import type { TypedJSCallback } from '@tscallback';
 import { stringToCString } from '@utility/common';
 import type { CString, Pointer } from 'bun:ffi';
 import type { GLFW } from './index';

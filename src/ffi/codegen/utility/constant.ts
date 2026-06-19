@@ -1,4 +1,4 @@
-import { CStruct } from '@/utility/cstruct';
+import { CStruct } from '@cstruct';
 import type { FFITypeStringToType } from 'bun:ffi';
 import type { DataViewDataType } from '../types';
 

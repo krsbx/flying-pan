@@ -1,4 +1,4 @@
-import { CStruct } from '@/utility/cstruct';
+import { CStruct } from '@cstruct';
 import type { CTypeDecl } from '../../ast/types';
 import { CType, PrimitiveMap } from './constant';
 
