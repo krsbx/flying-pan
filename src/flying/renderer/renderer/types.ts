@@ -49,6 +49,7 @@ export interface DrawTextOptions extends Coordinate2D {
   opacity?: number;
   letterSpacing?: number;
   lineHeight?: number;
+  fontSize?: number;
 }
 
 export interface DrawTextureOptions extends Coordinate2D, Size {

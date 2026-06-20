@@ -34,6 +34,7 @@ export interface GetQuadsOptions {
   y: number;
   letterSpacing?: number;
   lineHeight?: number;
+  fontSize?: number;
 }
 
 export interface GetQuads {

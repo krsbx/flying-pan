@@ -51,5 +51,6 @@ export function paintText(
     opacity: style.opacity,
     letterSpacing: style.letterSpacing,
     lineHeight: style.lineHeight,
+    fontSize: style.fontSize,
   });
 }

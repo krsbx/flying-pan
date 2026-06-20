@@ -9,6 +9,7 @@ import {
 } from '@flying/renderer/constant';
 import type { GLFW } from '@glfw';
 import { TrueType } from '@truetype';
+import { BakedChar } from './baked-char';
 import {
   ATLAS_HEIGHT,
   ATLAS_WIDTH,
@@ -41,6 +42,8 @@ export abstract class BaseFontAtlas implements FontAtlasContract {
   protected ATLAS_SIZE: number;
   protected _destroyed: boolean;
   protected _initialized: boolean;
+  protected _ascent: number;
+  protected _descent: number;
 
   public constructor(options: FontAtlasOptions) {
     this.fontPath = options.fontPath;
@@ -52,6 +55,8 @@ export abstract class BaseFontAtlas implements FontAtlasContract {
     this.ATLAS_SIZE = ATLAS_WIDTH * ATLAS_HEIGHT;
     this._destroyed = false;
     this._initialized = false;
+    this._ascent = 0;
+    this._descent = 0;
   }
 
   public async init(): Promise<void> {
@@ -60,6 +65,8 @@ export abstract class BaseFontAtlas implements FontAtlasContract {
     }
 
     const { rgba } = await this.bakeFontBitmap();
+
+    this.computeVerticalMetrics();
 
     // Generate OpenGL Texture
     const textureStruct = new CStruct({ length: CStruct.BYTE_SIZE.i32 });
@@ -159,6 +166,32 @@ export abstract class BaseFontAtlas implements FontAtlasContract {
 
   public abstract getQuads(options: GetQuadsOptions): TextQuad[];
 
+  protected computeVerticalMetrics(): void {
+    const bakedChars = CStruct.readArrayLazy(
+      BakedChar,
+      this.bakedChars.$address,
+      NUM_CHARS
+    );
+
+    let minTop = 0;
+    let maxBottom = 0;
+
+    for (const b of bakedChars) {
+      const atlasHeight = b.y1 - b.y0;
+
+      if (atlasHeight <= 0) continue; // no glyph (space, etc.)
+
+      const top = b.yOff; // negative = above baseline
+      const bottom = b.yOff + atlasHeight; // positive = below baseline
+
+      if (top < minTop) minTop = top;
+      if (bottom > maxBottom) maxBottom = bottom;
+    }
+
+    this._ascent = -minTop;
+    this._descent = maxBottom;
+  }
+
   public get textureId(): number {
     return this._textureId;
   }
@@ -169,6 +202,14 @@ export abstract class BaseFontAtlas implements FontAtlasContract {
 
   public get destroyed(): boolean {
     return this._destroyed;
+  }
+
+  public get ascent(): number {
+    return this._ascent;
+  }
+
+  public get descent(): number {
+    return this._descent;
   }
 
   public destroy(): void {

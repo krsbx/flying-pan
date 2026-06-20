@@ -54,14 +54,18 @@ export class FontAtlas extends BaseFontAtlas {
     const alignedQuad = AlignedQuad.create();
     const letterSpacing = options.letterSpacing ?? 0;
     const effectiveLineHeight = options.lineHeight ?? this.fontSize;
+    const effectiveFontSize = options.fontSize ?? this.fontSize;
 
     const lines = options.text.split('\n');
 
     for (let lineIdx = 0; lineIdx < lines.length; lineIdx++) {
       const line = lines[lineIdx]!;
+      const scale = effectiveFontSize / this.fontSize;
+      const ascent = this.ascent * scale;
+      const baselineY = options.y + lineIdx * effectiveLineHeight + ascent;
       const pos = new FVector2({
         x: options.x,
-        y: options.y + lineIdx * effectiveLineHeight,
+        y: baselineY,
       });
 
       for (let i = 0; i < line.length; i++) {
