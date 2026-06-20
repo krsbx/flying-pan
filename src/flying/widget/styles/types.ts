@@ -1,9 +1,4 @@
-import type {
-  ClickEventHandler,
-  FocusEventHandler,
-  KeyEventHandler,
-  PointerEventHandler,
-} from '@flying/interactions';
+import type { InteractionProps } from '@flying/interactions';
 import type { Coordinate2D, Size, ValidColor } from '@flying/types';
 import type {
   FlexAlign,
@@ -138,21 +133,11 @@ export interface TextStyle extends ViewStyle {
 
 export type WidgetProps = Record<string, unknown>;
 
-export interface WidgetDescriptor {
+export interface WidgetDescriptor extends InteractionProps {
   type: WidgetType;
   props: WidgetProps;
   style?: ViewStyle;
   children?: WidgetDescriptor[];
-  onPointerDown?: PointerEventHandler;
-  onPointerUp?: PointerEventHandler;
-  onPointerMove?: PointerEventHandler;
-  onClick?: ClickEventHandler;
-  onPointerEnter?: PointerEventHandler;
-  onPointerLeave?: PointerEventHandler;
-  onKeyDown?: KeyEventHandler;
-  onKeyUp?: KeyEventHandler;
-  onFocus?: FocusEventHandler;
-  onBlur?: FocusEventHandler;
 }
 
 export interface LayoutConstraintsOptions {

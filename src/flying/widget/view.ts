@@ -19,6 +19,10 @@ export function View(props: ViewProps): WidgetDescriptor {
     onKeyUp,
     onFocus,
     onBlur,
+    key,
+    onMount,
+    onUnmount,
+    onUpdate,
     style,
     ...rest
   } = props;
@@ -38,5 +42,9 @@ export function View(props: ViewProps): WidgetDescriptor {
     onKeyUp,
     onFocus,
     onBlur,
+    key,
+    onMount,
+    onUnmount,
+    onUpdate,
   };
 }

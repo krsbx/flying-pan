@@ -19,6 +19,10 @@ export function Label(props: LabelProps): WidgetDescriptor {
     onKeyUp,
     onFocus,
     onBlur,
+    key,
+    onMount,
+    onUnmount,
+    onUpdate,
     style,
     ...rest
   } = props;
@@ -37,6 +41,10 @@ export function Label(props: LabelProps): WidgetDescriptor {
     onKeyUp,
     onFocus,
     onBlur,
+    key,
+    onMount,
+    onUnmount,
+    onUpdate,
   };
 }
 

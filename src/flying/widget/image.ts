@@ -21,6 +21,10 @@ export function Image(props: ImageProps): WidgetDescriptor {
     onKeyUp,
     onFocus,
     onBlur,
+    key,
+    onMount,
+    onUnmount,
+    onUpdate,
     style,
     ...rest
   } = props;
@@ -39,5 +43,9 @@ export function Image(props: ImageProps): WidgetDescriptor {
     onKeyUp,
     onFocus,
     onBlur,
+    key,
+    onMount,
+    onUnmount,
+    onUpdate,
   };
 }

@@ -20,6 +20,10 @@ export function Button(props: ButtonProps): WidgetDescriptor {
     onKeyUp,
     onFocus,
     onBlur,
+    key,
+    onMount,
+    onUnmount,
+    onUpdate,
     style,
     ...rest
   } = props;
@@ -42,5 +46,9 @@ export function Button(props: ButtonProps): WidgetDescriptor {
     onKeyUp,
     onFocus,
     onBlur,
+    key,
+    onMount,
+    onUnmount,
+    onUpdate,
   };
 }

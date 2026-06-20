@@ -24,6 +24,10 @@ export function Flex(props: FlexProps): WidgetDescriptor {
     onKeyUp,
     onFocus,
     onBlur,
+    key,
+    onMount,
+    onUnmount,
+    onUpdate,
     ...rest
   } = props;
 
@@ -48,5 +52,9 @@ export function Flex(props: FlexProps): WidgetDescriptor {
     onKeyUp,
     onFocus,
     onBlur,
+    key,
+    onMount,
+    onUnmount,
+    onUpdate,
   };
 }

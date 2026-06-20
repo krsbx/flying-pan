@@ -1,6 +1,7 @@
 import type { Window } from '@flying/app';
 import type { LayoutNode } from '@flying/layout';
 import type { Coordinate2D } from '@flying/types';
+import type { WidgetDescriptor } from '@flying/widget';
 
 /**
  * Base shape for every interaction event. Carries the hit-tested layout node
@@ -63,6 +64,30 @@ export interface FocusEvent extends InteractionEvent {
 
 // #endregion
 
+// #region Lifecycle
+
+/**
+ * Fired on mount (widget enters the tree) and unmount (widget leaves).
+ * Reconciler fires these during the reconcile pass, before layout —
+ * there is no LayoutNode yet. Carries widget + stableId only.
+ */
+export interface LifecycleEvent {
+  window: Window;
+  widget: WidgetDescriptor;
+  stableId: number;
+}
+
+/**
+ * Fired on update (matched pair where the descriptor reference changed).
+ * Under rebuild-per-frame usage this fires every frame on every matched
+ * pair — spurious but harmless. Optimization deferred.
+ */
+export interface UpdateEvent extends LifecycleEvent {
+  prev: WidgetDescriptor;
+}
+
+// #endregion
+
 // #region Handlers
 
 export interface PointerEventHandler {
@@ -79,6 +104,14 @@ export interface KeyEventHandler {
 
 export interface FocusEventHandler {
   (event: FocusEvent): void;
+}
+
+export interface LifecycleEventHandler {
+  (event: LifecycleEvent): void;
+}
+
+export interface UpdateEventHandler {
+  (event: UpdateEvent): void;
 }
 
 // #endregion
@@ -100,6 +133,11 @@ export interface InteractionProps {
   onKeyUp?: KeyEventHandler;
   onFocus?: FocusEventHandler;
   onBlur?: FocusEventHandler;
+
+  key?: string | number;
+  onMount?: LifecycleEventHandler;
+  onUnmount?: LifecycleEventHandler;
+  onUpdate?: UpdateEventHandler;
 }
 
 // #endregion
