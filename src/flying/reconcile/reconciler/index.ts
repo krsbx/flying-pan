@@ -1,11 +1,14 @@
 import type { StateStore } from '@/flying/state';
 import type { WidgetDescriptor } from '@/flying/widget';
-import { setCurrentStableIds } from '../hooks';
 import type { ReconciledNode } from '../types.ts';
-import type { ReconcileNodeOptions, UnmountNodeOptions } from './types';
+import type {
+  GetStableId,
+  ReconcileNodeOptions,
+  UnmountNodeOptions,
+} from './types';
 import type { ReconcileOptions } from './types.ts';
 
-export class Reconciler {
+export class Reconciler implements GetStableId {
   protected readonly stateStore: StateStore;
   protected prevTree: ReconciledNode | null;
   protected nextId; // 0 reserved for "not reconciled"
@@ -30,7 +33,6 @@ export class Reconciler {
     });
 
     this.prevTree = result;
-    setCurrentStableIds(this.stableIdByWidget);
 
     return result;
   }
@@ -40,7 +42,10 @@ export class Reconciler {
     this.nextId = 1;
 
     this.stableIdByWidget = new Map();
-    setCurrentStableIds(this.stableIdByWidget);
+  }
+
+  public getStableId(widget: WidgetDescriptor): number {
+    return this.stableIdByWidget.get(widget) ?? 0;
   }
 
   protected reconcileNode(options: ReconcileNodeOptions): ReconciledNode {

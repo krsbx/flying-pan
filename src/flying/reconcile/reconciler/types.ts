@@ -17,3 +17,11 @@ export interface UnmountNodeOptions {
   node: ReconciledNode;
   window: Window;
 }
+
+export interface GetStableIdFn {
+  (widget: WidgetDescriptor): number;
+}
+
+export interface GetStableId {
+  getStableId: GetStableIdFn;
+}

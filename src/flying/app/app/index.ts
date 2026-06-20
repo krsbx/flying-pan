@@ -1,5 +1,4 @@
 import { layoutFlex } from '@flying/layout';
-import { getStableId } from '@flying/reconcile';
 import { paint, Renderer } from '@flying/renderer';
 import { GLFW } from '@glfw';
 import {
@@ -138,7 +137,7 @@ export class App {
             ctx: {
               fontManager: this.manager.font,
               textureManager: this.manager.texture,
-              getStableId,
+              getStableId: this.manager.$getStableId,
             },
           });
 
@@ -150,9 +149,13 @@ export class App {
           paint(window, {
             renderer: this.renderer,
             layout: layout,
-            fontManager: this.manager.font,
-            interactionManager: this.manager.interaction,
-            textureManager: this.manager.texture,
+            ctx: {
+              fontManager: this.manager.font,
+              interactionManager: this.manager.interaction,
+              textureManager: this.manager.texture,
+              getStableId: this.manager.$getStableId,
+              stateStore: this.manager.stateStore,
+            },
           });
         }
       }

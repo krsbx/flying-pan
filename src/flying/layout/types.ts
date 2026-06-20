@@ -1,4 +1,6 @@
 import type { FontManager } from '@flying/app/fonts/manager';
+import type { GetStableIdFn } from '@flying/reconcile/reconciler/types';
+import type { TextureManager } from '@flying/renderer/texture/manager';
 import type {
   FlexAlign,
   FlexJustify,
@@ -6,12 +8,7 @@ import type {
   ViewStyle,
   WidgetDescriptor,
 } from '@flying/widget';
-import type { TextureManager } from '../renderer/texture/manager';
 import type { Coordinate2D, Size } from '../types';
-
-interface GetStableIdFn {
-  (widget: WidgetDescriptor): number;
-}
 
 export interface LayoutContext {
   fontManager: FontManager;

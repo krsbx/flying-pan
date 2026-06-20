@@ -1,6 +1,6 @@
-import type { StateForOptions } from './types';
+import type { StateForOptions, StoreFor } from './types';
 
-export class StateStore {
+export class StateStore implements StoreFor {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   protected store: Map<number, any>;
 

@@ -31,13 +31,13 @@ function resolveStyle(
 }
 
 export function paint(window: Window, options: PaintOptions) {
-  const { renderer, fontManager, interactionManager, textureManager } = options;
+  const { renderer, ctx } = options;
   const { widget, x, y, width, height, children } = options.layout;
   const baseStyle = widget.style ?? ({} as ViewStyle);
 
-  const hovered = interactionManager.pointer.hoveredNode?.widget === widget;
-  const focused = interactionManager.focus.focusedWidget === widget;
-  const pressed = interactionManager.pointer.pressedNode?.widget === widget;
+  const hovered = ctx.interactionManager.pointer.hoveredNode?.widget === widget;
+  const focused = ctx.interactionManager.focus.focusedWidget === widget;
+  const pressed = ctx.interactionManager.pointer.pressedNode?.widget === widget;
   const style = resolveStyle(baseStyle, hovered, focused, pressed);
 
   const borderRadius = style.borderRadius;
@@ -88,7 +88,7 @@ export function paint(window: Window, options: PaintOptions) {
 
   if (widget.type === WidgetType.Image) {
     const src = (widget.props as ImageProps).src;
-    const texture = textureManager?.get?.(src);
+    const texture = ctx.textureManager?.get?.(src);
 
     if (texture) {
       renderer.drawTexture(window, {
@@ -104,7 +104,7 @@ export function paint(window: Window, options: PaintOptions) {
 
   if (widget.type === WidgetType.Label) {
     const textStyle = style as TextStyle;
-    const fontAtlas = fontManager.get(textStyle.font);
+    const fontAtlas = ctx.fontManager.get(textStyle.font);
 
     const text = (widget.props as LabelProps)?.text ?? '';
     const color = textStyle.color ?? Color.white;
@@ -159,17 +159,15 @@ export function paint(window: Window, options: PaintOptions) {
   }
 
   if (isScrollable && children.length > 0) {
-    const offset = interactionManager.scroll.offset(widget);
+    const offset = ctx.interactionManager.scroll.offset(widget);
     renderer.pushTranslate(window, { x: -offset.x, y: -offset.y });
   }
 
   for (const child of children) {
     paint(window, {
       renderer,
-      fontManager,
       layout: child,
-      interactionManager,
-      textureManager,
+      ctx,
     });
   }
 
