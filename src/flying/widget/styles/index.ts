@@ -8,6 +8,7 @@ export type {
   SizeInputWithUnit,
   Spacing,
   SpacingInput,
+  TextInputStyle,
   TextPseudoStateStyle,
   TextStyle,
   ViewStyle,

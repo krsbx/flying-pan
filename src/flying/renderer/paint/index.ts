@@ -3,12 +3,14 @@ import {
   Overflow,
   WidgetType,
   type CheckboxProps,
+  type TextInputStyle,
   type TextStyle,
   type ViewStyle,
 } from '@flying/widget';
 import { paintCheckbox } from './checkbox';
 import { paintImage } from './image';
 import { paintText } from './text';
+import { paintTextInput } from './text/input';
 import type { PaintOptions } from './types';
 import { resolveStyle } from './utility';
 
@@ -84,6 +86,16 @@ export function paint(window: Window, options: PaintOptions) {
       layout,
       renderer,
       style: style as TextStyle,
+    });
+  }
+
+  if (widget.type === WidgetType.TextInput) {
+    paintTextInput(window, {
+      ctx,
+      layout,
+      renderer,
+      style: style as TextInputStyle,
+      focused,
     });
   }
 

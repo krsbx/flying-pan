@@ -1,5 +1,11 @@
 import { clamp } from '@/utility/common';
-import type { ImageProps, LabelProps } from '@flying/widget';
+import type {
+  ImageProps,
+  LabelProps,
+  TextInputProps,
+  TextInputState,
+  TextInputStyle,
+} from '@flying/widget';
 import {
   FlexAlign,
   FlexJustify,
@@ -53,6 +59,36 @@ export function measureChildsComponent(
       }
     }
 
+    if (child.type === WidgetType.TextInput) {
+      const style = child.style as TextInputStyle;
+      const fontAtlas = ctx.fontManager.get(style.font);
+      const props = child.props as TextInputProps;
+
+      const value =
+        props.value ??
+        ctx.stateStore.stateFor<TextInputState>({
+          stableId: ctx.getStableId(child),
+          initial: {
+            value: props.defaultValue ?? '',
+            caret: (props.defaultValue ?? '').length,
+          },
+        }).value;
+
+      const text = value || (props.placeholder ?? '');
+
+      if (text) {
+        const measured = fontAtlas.measureText({
+          text,
+          fontSize: style.fontSize ?? 16,
+          letterSpacing: style.letterSpacing,
+          lineHeight: style.lineHeight,
+        });
+
+        width ||= measured.width;
+        height ||= measured.height;
+      }
+    }
+
     if (child.type === WidgetType.Label) {
       const style = child.style as TextStyle;
       const fontAtlas = ctx.fontManager.get(style.font);
@@ -69,8 +105,8 @@ export function measureChildsComponent(
         lineHeight,
       });
 
-      if (!width) width = measured.width;
-      if (!height) height = measured.height;
+      width ||= measured.width;
+      height ||= measured.height;
     }
 
     // Clamp to min/max constraints

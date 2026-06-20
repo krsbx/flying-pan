@@ -1,0 +1,84 @@
+import type { InteractionProps } from '../../interactions';
+import { WidgetType } from '../constant';
+import type { WidgetProps } from '../styles';
+import type { TextInputStyle, WidgetDescriptor } from '../styles/types';
+import {
+  createTextInputCharHandler,
+  createTextInputKeyHandler,
+} from './handler';
+
+export interface TextInputProps extends WidgetProps, InteractionProps {
+  value?: string;
+  defaultValue?: string;
+  placeholder?: string;
+  onChange?: (value: string) => void;
+  disabled?: boolean;
+  style?: TextInputStyle;
+}
+
+export interface TextInputState {
+  value: string;
+  caret: number;
+}
+
+export function TextInput(props: TextInputProps): WidgetDescriptor {
+  const {
+    value,
+    defaultValue,
+    placeholder,
+    onChange,
+    disabled,
+    onChar: userOnChar,
+    onKeyDown: userOnKeyDown,
+    onPointerDown,
+    onPointerUp,
+    onPointerMove,
+    onClick,
+    onPointerEnter,
+    onPointerLeave,
+    onKeyUp,
+    onFocus,
+    onBlur,
+    key,
+    onMount,
+    onUnmount,
+    onUpdate,
+    style,
+    ...rest
+  } = props;
+
+  const internalProps = {
+    value,
+    defaultValue,
+    placeholder,
+    onChange,
+    disabled,
+  };
+
+  return {
+    type: WidgetType.TextInput,
+    props: { value, defaultValue, placeholder, disabled, ...rest },
+    style: { focusable: !disabled, ...style },
+    onChar: (event) => {
+      createTextInputCharHandler(internalProps)(event);
+      userOnChar?.(event);
+    },
+    onKeyDown: (event) => {
+      createTextInputKeyHandler(internalProps)(event);
+      userOnKeyDown?.(event);
+    },
+    onPointerDown,
+    onPointerUp,
+    onPointerMove,
+    onClick,
+    onPointerEnter,
+    onPointerLeave,
+    onKeyUp,
+    onFocus,
+    onBlur,
+    key,
+    onMount,
+    onUnmount,
+    onUpdate,
+  };
+}

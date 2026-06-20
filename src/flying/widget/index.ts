@@ -5,4 +5,5 @@ export * from './flex';
 export * from './image';
 export * from './label';
 export * from './styles';
+export * from './text-input';
 export * from './view';

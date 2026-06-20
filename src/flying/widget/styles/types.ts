@@ -131,6 +131,12 @@ export interface TextStyle extends ViewStyle {
   _hover?: TextPseudoStateStyle;
 }
 
+export interface TextInputStyle extends TextStyle {
+  placeholderColor?: ValidColor;
+  caretColor?: ValidColor;
+  caretWidth?: number;
+}
+
 export type WidgetProps = Record<string, unknown>;
 
 export interface WidgetDescriptor extends InteractionProps {
