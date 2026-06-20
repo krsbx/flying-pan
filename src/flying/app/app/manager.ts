@@ -1,4 +1,3 @@
-import type { GetStableIdFn } from '@/flying/reconcile/reconciler/types';
 import { InteractionManager } from '@flying/interactions';
 import { Reconciler } from '@flying/reconcile';
 import { TextureManager } from '@flying/renderer/texture/manager';
@@ -28,7 +27,6 @@ export class AppManager {
   public readonly texture: TextureManager | null;
   public readonly reconciler: Reconciler;
   public readonly stateStore: StateStore;
-  public readonly $getStableId: GetStableIdFn;
 
   public constructor(options: AppManagerOptions) {
     this.window = new WindowManager(options.gl);
@@ -48,6 +46,5 @@ export class AppManager {
       : null;
     this.stateStore = new StateStore();
     this.reconciler = new Reconciler(this.stateStore);
-    this.$getStableId = this.reconciler.getStableId.bind(this.reconciler);
   }
 }

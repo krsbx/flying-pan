@@ -31,7 +31,7 @@ export class InputManager {
     this._bindings = new Map();
   }
 
-  protected onKey({ key, action, mods }: KeyAction): void {
+  protected onKey = ({ key, action, mods }: KeyAction): void => {
     this._current.modifiers = mods;
 
     if (action === GLFW_PRESS) {
@@ -42,9 +42,9 @@ export class InputManager {
     } else {
       this._current.keys.delete(key);
     }
-  }
+  };
 
-  protected onMousePress({ action, button, mods }: MouseAction): void {
+  protected onMousePress = ({ action, button, mods }: MouseAction): void => {
     this._current.modifiers = mods;
 
     if (action === GLFW_PRESS) {
@@ -52,16 +52,16 @@ export class InputManager {
     } else {
       this._current.mouseButtons.delete(button);
     }
-  }
+  };
 
-  protected onCursorPosition(position: Coordinate2D): void {
+  protected onCursorPosition = (position: Coordinate2D): void => {
     this._current.mousePosition = position;
-  }
+  };
 
-  protected onMouseScroll(delta: Coordinate2D): void {
+  protected onMouseScroll = (delta: Coordinate2D): void => {
     this._current.scrollDelta.x += delta.x;
     this._current.scrollDelta.y += delta.y;
-  }
+  };
 
   public update(): void {
     this._previous.keys = new Set(this._current.keys);
@@ -76,16 +76,11 @@ export class InputManager {
   }
 
   protected createBindings(): WindowCallbackMap {
-    const key = this.onKey.bind(this);
-    const mousePress = this.onMousePress.bind(this);
-    const cursorPosition = this.onCursorPosition.bind(this);
-    const mouseScroll = this.onMouseScroll.bind(this);
-
     return {
-      [InputEvent.Key]: key,
-      [InputEvent.MousePress]: mousePress,
-      [InputEvent.CursorPosition]: cursorPosition,
-      [InputEvent.MouseScroll]: mouseScroll,
+      [InputEvent.Key]: this.onKey,
+      [InputEvent.MousePress]: this.onMousePress,
+      [InputEvent.CursorPosition]: this.onCursorPosition,
+      [InputEvent.MouseScroll]: this.onMouseScroll,
     };
   }
 
