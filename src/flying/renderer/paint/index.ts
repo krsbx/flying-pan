@@ -1,14 +1,12 @@
 import type { Window } from '@flying/app';
 import {
   Overflow,
-  TextAlign,
   WidgetType,
-  type ImageProps,
-  type LabelProps,
   type TextStyle,
   type ViewStyle,
 } from '@flying/widget';
-import { Color } from '../color';
+import { paintImage } from './image';
+import { paintText } from './text';
 import type { PaintOptions } from './types';
 
 function resolveStyle(
@@ -32,7 +30,7 @@ function resolveStyle(
 
 export function paint(window: Window, options: PaintOptions) {
   const { renderer, ctx, layout } = options;
-  const { widget, x, y, width, height, children } = options.layout;
+  const { widget, x, y, width, height, children } = layout;
   const baseStyle = widget.style ?? ({} as ViewStyle);
 
   const stableId = layout.stableId;
@@ -88,65 +86,23 @@ export function paint(window: Window, options: PaintOptions) {
   }
 
   if (widget.type === WidgetType.Image) {
-    const src = (widget.props as ImageProps).src;
-    const texture = ctx.textureManager?.get?.(src);
-
-    if (texture) {
-      renderer.drawTexture(window, {
-        texture,
-        x,
-        y,
-        width,
-        height,
-        opacity,
-      });
-    }
+    paintImage(window, {
+      ctx,
+      layout,
+      renderer,
+      style,
+    });
   }
 
   if (widget.type === WidgetType.Label) {
     const textStyle = style as TextStyle;
-    const fontAtlas = ctx.fontManager.get(textStyle.font);
 
-    const text = (widget.props as LabelProps)?.text ?? '';
-    const color = textStyle.color ?? Color.white;
-
-    if (text) {
-      let x = options.layout.x;
-
-      const measured = fontAtlas.measureText({
-        text,
-        letterSpacing: textStyle.letterSpacing,
-        lineHeight: textStyle.lineHeight,
-        fontSize: textStyle.fontSize,
-      });
-
-      switch (textStyle.textAlign) {
-        case TextAlign.Center: {
-          x += (width - measured.width) / 2;
-          break;
-        }
-
-        case TextAlign.Right: {
-          x += width - measured.width;
-          break;
-        }
-
-        case TextAlign.Left:
-        default:
-          break;
-      }
-
-      renderer.drawText(window, {
-        text,
-        x,
-        y,
-        color,
-        atlas: fontAtlas,
-        opacity,
-        letterSpacing: textStyle.letterSpacing,
-        lineHeight: textStyle.lineHeight,
-      });
-    }
+    paintText(window, {
+      ctx,
+      layout,
+      renderer,
+      style: textStyle,
+    });
   }
 
   const overflow = style.overflow;
