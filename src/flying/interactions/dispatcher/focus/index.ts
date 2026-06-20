@@ -20,14 +20,14 @@ import type {
 
 export class FocusDispatcher extends BaseDispatcher {
   protected focusableNodes: LayoutNode[];
-  protected _focusedWidget: WidgetDescriptor | null;
+  protected _focusedStableId: number | null;
   protected _pendingFocusWidget: WidgetDescriptor | null;
   protected _pendingBlur: boolean;
 
-  public constructor(input: InputManager | null) {
+  public constructor(input: InputManager) {
     super(input);
 
-    this._focusedWidget = null;
+    this._focusedStableId = null;
     this.focusableNodes = [];
     this._pendingFocusWidget = null;
     this._pendingBlur = false;
@@ -44,12 +44,12 @@ export class FocusDispatcher extends BaseDispatcher {
     this.collectFocusable(layout);
 
     // 2. Validate current focus — blur if unmounted or no longer focusable
-    if (this._focusedWidget) {
-      const node = this.findNodeForWidget(layout, this._focusedWidget);
+    if (this._focusedStableId) {
+      const node = this.findNodeByStableId(layout, this._focusedStableId);
       const stillFocusable = node?.widget.style?.focusable === true;
 
       if (!node || !stillFocusable) {
-        this._focusedWidget = null;
+        this._focusedStableId = null;
         node?.widget.onBlur?.({ window, node, relatedTarget: null });
       }
     }
@@ -68,8 +68,8 @@ export class FocusDispatcher extends BaseDispatcher {
     }
 
     // 5. Route key events to the (possibly newly) focused widget
-    if (this._focusedWidget) {
-      const node = this.findNodeForWidget(layout, this._focusedWidget);
+    if (this._focusedStableId) {
+      const node = this.findNodeByStableId(layout, this._focusedStableId);
 
       if (node) {
         this.routeKeys({ window, node, input });
@@ -78,7 +78,7 @@ export class FocusDispatcher extends BaseDispatcher {
   }
 
   public reset(): void {
-    this._focusedWidget = null;
+    this._focusedStableId = null;
     this.focusableNodes = [];
     this._pendingFocusWidget = null;
     this._pendingBlur = false;
@@ -90,10 +90,10 @@ export class FocusDispatcher extends BaseDispatcher {
     if (this._pendingBlur) {
       this._pendingBlur = false;
 
-      if (this._focusedWidget) {
-        const oldNode = this.findNodeForWidget(layout, this._focusedWidget);
+      if (this._focusedStableId) {
+        const oldNode = this.findNodeByStableId(layout, this._focusedStableId);
 
-        this._focusedWidget = null;
+        this._focusedStableId = null;
 
         oldNode?.widget.onBlur?.({
           window,
@@ -124,8 +124,8 @@ export class FocusDispatcher extends BaseDispatcher {
     if (list.length === 0) return;
 
     const shift = input.isShiftDown;
-    const currentIdx = this._focusedWidget
-      ? list.findIndex((n) => n.widget === this._focusedWidget)
+    const currentIdx = this._focusedStableId
+      ? list.findIndex((n) => n.stableId === this._focusedStableId)
       : -1;
 
     let nextIdx: number;
@@ -155,11 +155,11 @@ export class FocusDispatcher extends BaseDispatcher {
 
     if (target) {
       this.moveFocus({ window, layout, target });
-    } else if (this._focusedWidget) {
+    } else if (this._focusedStableId) {
       // Clicked outside any focusable widget → blur current (HTML semantics)
-      const oldNode = this.findNodeForWidget(layout, this._focusedWidget);
+      const oldNode = this.findNodeByStableId(layout, this._focusedStableId);
 
-      this._focusedWidget = null;
+      this._focusedStableId = null;
 
       oldNode?.widget.onBlur?.({
         window,
@@ -172,14 +172,15 @@ export class FocusDispatcher extends BaseDispatcher {
   protected moveFocus(options: MoveFocusOptions): void {
     const { window, layout, target } = options;
 
-    if (this._focusedWidget === target.widget) return;
+    if (this._focusedStableId === target.stableId) return;
 
-    const oldWidget = this._focusedWidget;
-    const oldNode = oldWidget
-      ? this.findNodeForWidget(layout, oldWidget)
-      : null;
+    const oldStableId = this._focusedStableId;
+    const oldNode =
+      oldStableId !== null
+        ? this.findNodeByStableId(layout, oldStableId)
+        : null;
 
-    this._focusedWidget = target.widget;
+    this._focusedStableId = target.stableId;
 
     if (oldNode) {
       oldNode.widget.onBlur?.({
@@ -293,8 +294,8 @@ export class FocusDispatcher extends BaseDispatcher {
     this._pendingFocusWidget = null;
   }
 
-  public get focusedWidget(): WidgetDescriptor | null {
-    return this._focusedWidget;
+  public get focusedStableId(): number | null {
+    return this._focusedStableId;
   }
 
   public get pendingFocusWidget(): WidgetDescriptor | null {

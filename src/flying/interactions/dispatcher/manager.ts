@@ -9,7 +9,7 @@ export class InteractionManager {
   public readonly focus: FocusDispatcher;
   public readonly scroll: ScrollDispatcher;
 
-  public constructor(input: InputManager | null) {
+  public constructor(input: InputManager) {
     this.pointer = new PointerDispatcher(input);
     this.focus = new FocusDispatcher(input);
     this.scroll = new ScrollDispatcher(input);

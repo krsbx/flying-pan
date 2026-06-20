@@ -1,8 +1,6 @@
 import type { InputManager } from '@flying/app';
 import type { PointerEvent } from '@flying/interactions/event/types';
 import { hitTest } from '@flying/interactions/utility/hit-test';
-import type { LayoutNode } from '@flying/layout';
-import type { WidgetDescriptor } from '@flying/widget';
 import {
   GLFW_MOUSE_BUTTON_LEFT,
   GLFW_MOUSE_BUTTON_MIDDLE,
@@ -21,16 +19,16 @@ const TRACKED_BUTTONS = [
 ] as const;
 
 export class PointerDispatcher extends BaseDispatcher {
-  protected _hoveredNode: LayoutNode | null;
-  protected _pressedNode: LayoutNode | null;
+  protected _hoveredStableId: number | null;
+  protected _pressedStableId: number | null;
   protected _pressedButton: number | null;
   protected lastClick: LastClick | null;
 
-  public constructor(input: InputManager | null) {
+  public constructor(input: InputManager) {
     super(input);
 
-    this._hoveredNode = null;
-    this._pressedNode = null;
+    this._hoveredStableId = null;
+    this._pressedStableId = null;
     this._pressedButton = null;
     this.lastClick = null;
   }
@@ -50,17 +48,19 @@ export class PointerDispatcher extends BaseDispatcher {
       x: position.x,
       y: position.y,
     });
+    const hitId = hit?.stableId ?? null;
 
     // --- Hover enter / leave (compared by widget identity, not LayoutNode) ---
 
-    const hitWidget = hit?.widget ?? null;
-    const prevWidget = this._hoveredNode?.widget ?? null;
+    const prevNode = this._hoveredStableId
+      ? this.findNodeByStableId(layout, this._hoveredStableId)
+      : null;
 
-    if (hitWidget !== prevWidget) {
+    if (hitId !== this._hoveredStableId) {
       // Trigger leave previous node
       this.fireLeave({
         window,
-        node: this._hoveredNode,
+        node: prevNode,
         position,
         modifiers,
       });
@@ -68,12 +68,15 @@ export class PointerDispatcher extends BaseDispatcher {
       // Press cancellation: if the pointer left the widget it was pressed on
       // while still held, cancel the press (matches HTML :active — no click
       // fires on the eventual release, and the pressed style releases now).
-      if (this._pressedNode && this._pressedNode.widget === prevWidget) {
-        this._pressedNode = null;
+      if (
+        this._pressedStableId &&
+        this._pressedStableId === this._hoveredStableId
+      ) {
+        this._pressedStableId = null;
         this._pressedButton = null;
       }
 
-      this._hoveredNode = hit;
+      this._hoveredStableId = hitId;
 
       // Trigger enter new node
       this.fireEnter({
@@ -106,7 +109,7 @@ export class PointerDispatcher extends BaseDispatcher {
           button,
         });
 
-        this._pressedNode = hit;
+        this._pressedStableId = hitId;
         this._pressedButton = button;
       }
 
@@ -122,10 +125,11 @@ export class PointerDispatcher extends BaseDispatcher {
         // Click = pointer down and up on the same widget with the same button
         if (
           hit &&
-          this.sameWidget(hit, this._pressedNode) &&
+          hitId &&
+          hitId === this._pressedStableId &&
           button === this._pressedButton
         ) {
-          const count = this.getClickCount(hit.widget, button);
+          const count = this.getClickCount(hitId, button);
 
           hit.widget.onClick?.({
             window,
@@ -138,7 +142,7 @@ export class PointerDispatcher extends BaseDispatcher {
         }
 
         if (button === this._pressedButton) {
-          this._pressedNode = null;
+          this._pressedStableId = null;
           this._pressedButton = null;
         }
       }
@@ -146,8 +150,8 @@ export class PointerDispatcher extends BaseDispatcher {
   }
 
   public reset(): void {
-    this._hoveredNode = null;
-    this._pressedNode = null;
+    this._hoveredStableId = null;
+    this._pressedStableId = null;
     this._pressedButton = null;
     this.lastClick = null;
   }
@@ -161,12 +165,12 @@ export class PointerDispatcher extends BaseDispatcher {
     );
   }
 
-  protected getClickCount(widget: WidgetDescriptor, button: number): number {
+  protected getClickCount(stableId: number, button: number): number {
     const now = performance.now();
 
     if (
       this.lastClick &&
-      this.lastClick.widget === widget &&
+      this.lastClick.stableId === stableId &&
       this.lastClick.button === button &&
       now - this.lastClick.time <= DOUBLE_CLICK_MS
     ) {
@@ -177,7 +181,7 @@ export class PointerDispatcher extends BaseDispatcher {
     }
 
     this.lastClick = {
-      widget,
+      stableId,
       button,
       time: now,
       count: 1,
@@ -202,12 +206,12 @@ export class PointerDispatcher extends BaseDispatcher {
     return options.node !== null;
   }
 
-  public get hoveredNode(): LayoutNode | null {
-    return this._hoveredNode;
+  public get hoveredStableId(): number | null {
+    return this._hoveredStableId;
   }
 
-  public get pressedNode(): LayoutNode | null {
-    return this._pressedNode;
+  public get pressedStableId(): number | null {
+    return this._pressedStableId;
   }
 
   public get pressedButton(): number | null {

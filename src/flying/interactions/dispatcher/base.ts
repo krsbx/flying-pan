@@ -4,9 +4,9 @@ import type { WidgetDescriptor } from '@/flying/widget';
 import type { DispatchOptions } from './types';
 
 export abstract class BaseDispatcher {
-  public input: InputManager | null;
+  public input: InputManager;
 
-  public constructor(input: InputManager | null) {
+  public constructor(input: InputManager) {
     this.input = input;
   }
 
@@ -48,8 +48,19 @@ export abstract class BaseDispatcher {
     return null;
   }
 
-  protected sameWidget(a: LayoutNode | null, b: LayoutNode | null): boolean {
-    return a !== null && b !== null && a.widget === b.widget;
+  protected findNodeByStableId(
+    node: LayoutNode,
+    stableId: number
+  ): LayoutNode | null {
+    if (node.stableId === stableId) return node;
+
+    for (const child of node.children) {
+      const found = this.findNodeByStableId(child, stableId);
+
+      if (found) return found;
+    }
+
+    return null;
   }
 
   protected assertInput(input: InputManager | null): asserts input {

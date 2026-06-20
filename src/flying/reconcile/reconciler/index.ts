@@ -44,9 +44,9 @@ export class Reconciler implements GetStableId {
     this.stableIdByWidget = new Map();
   }
 
-  public getStableId(widget: WidgetDescriptor): number {
+  public getStableId = (widget: WidgetDescriptor): number => {
     return this.stableIdByWidget.get(widget) ?? 0;
-  }
+  };
 
   protected reconcileNode(options: ReconcileNodeOptions): ReconciledNode {
     const { prev, next, window } = options;

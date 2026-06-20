@@ -31,13 +31,14 @@ function resolveStyle(
 }
 
 export function paint(window: Window, options: PaintOptions) {
-  const { renderer, ctx } = options;
+  const { renderer, ctx, layout } = options;
   const { widget, x, y, width, height, children } = options.layout;
   const baseStyle = widget.style ?? ({} as ViewStyle);
 
-  const hovered = ctx.interactionManager.pointer.hoveredNode?.widget === widget;
-  const focused = ctx.interactionManager.focus.focusedWidget === widget;
-  const pressed = ctx.interactionManager.pointer.pressedNode?.widget === widget;
+  const stableId = layout.stableId;
+  const hovered = ctx.interactionManager.pointer.hoveredStableId === stableId;
+  const focused = ctx.interactionManager.focus.focusedStableId === stableId;
+  const pressed = ctx.interactionManager.pointer.pressedStableId === stableId;
   const style = resolveStyle(baseStyle, hovered, focused, pressed);
 
   const borderRadius = style.borderRadius;
@@ -159,7 +160,7 @@ export function paint(window: Window, options: PaintOptions) {
   }
 
   if (isScrollable && children.length > 0) {
-    const offset = ctx.interactionManager.scroll.offset(widget);
+    const offset = ctx.interactionManager.scroll.offset(layout);
     renderer.pushTranslate(window, { x: -offset.x, y: -offset.y });
   }
 

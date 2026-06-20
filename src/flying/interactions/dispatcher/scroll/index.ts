@@ -3,14 +3,14 @@ import { clamp } from '@/utility/common';
 import type { InputManager } from '@flying/app';
 import { hitTest } from '@flying/interactions';
 import type { LayoutNode } from '@flying/layout';
-import { Overflow, type WidgetDescriptor } from '@flying/widget';
+import { Overflow } from '@flying/widget';
 import { BaseDispatcher } from '../base';
 import type { DispatchOptions } from '../types';
 
 export class ScrollDispatcher extends BaseDispatcher {
-  protected offsets: Map<WidgetDescriptor, Coordinate2D>;
+  protected offsets: Map<number, Coordinate2D>;
 
-  public constructor(input: InputManager | null) {
+  public constructor(input: InputManager) {
     super(input);
     this.offsets = new Map();
   }
@@ -23,9 +23,9 @@ export class ScrollDispatcher extends BaseDispatcher {
 
     // 1. Drop orphan offsets (scrollable widgets that unmounted)
     if (this.offsets.size > 0) {
-      for (const widget of this.offsets.keys()) {
-        if (!this.findNodeForWidget(layout, widget)) {
-          this.offsets.delete(widget);
+      for (const stableId of this.offsets.keys()) {
+        if (!this.findNodeByStableId(layout, stableId)) {
+          this.offsets.delete(stableId);
         }
       }
     }
@@ -46,7 +46,7 @@ export class ScrollDispatcher extends BaseDispatcher {
     if (!target) return;
 
     // 4. Clamp against content size (extent of direct children)
-    const current = this.offset(target.widget);
+    const current = this.offset(target);
     const { contentWidth, contentHeight } = this.measureContent(target);
 
     const maxScrollX = Math.max(0, contentWidth - target.width);
@@ -65,11 +65,11 @@ export class ScrollDispatcher extends BaseDispatcher {
       max: maxScrollY,
     });
 
-    this.offsets.set(target.widget, { x: nextX, y: nextY });
+    this.offsets.set(target.stableId, { x: nextX, y: nextY });
   }
 
-  public offset(widget: WidgetDescriptor): Coordinate2D {
-    return this.offsets.get(widget) ?? { x: 0, y: 0 };
+  public offset(node: LayoutNode): Coordinate2D {
+    return this.offsets.get(node.stableId) ?? { x: 0, y: 0 };
   }
 
   public reset(): void {
