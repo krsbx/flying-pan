@@ -18,3 +18,8 @@ export interface RouteKeysOptions extends Omit<DispatchOptions, 'layout'> {
   node: LayoutNode;
   input: InputManager;
 }
+
+export interface RouteCharsOptions extends Omit<DispatchOptions, 'layout'> {
+  node: LayoutNode;
+  input: InputManager;
+}

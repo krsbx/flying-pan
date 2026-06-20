@@ -138,6 +138,7 @@ export class App {
               fontManager: this.manager.font,
               textureManager: this.manager.texture,
               getStableId: this.manager.reconciler.getStableId,
+              stateStore: this.manager.stateStore,
             },
           });
 

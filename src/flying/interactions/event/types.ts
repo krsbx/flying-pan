@@ -51,6 +51,10 @@ export interface KeyEvent extends InteractionEvent {
   repeat: boolean;
 }
 
+export interface CharEvent extends InteractionEvent {
+  codepoint: number;
+}
+
 // #endregion
 
 // #region Focus
@@ -104,6 +108,10 @@ export interface KeyEventHandler {
   (event: KeyEvent): void;
 }
 
+export interface CharEventHandler {
+  (event: CharEvent): void;
+}
+
 export interface FocusEventHandler {
   (event: FocusEvent): void;
 }
@@ -133,6 +141,7 @@ export interface InteractionProps {
   onPointerLeave?: PointerEventHandler;
   onKeyDown?: KeyEventHandler;
   onKeyUp?: KeyEventHandler;
+  onChar?: CharEventHandler;
   onFocus?: FocusEventHandler;
   onBlur?: FocusEventHandler;
 

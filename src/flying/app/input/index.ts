@@ -8,7 +8,15 @@ import {
 } from '@glfw/enums';
 import type { Window } from '../window';
 import { InputEvent } from '../window/window/constant';
-import type { KeyAction, MouseAction } from '../window/window/types';
+import type {
+  KeyAction,
+  MouseAction,
+  OnCharButton,
+  OnCursorPosition,
+  OnKeyButton,
+  OnMousePress,
+  OnMouseScroll,
+} from '../window/window/types';
 import { InputState } from './state';
 import type { WindowCallbackMap } from './types';
 
@@ -18,6 +26,7 @@ export class InputManager {
     InputEvent.MousePress,
     InputEvent.CursorPosition,
     InputEvent.MouseScroll,
+    InputEvent.Char,
   ] satisfies InputEvent[];
   protected _current: InputState;
   protected _previous: InputState;
@@ -31,7 +40,7 @@ export class InputManager {
     this._bindings = new Map();
   }
 
-  protected onKey = ({ key, action, mods }: KeyAction): void => {
+  protected onKey: OnKeyButton = ({ key, action, mods }: KeyAction): void => {
     this._current.modifiers = mods;
 
     if (action === GLFW_PRESS) {
@@ -44,7 +53,15 @@ export class InputManager {
     }
   };
 
-  protected onMousePress = ({ action, button, mods }: MouseAction): void => {
+  protected onChar: OnCharButton = (codepoint: number): void => {
+    this._current.chars.push(codepoint);
+  };
+
+  protected onMousePress: OnMousePress = ({
+    action,
+    button,
+    mods,
+  }: MouseAction): void => {
     this._current.modifiers = mods;
 
     if (action === GLFW_PRESS) {
@@ -54,17 +71,20 @@ export class InputManager {
     }
   };
 
-  protected onCursorPosition = (position: Coordinate2D): void => {
+  protected onCursorPosition: OnCursorPosition = (
+    position: Coordinate2D
+  ): void => {
     this._current.mousePosition = position;
   };
 
-  protected onMouseScroll = (delta: Coordinate2D): void => {
+  protected onMouseScroll: OnMouseScroll = (delta: Coordinate2D): void => {
     this._current.scrollDelta.x += delta.x;
     this._current.scrollDelta.y += delta.y;
   };
 
   public update(): void {
     this._previous.keys = new Set(this._current.keys);
+    this._previous.chars = this._current.chars;
     this._previous.repeatedKeys = new Set(this._current.repeatedKeys);
     this._previous.mouseButtons = new Set(this._current.mouseButtons);
     this._previous.mousePosition = { ...this._current.mousePosition };
@@ -73,11 +93,13 @@ export class InputManager {
 
     this._current.scrollDelta = { x: 0, y: 0 };
     this._current.repeatedKeys = new Set();
+    this._current.chars = [];
   }
 
   protected createBindings(): WindowCallbackMap {
     return {
       [InputEvent.Key]: this.onKey,
+      [InputEvent.Char]: this.onChar,
       [InputEvent.MousePress]: this.onMousePress,
       [InputEvent.CursorPosition]: this.onCursorPosition,
       [InputEvent.MouseScroll]: this.onMouseScroll,

@@ -14,6 +14,7 @@ import type {
   HandleClickOptions,
   HandleTabOptions,
   MoveFocusOptions,
+  RouteCharsOptions,
   RouteKeysOptions,
 } from './types';
 
@@ -77,6 +78,7 @@ export class FocusDispatcher extends BaseDispatcher {
 
       if (node) {
         this.routeKeys({ window, node, input, stateStore });
+        this.routeChars({ window, node, input, stateStore });
       }
     }
   }
@@ -203,6 +205,14 @@ export class FocusDispatcher extends BaseDispatcher {
       relatedTarget: oldNode ?? null,
       stateStore,
     });
+  }
+
+  protected routeChars(options: RouteCharsOptions): void {
+    const { window, node, input, stateStore } = options;
+
+    for (const codepoint of input.current.chars) {
+      node.widget.onChar?.({ window, node, stateStore, codepoint });
+    }
   }
 
   protected routeKeys(options: RouteKeysOptions): void {
