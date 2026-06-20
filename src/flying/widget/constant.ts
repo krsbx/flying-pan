@@ -54,6 +54,8 @@ export const WidgetType = {
   Label: 'Label',
   Button: 'Button',
   Image: 'Image',
+  TextInput: 'TextInput',
+  Checkbox: 'Checkbox',
 } as const;
 
 export type WidgetType = (typeof WidgetType)[keyof typeof WidgetType];

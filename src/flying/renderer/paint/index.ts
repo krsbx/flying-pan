@@ -2,31 +2,15 @@ import type { Window } from '@flying/app';
 import {
   Overflow,
   WidgetType,
+  type CheckboxProps,
   type TextStyle,
   type ViewStyle,
 } from '@flying/widget';
+import { paintCheckbox } from './checkbox';
 import { paintImage } from './image';
 import { paintText } from './text';
 import type { PaintOptions } from './types';
-
-function resolveStyle(
-  style: ViewStyle,
-  hovered: boolean,
-  focused: boolean,
-  pressed: boolean
-): ViewStyle {
-  if (!style._hover && !style._focus && !style._active) return style;
-
-  const { _hover, _focus, _active, ...base } = style;
-  let resolved: ViewStyle = base;
-
-  if (hovered && _hover) resolved = { ...resolved, ..._hover };
-  if (focused && _focus) resolved = { ...resolved, ..._focus };
-  // Pressed wins — matches CSS :active precedence (declared last).
-  if (pressed && _active) resolved = { ...resolved, ..._active };
-
-  return resolved;
-}
+import { resolveStyle } from './utility';
 
 export function paint(window: Window, options: PaintOptions) {
   const { renderer, ctx, layout } = options;
@@ -95,13 +79,23 @@ export function paint(window: Window, options: PaintOptions) {
   }
 
   if (widget.type === WidgetType.Label) {
-    const textStyle = style as TextStyle;
-
     paintText(window, {
       ctx,
       layout,
       renderer,
-      style: textStyle,
+      style: style as TextStyle,
+    });
+  }
+
+  if (widget.type === WidgetType.Checkbox) {
+    const props = widget.props as CheckboxProps;
+    const mergedStyle = { ...style, ...props.tickStyle };
+
+    paintCheckbox(window, {
+      ctx,
+      layout,
+      renderer,
+      style: resolveStyle(mergedStyle, hovered, focused, pressed),
     });
   }
 
