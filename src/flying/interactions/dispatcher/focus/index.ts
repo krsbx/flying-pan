@@ -11,7 +11,6 @@ import {
 import { BaseDispatcher } from '../base';
 import type { DispatchOptions } from '../types';
 import type {
-  ApplyPendingBlurFocusOptions,
   HandleClickOptions,
   HandleTabOptions,
   MoveFocusOptions,
@@ -34,7 +33,7 @@ export class FocusDispatcher extends BaseDispatcher {
   }
 
   public dispatch(options: DispatchOptions): void {
-    const { window, layout } = options;
+    const { window, layout, stateStore } = options;
     const input = options.input ?? this.input;
 
     this.assertInput(input);
@@ -50,21 +49,26 @@ export class FocusDispatcher extends BaseDispatcher {
 
       if (!node || !stillFocusable) {
         this._focusedStableId = null;
-        node?.widget.onBlur?.({ window, node, relatedTarget: null });
+        node?.widget.onBlur?.({
+          window,
+          node,
+          relatedTarget: null,
+          stateStore: stateStore,
+        });
       }
     }
 
     // 2.5. Apply pending blur/focus
-    this.applyPendingBlurFocus({ window, layout });
+    this.applyPendingBlurFocus({ window, layout, stateStore });
 
     // 3. Tab cycling
     if (input.isKeyPressed(GLFW_KEY_TAB)) {
-      this.handleTab({ window, layout, input });
+      this.handleTab({ window, layout, input, stateStore });
     }
 
     // 4. Click-to-focus (nearest focusable ancestor of the hit target)
     if (input.isButtonPressed(GLFW_MOUSE_BUTTON_LEFT)) {
-      this.handleClick({ window, layout, input });
+      this.handleClick({ window, layout, input, stateStore });
     }
 
     // 5. Route key events to the (possibly newly) focused widget
@@ -72,7 +76,7 @@ export class FocusDispatcher extends BaseDispatcher {
       const node = this.findNodeByStableId(layout, this._focusedStableId);
 
       if (node) {
-        this.routeKeys({ window, node, input });
+        this.routeKeys({ window, node, input, stateStore });
       }
     }
   }
@@ -84,8 +88,8 @@ export class FocusDispatcher extends BaseDispatcher {
     this._pendingBlur = false;
   }
 
-  protected applyPendingBlurFocus(options: ApplyPendingBlurFocusOptions) {
-    const { window, layout } = options;
+  protected applyPendingBlurFocus(options: DispatchOptions) {
+    const { window, layout, stateStore } = options;
 
     if (this._pendingBlur) {
       this._pendingBlur = false;
@@ -99,6 +103,7 @@ export class FocusDispatcher extends BaseDispatcher {
           window,
           node: oldNode,
           relatedTarget: null,
+          stateStore,
         });
       }
     }
@@ -111,13 +116,13 @@ export class FocusDispatcher extends BaseDispatcher {
       const node = this.findNodeForWidget(layout, widget);
 
       if (node && node.widget.style?.focusable === true) {
-        this.moveFocus({ window, layout, target: node });
+        this.moveFocus({ window, layout, target: node, stateStore });
       }
     }
   }
 
   protected handleTab(options: HandleTabOptions): void {
-    const { window, layout, input } = options;
+    const { window, layout, input, stateStore } = options;
 
     const list = this.focusableNodes;
 
@@ -142,11 +147,11 @@ export class FocusDispatcher extends BaseDispatcher {
 
     if (!target) return;
 
-    this.moveFocus({ window, layout, target });
+    this.moveFocus({ window, layout, target, stateStore });
   }
 
   protected handleClick(options: HandleClickOptions): void {
-    const { window, layout, input } = options;
+    const { window, layout, input, stateStore } = options;
 
     const position = input.mousePosition;
     const hit = hitTest({ node: layout, x: position.x, y: position.y });
@@ -154,7 +159,7 @@ export class FocusDispatcher extends BaseDispatcher {
     const target = hit ? this.nearestFocusableAncestor(layout, hit) : null;
 
     if (target) {
-      this.moveFocus({ window, layout, target });
+      this.moveFocus({ window, layout, target, stateStore });
     } else if (this._focusedStableId) {
       // Clicked outside any focusable widget → blur current (HTML semantics)
       const oldNode = this.findNodeByStableId(layout, this._focusedStableId);
@@ -165,12 +170,13 @@ export class FocusDispatcher extends BaseDispatcher {
         window,
         node: oldNode,
         relatedTarget: null,
+        stateStore,
       });
     }
   }
 
   protected moveFocus(options: MoveFocusOptions): void {
-    const { window, layout, target } = options;
+    const { window, layout, target, stateStore } = options;
 
     if (this._focusedStableId === target.stableId) return;
 
@@ -187,6 +193,7 @@ export class FocusDispatcher extends BaseDispatcher {
         window,
         node: oldNode,
         relatedTarget: target,
+        stateStore,
       });
     }
 
@@ -194,11 +201,12 @@ export class FocusDispatcher extends BaseDispatcher {
       window,
       node: target,
       relatedTarget: oldNode ?? null,
+      stateStore,
     });
   }
 
   protected routeKeys(options: RouteKeysOptions): void {
-    const { window, node, input } = options;
+    const { window, node, input, stateStore } = options;
 
     const current = input.current.keys;
     const previous = input.previous.keys;
@@ -219,15 +227,17 @@ export class FocusDispatcher extends BaseDispatcher {
           scancode: 0,
           modifiers,
           repeat: isRepeat,
+          stateStore,
         });
 
-        // Activate focused buttons on Enter / Space (HTML semantics).
+        // Activate focused buttons/checkboxes on Enter / Space (HTML semantics).
         // Only on fresh press — auto-repeat must not re-trigger the click.
         // Synthesizes a ClickEvent so user handlers don't care about source.
         if (
           isFresh &&
           (key === GLFW_KEY_ENTER || key === GLFW_KEY_SPACE) &&
-          node.widget.type === WidgetType.Button
+          (node.widget.type === WidgetType.Button ||
+            node.widget.type === WidgetType.Checkbox)
         ) {
           node.widget.onClick?.({
             window,
@@ -236,6 +246,7 @@ export class FocusDispatcher extends BaseDispatcher {
             button: GLFW_MOUSE_BUTTON_LEFT,
             modifiers,
             count: 1,
+            stateStore,
           });
         }
       }
@@ -252,6 +263,7 @@ export class FocusDispatcher extends BaseDispatcher {
           scancode: 0,
           modifiers,
           repeat: false,
+          stateStore,
         });
       }
     }

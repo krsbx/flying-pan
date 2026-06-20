@@ -1,4 +1,4 @@
-import type { StateForOptions, StoreFor } from './types';
+import type { SetStateOptions, StateForOptions, StoreFor } from './types';
 
 export class StateStore implements StoreFor {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -8,8 +8,7 @@ export class StateStore implements StoreFor {
     this.store = new Map();
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public stateFor<T = (() => any) | any>(options: StateForOptions<T>): T {
+  public stateFor<T, U = (() => T) | T>(options: StateForOptions<U>): T {
     const { stableId, initial } = options;
     const existing = this.store.get(stableId);
 
@@ -21,6 +20,11 @@ export class StateStore implements StoreFor {
     this.store.set(stableId, created);
 
     return created;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public setState<T = any>(options: SetStateOptions<T>): void {
+    this.store.set(options.stableId, options.value);
   }
 
   public destroy(stableId: number): void {

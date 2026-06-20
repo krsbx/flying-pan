@@ -1,31 +1,20 @@
-import type { InputManager, Window } from '@/flying/app';
+import type { InputManager } from '@/flying/app';
 import type { LayoutNode } from '@/flying/layout';
+import type { DispatchOptions } from '../types';
 
-export interface HandleTabOptions {
-  window: Window;
-  layout: LayoutNode;
+export interface HandleTabOptions extends DispatchOptions {
   input: InputManager;
 }
 
-export interface HandleClickOptions {
-  window: Window;
-  layout: LayoutNode;
+export interface HandleClickOptions extends DispatchOptions {
   input: InputManager;
 }
 
-export interface MoveFocusOptions {
-  window: Window;
-  layout: LayoutNode;
+export interface MoveFocusOptions extends DispatchOptions {
   target: LayoutNode;
 }
 
-export interface RouteKeysOptions {
-  window: Window;
+export interface RouteKeysOptions extends Omit<DispatchOptions, 'layout'> {
   node: LayoutNode;
   input: InputManager;
-}
-
-export interface ApplyPendingBlurFocusOptions {
-  window: Window;
-  layout: LayoutNode;
 }

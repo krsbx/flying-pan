@@ -34,7 +34,7 @@ export class PointerDispatcher extends BaseDispatcher {
   }
 
   public dispatch(options: DispatchOptions): void {
-    const { window, layout } = options;
+    const { window, layout, stateStore } = options;
 
     const input = options.input ?? this.input;
 
@@ -95,6 +95,7 @@ export class PointerDispatcher extends BaseDispatcher {
         node: hit,
         position,
         modifiers,
+        stateStore,
       });
     }
 
@@ -107,6 +108,7 @@ export class PointerDispatcher extends BaseDispatcher {
           position,
           modifiers,
           button,
+          stateStore,
         });
 
         this._pressedStableId = hitId;
@@ -120,6 +122,7 @@ export class PointerDispatcher extends BaseDispatcher {
           position,
           modifiers,
           button,
+          stateStore,
         });
 
         // Click = pointer down and up on the same widget with the same button
@@ -138,6 +141,7 @@ export class PointerDispatcher extends BaseDispatcher {
             button,
             modifiers,
             count,
+            stateStore,
           });
         }
 

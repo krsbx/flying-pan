@@ -1,5 +1,6 @@
 import type { Window } from '@flying/app';
 import type { LayoutNode } from '@flying/layout';
+import type { StateStore } from '@flying/state';
 import type { Coordinate2D } from '@flying/types';
 import type { WidgetDescriptor } from '@flying/widget';
 
@@ -10,6 +11,7 @@ import type { WidgetDescriptor } from '@flying/widget';
 export interface InteractionEvent {
   window: Window;
   node: LayoutNode;
+  stateStore: StateStore;
 }
 
 // #region Pointer
