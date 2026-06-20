@@ -1,4 +1,5 @@
 import { layoutFlex } from '@flying/layout';
+import { getStableId } from '@flying/reconcile';
 import { paint, Renderer } from '@flying/renderer';
 import { GLFW } from '@glfw';
 import {
@@ -123,14 +124,22 @@ export class App {
         this.renderer.clear(window, window.backgroundColor);
 
         if (window.widget) {
+          this.manager.reconciler.reconcile({
+            window,
+            next: window.widget,
+          });
+
           const layout = layoutFlex({
             node: window.widget,
             x: 0,
             y: 0,
             availableWidth: window.size.width,
             availableHeight: window.size.height,
-            fontManager: this.manager.font,
-            textureManager: this.manager.texture,
+            ctx: {
+              fontManager: this.manager.font,
+              textureManager: this.manager.texture,
+              getStableId,
+            },
           });
 
           this.manager.interaction.dispatch({

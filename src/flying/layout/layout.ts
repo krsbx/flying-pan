@@ -12,15 +12,7 @@ import type { LayoutFlexFn, LayoutNode } from './types';
 import { layoutSingleLine, layoutWrap } from './wrap';
 
 export const layoutFlex: LayoutFlexFn = function (options) {
-  const {
-    node,
-    x,
-    y,
-    fontManager,
-    textureManager,
-    availableWidth,
-    availableHeight,
-  } = options;
+  const { node, x, y, availableWidth, availableHeight, ctx } = options;
   const style = node.style ?? ({} as ViewStyle);
 
   const padding = resolveSpacing(
@@ -43,6 +35,7 @@ export const layoutFlex: LayoutFlexFn = function (options) {
   if (!node.children || node.children.length === 0) {
     return {
       widget: node,
+      stableId: ctx.getStableId(node),
       x,
       y,
       width: contentWidth + padding.left + padding.right,
@@ -53,10 +46,9 @@ export const layoutFlex: LayoutFlexFn = function (options) {
 
   const { flow, absolute } = measureChildsComponent({
     children: node.children,
-    fontManager,
     parentWidth: contentWidth,
     parentHeight: contentHeight,
-    textureManager: textureManager,
+    ctx,
   });
 
   const lineOptions = {
@@ -69,9 +61,8 @@ export const layoutFlex: LayoutFlexFn = function (options) {
     contentHeight,
     x,
     y,
-    fontManager,
     children,
-    textureManager,
+    ctx,
   };
 
   if (flow.length > 0) {
@@ -88,6 +79,7 @@ export const layoutFlex: LayoutFlexFn = function (options) {
 
   return {
     widget: node,
+    stableId: ctx.getStableId(node),
     x,
     y,
     width: contentWidth + padding.left + padding.right,

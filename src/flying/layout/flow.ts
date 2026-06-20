@@ -18,8 +18,7 @@ export function positionFlowChildren(
     x,
     y,
     gap,
-    fontManager,
-    textureManager,
+    ctx,
     children,
   } = options;
 
@@ -73,8 +72,7 @@ export function positionFlowChildren(
         y: y + childY,
         availableWidth: m.width,
         availableHeight: m.height,
-        fontManager,
-        textureManager,
+        ctx,
       })
     );
 

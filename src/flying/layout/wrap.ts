@@ -7,20 +7,8 @@ export function layoutSingleLine(
   options: LayoutLineOptions,
   layoutFlex: LayoutFlexFn
 ) {
-  const {
-    flow,
-    style,
-    padding,
-    isRow,
-    gap,
-    contentWidth,
-    contentHeight,
-    x,
-    y,
-    fontManager,
-    textureManager,
-    children,
-  } = options;
+  const { flow, style, padding, isRow, gap, contentWidth, contentHeight } =
+    options;
 
   const { crossAxisSize, mainAxisSize, totalGaps } = updateChildMeasurements({
     measurements: flow,
@@ -48,21 +36,14 @@ export function layoutSingleLine(
 
   positionFlowChildren(
     {
+      ...options,
       measurements: flow,
       alignItems,
-      isRow,
-      padding,
       crossAxisSize,
       mainPos: calculatedMainPos,
       spaceBetweenGap,
       spaceEvenlyGap,
       justifyItems,
-      x,
-      y,
-      gap,
-      fontManager,
-      textureManager,
-      children,
     },
     layoutFlex
   );
@@ -72,20 +53,8 @@ export function layoutWrap(
   options: LayoutLineOptions,
   layoutFlex: LayoutFlexFn
 ) {
-  const {
-    flow,
-    style,
-    padding,
-    isRow,
-    gap,
-    contentWidth,
-    contentHeight,
-    x,
-    y,
-    fontManager,
-    textureManager,
-    children,
-  } = options;
+  const { flow, style, padding, isRow, gap, contentWidth, contentHeight } =
+    options;
 
   const mainAxisSize = isRow ? contentWidth : contentHeight;
 
@@ -128,9 +97,9 @@ export function layoutWrap(
 
     positionFlowChildren(
       {
+        ...options,
         measurements: line.measurements,
         alignItems,
-        isRow,
         padding: {
           ...padding,
           top: isRow ? crossPos : padding.top,
@@ -141,12 +110,6 @@ export function layoutWrap(
         spaceBetweenGap,
         spaceEvenlyGap,
         justifyItems,
-        x,
-        y,
-        gap,
-        fontManager,
-        textureManager,
-        children,
       },
       layoutFlex
     );

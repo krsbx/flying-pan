@@ -1,5 +1,7 @@
-import { TextureManager } from '@/flying/renderer/texture/manager';
 import { InteractionManager } from '@flying/interactions';
+import { Reconciler } from '@flying/reconcile';
+import { TextureManager } from '@flying/renderer/texture/manager';
+import { setCurrentStateStore, StateStore } from '@flying/state';
 import type { GLFW } from '@glfw';
 import { AudioManager, type AudioManagerOptions } from '../audio';
 import { FontManager } from '../fonts/manager';
@@ -23,6 +25,8 @@ export class AppManager {
   public readonly interaction: InteractionManager;
   public readonly audio: AudioManager | null;
   public readonly texture: TextureManager | null;
+  public readonly reconciler: Reconciler;
+  public readonly stateStore: StateStore;
 
   public constructor(options: AppManagerOptions) {
     this.window = new WindowManager(options.gl);
@@ -40,5 +44,9 @@ export class AppManager {
           imageLibPath: options.texture,
         })
       : null;
+    this.stateStore = new StateStore();
+    this.reconciler = new Reconciler(this.stateStore);
+
+    setCurrentStateStore(this.stateStore);
   }
 }

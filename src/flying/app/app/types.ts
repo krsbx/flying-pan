@@ -20,13 +20,6 @@ export interface AppConfig extends WindowOptions {
   vsync?: boolean;
 }
 
-export type AppFonts<Fonts extends readonly FontConfig[]> = Omit<
-  Map<Fonts[number]['identifier'], BaseFontAtlas>,
-  'get'
-> & {
-  get(key: Fonts[number]['identifier']): BaseFontAtlas;
-};
-
 export interface OnRenderFrame {
   (app: App): void;
 }

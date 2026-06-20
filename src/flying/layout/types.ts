@@ -9,7 +9,18 @@ import type {
 import type { TextureManager } from '../renderer/texture/manager';
 import type { Coordinate2D, Size } from '../types';
 
+interface GetStableIdFn {
+  (widget: WidgetDescriptor): number;
+}
+
+export interface LayoutContext {
+  fontManager: FontManager;
+  textureManager: TextureManager | null;
+  getStableId: GetStableIdFn;
+}
+
 export interface LayoutNode extends Coordinate2D, Size {
+  stableId: number;
   widget: WidgetDescriptor;
   children: LayoutNode[];
 }
@@ -18,8 +29,7 @@ export interface LayoutFlexOptions extends Coordinate2D {
   node: WidgetDescriptor;
   availableWidth: number;
   availableHeight: number;
-  fontManager: FontManager;
-  textureManager: TextureManager | null;
+  ctx: LayoutContext;
 }
 
 export interface LayoutFlexFn {
@@ -35,10 +45,9 @@ export interface ChildMeasurements extends Size {
 
 export interface MeasureChildsComponentOptions {
   children: WidgetDescriptor[];
-  fontManager: FontManager;
-  textureManager: TextureManager | null;
   parentWidth: number;
   parentHeight: number;
+  ctx: LayoutContext;
 }
 
 export interface MeasureChildsComponentResult {
@@ -104,9 +113,8 @@ export interface LayoutLineOptions {
   contentHeight: number;
   x: number;
   y: number;
-  fontManager: FontManager;
-  textureManager: TextureManager | null;
   children: LayoutNode[];
+  ctx: LayoutContext;
 }
 
 export interface PositionFlowChildrenOptions {
@@ -122,9 +130,8 @@ export interface PositionFlowChildrenOptions {
   x: number;
   y: number;
   gap: number;
-  fontManager: FontManager;
-  textureManager: TextureManager | null;
   children: LayoutNode[];
+  ctx: LayoutContext;
 }
 
 export interface PositionAbsoluteOptions {
@@ -134,7 +141,6 @@ export interface PositionAbsoluteOptions {
   contentHeight: number;
   x: number;
   y: number;
-  fontManager: FontManager;
-  textureManager: TextureManager | null;
   children: LayoutNode[];
+  ctx: LayoutContext;
 }

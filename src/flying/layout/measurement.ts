@@ -23,7 +23,7 @@ import type {
 export function measureChildsComponent(
   options: MeasureChildsComponentOptions
 ): MeasureChildsComponentResult {
-  const { parentWidth, parentHeight, textureManager } = options;
+  const { parentWidth, parentHeight, ctx } = options;
   const flow: ChildMeasurements[] = [];
   const absolute: ChildMeasurements[] = [];
 
@@ -45,7 +45,7 @@ export function measureChildsComponent(
 
     if (child.type === WidgetType.Image && !width && !height) {
       const props = child.props as ImageProps;
-      const info = textureManager?.info?.(props.src);
+      const info = ctx.textureManager?.info?.(props.src);
 
       if (info) {
         width ||= props.width || info.width;
@@ -55,7 +55,7 @@ export function measureChildsComponent(
 
     if (child.type === WidgetType.Label) {
       const style = child.style as TextStyle;
-      const fontAtlas = options.fontManager.get(style.font);
+      const fontAtlas = ctx.fontManager.get(style.font);
 
       const text = (child.props as LabelProps).text;
       const fontSize = style?.fontSize ?? 16;
