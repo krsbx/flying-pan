@@ -19,6 +19,7 @@ import type {
 } from './types';
 
 export class FocusDispatcher extends BaseDispatcher {
+  protected readonly activableWidgets: Set<WidgetType>;
   protected focusableNodes: LayoutNode[];
   protected _focusedStableId: number | null;
   protected _pendingFocusWidget: WidgetDescriptor | null;
@@ -27,6 +28,11 @@ export class FocusDispatcher extends BaseDispatcher {
   public constructor(input: InputManager) {
     super(input);
 
+    this.activableWidgets = new Set([
+      WidgetType.Button,
+      WidgetType.Checkbox,
+      WidgetType.Radio,
+    ]);
     this._focusedStableId = null;
     this.focusableNodes = [];
     this._pendingFocusWidget = null;
@@ -240,14 +246,13 @@ export class FocusDispatcher extends BaseDispatcher {
           stateStore,
         });
 
-        // Activate focused buttons/checkboxes on Enter / Space (HTML semantics).
+        // Activate focused widget on Enter / Space (HTML semantics).
         // Only on fresh press — auto-repeat must not re-trigger the click.
         // Synthesizes a ClickEvent so user handlers don't care about source.
         if (
           isFresh &&
           (key === GLFW_KEY_ENTER || key === GLFW_KEY_SPACE) &&
-          (node.widget.type === WidgetType.Button ||
-            node.widget.type === WidgetType.Checkbox)
+          this.activableWidgets.has(node.widget.type)
         ) {
           node.widget.onClick?.({
             window,
