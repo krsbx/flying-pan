@@ -37,6 +37,8 @@ export function RadioGroup(props: RadioGroupProps): WidgetDescriptor {
     if (child.type !== WidgetType.Radio) return child;
 
     const radioProps = child.props as RadioProps;
+    const { label, labelColor, font, ...radioOnly } = radioProps;
+
     const isDisabled = radioProps.disabled === true;
 
     const selected = isControlled
@@ -46,7 +48,7 @@ export function RadioGroup(props: RadioGroupProps): WidgetDescriptor {
     const innerRadio: WidgetDescriptor = {
       ...child,
       props: {
-        ...radioProps,
+        ...radioOnly,
         selected,
         name: isControlled ? undefined : props.name,
         groupDefaultValue: isControlled ? undefined : resolvedDefault,
@@ -80,12 +82,16 @@ export function RadioGroup(props: RadioGroupProps): WidgetDescriptor {
       },
     };
 
-    if (radioProps.label === undefined) return innerRadio;
+    if (label === undefined) return innerRadio;
 
     const labelWidget: WidgetDescriptor =
-      typeof radioProps.label === 'string'
-        ? Label({ text: radioProps.label, style: { font: radioProps.font! } })
-        : radioProps.label;
+      typeof label === 'string'
+        ? Label({
+            text: label,
+            font: font!,
+            style: { color: labelColor },
+          })
+        : label;
 
     return Flex({
       direction: 'row',

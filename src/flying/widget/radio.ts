@@ -1,12 +1,15 @@
 import type { InteractionProps } from '@flying/interactions';
+import type { ValidColor } from '../types';
 import { WidgetType } from './constant';
-import { Metrics, Palette } from './styles';
 import type { ViewStyle, WidgetDescriptor, WidgetProps } from './styles';
+import { Metrics, Palette } from './styles';
 
 export interface RadioProps extends WidgetProps, InteractionProps {
   value: string;
   selected?: boolean;
   label?: string | WidgetDescriptor;
+  /** Label color. */
+  labelColor?: ValidColor;
   disabled?: boolean;
   name?: string;
   groupDefaultValue?: string;
@@ -22,6 +25,8 @@ export function Radio(props: RadioProps): WidgetDescriptor {
     value,
     selected,
     label,
+    labelColor,
+    font,
     disabled = false,
     dotStyle,
     dotSize,
@@ -51,6 +56,8 @@ export function Radio(props: RadioProps): WidgetDescriptor {
       value,
       selected,
       label,
+      labelColor,
+      font,
       disabled,
       dotStyle: {
         backgroundColor: Palette.accent,
