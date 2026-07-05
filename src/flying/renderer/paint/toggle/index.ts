@@ -1,17 +1,14 @@
 import type { Window } from '@/flying/app';
-import type { ViewStyle } from '@/flying/widget';
 import type { ToggleProps } from '@/flying/widget/toggle';
-import type { PaintOptions } from '../types';
+import type { SubMarkPaintOptions } from '../types';
+import { paintBorder, resolveStyle } from '../utility';
 
 const INDICATOR_COLOR = '#ffffff';
 
 const INDICATOR_INSET = 1;
 
-export function paintToggle(
-  window: Window,
-  options: PaintOptions & { style: ViewStyle; checked: boolean }
-) {
-  const { renderer, layout, style, checked } = options;
+export function paintToggle(window: Window, options: SubMarkPaintOptions) {
+  const { renderer, layout, checked, hovered, focused, pressed } = options;
   const { widget, x, y, width, height } = layout;
   const props = widget.props as ToggleProps;
 
@@ -21,13 +18,30 @@ export function paintToggle(
   const markX = checked ? x + half : x + INDICATOR_INSET;
   const markY = y + INDICATOR_INSET;
 
+  const knob = resolveStyle({
+    style: props.indicatorStyle ?? {},
+    hovered,
+    focused,
+    pressed,
+    checked,
+  });
+
+  paintBorder(window, {
+    x: markX,
+    y: markY,
+    width: markWidth,
+    height: markHeight,
+    renderer,
+    style: knob,
+  });
+
   renderer.drawRect(window, {
     x: markX,
     y: markY,
     width: markWidth,
     height: markHeight,
-    color: props.indicatorStyle?.backgroundColor ?? INDICATOR_COLOR,
-    opacity: style.opacity,
-    borderRadius: props.indicatorStyle?.borderRadius ?? markHeight / 2,
+    color: knob.backgroundColor ?? INDICATOR_COLOR,
+    opacity: knob.opacity,
+    borderRadius: knob.borderRadius ?? markHeight / 2,
   });
 }

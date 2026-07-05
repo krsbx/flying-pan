@@ -16,7 +16,7 @@ import { paintText } from './text';
 import { paintTextInput } from './text/input';
 import { paintToggle } from './toggle';
 import type { PaintOptions } from './types';
-import { resolveStyle } from './utility';
+import { paintBorder, resolveStyle } from './utility';
 
 export function paint(window: Window, options: PaintOptions) {
   const { renderer, ctx, layout } = options;
@@ -92,18 +92,14 @@ export function paint(window: Window, options: PaintOptions) {
     }
   }
 
-  // Render the border by drawing a rectangle with a bigger size as the requested
-  if (style.borderWidth && style.borderColor) {
-    renderer.drawRect(window, {
-      x: x - style.borderWidth / 2,
-      y: y - style.borderWidth / 2,
-      width: width + style.borderWidth,
-      height: height + style.borderWidth,
-      color: style.borderColor,
-      borderRadius,
-      opacity,
-    });
-  }
+  paintBorder(window, {
+    x,
+    y,
+    width,
+    height,
+    style,
+    renderer,
+  });
 
   if (style.backgroundColor) {
     renderer.drawRect(window, {
@@ -156,6 +152,9 @@ export function paint(window: Window, options: PaintOptions) {
         renderer,
         style,
         checked,
+        hovered,
+        focused,
+        pressed,
       });
       break;
     }
@@ -167,6 +166,9 @@ export function paint(window: Window, options: PaintOptions) {
         renderer,
         style,
         checked,
+        hovered,
+        focused,
+        pressed,
       });
       break;
     }
@@ -178,6 +180,9 @@ export function paint(window: Window, options: PaintOptions) {
         renderer,
         style,
         checked,
+        hovered,
+        focused,
+        pressed,
       });
       break;
     }
