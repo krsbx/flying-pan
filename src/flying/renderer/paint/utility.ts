@@ -1,8 +1,16 @@
+import type { LayoutNode } from '@/flying/layout';
 import type { Coordinate2D, Resolution } from '@/flying/types';
 import type { Window } from '@flying/app';
-import type { ViewStyle } from '@flying/widget';
+import {
+  WidgetType,
+  type CheckboxProps,
+  type RadioProps,
+  type ToggleProps,
+  type ViewStyle,
+  type WidgetDescriptor,
+} from '@flying/widget';
 import type { Renderer } from '../renderer';
-import type { ResolveStyleOptions } from './types';
+import type { PaintContext, ResolveStyleOptions } from './types';
 
 export function paintBorder(
   window: Window,
@@ -43,4 +51,49 @@ export function resolveStyle(options: ResolveStyleOptions): ViewStyle {
   if (checked && _checked) resolved = { ...resolved, ..._checked };
 
   return resolved;
+}
+
+export function resolveWidgetCheckedState(options: {
+  widget: WidgetDescriptor;
+  layout: LayoutNode;
+  ctx: PaintContext;
+}): boolean {
+  const { widget, layout, ctx } = options;
+
+  if (widget.type === WidgetType.Radio) {
+    const radioProps = widget.props as RadioProps;
+
+    if (radioProps.selected !== undefined) {
+      return radioProps.selected;
+    } else if (radioProps.name !== undefined) {
+      const current = ctx.stateStore.stateForByName<string>({
+        name: radioProps.name,
+        initial: radioProps.groupDefaultValue ?? '',
+      });
+
+      return current === radioProps.value;
+    }
+  } else if (widget.type === WidgetType.Checkbox) {
+    const cbProps = widget.props as CheckboxProps;
+
+    return (
+      cbProps.value ??
+      ctx.stateStore.stateFor<boolean>({
+        stableId: layout.stableId,
+        initial: cbProps.defaultValue ?? false,
+      })
+    );
+  } else if (widget.type === WidgetType.Toggle) {
+    const toggleProps = widget.props as ToggleProps;
+
+    return (
+      toggleProps.value ??
+      ctx.stateStore.stateFor<boolean>({
+        stableId: layout.stableId,
+        initial: toggleProps.defaultValue ?? false,
+      })
+    );
+  }
+
+  return false;
 }

@@ -1,10 +1,7 @@
-import type { ToggleProps } from '@/flying/widget/toggle';
 import type { Window } from '@flying/app';
 import {
   Overflow,
   WidgetType,
-  type CheckboxProps,
-  type RadioProps,
   type TextInputStyle,
   type TextStyle,
   type ViewStyle,
@@ -16,7 +13,11 @@ import { paintText } from './text';
 import { paintTextInput } from './text/input';
 import { paintToggle } from './toggle';
 import type { PaintOptions } from './types';
-import { paintBorder, resolveStyle } from './utility';
+import {
+  paintBorder,
+  resolveStyle,
+  resolveWidgetCheckedState,
+} from './utility';
 
 export function paint(window: Window, options: PaintOptions) {
   const { renderer, ctx, layout } = options;
@@ -27,41 +28,7 @@ export function paint(window: Window, options: PaintOptions) {
   const hovered = ctx.interactionManager.pointer.hoveredStableId === stableId;
   const focused = ctx.interactionManager.focus.focusedStableId === stableId;
   const pressed = ctx.interactionManager.pointer.pressedStableId === stableId;
-
-  let checked = false;
-
-  if (widget.type === WidgetType.Radio) {
-    const radioProps = widget.props as RadioProps;
-
-    if (radioProps.selected !== undefined) {
-      checked = radioProps.selected;
-    } else if (radioProps.name !== undefined) {
-      const current = ctx.stateStore.stateForByName<string>({
-        name: radioProps.name,
-        initial: radioProps.groupDefaultValue ?? '',
-      });
-
-      checked = current === radioProps.value;
-    }
-  } else if (widget.type === WidgetType.Checkbox) {
-    const cbProps = widget.props as CheckboxProps;
-
-    checked =
-      cbProps.value ??
-      ctx.stateStore.stateFor<boolean>({
-        stableId: layout.stableId,
-        initial: cbProps.defaultValue ?? false,
-      });
-  } else if (widget.type === WidgetType.Toggle) {
-    const toggleProps = widget.props as ToggleProps;
-
-    checked =
-      toggleProps.value ??
-      ctx.stateStore.stateFor<boolean>({
-        stableId: layout.stableId,
-        initial: toggleProps.defaultValue ?? false,
-      });
-  }
+  const checked = resolveWidgetCheckedState({ widget, layout, ctx });
 
   const style = resolveStyle({
     style: baseStyle,
