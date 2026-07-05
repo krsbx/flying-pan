@@ -5,11 +5,13 @@ import type { ViewStyle, WidgetDescriptor, WidgetProps } from './styles';
 export interface ButtonProps extends WidgetProps, InteractionProps {
   style?: ViewStyle;
   children?: WidgetDescriptor[];
+  disabled?: boolean;
 }
 
 export function Button(props: ButtonProps): WidgetDescriptor {
   const {
     children,
+    disabled = false,
     onPointerDown,
     onPointerUp,
     onPointerMove,
@@ -32,7 +34,7 @@ export function Button(props: ButtonProps): WidgetDescriptor {
     type: WidgetType.Button,
     props: rest,
     style: {
-      focusable: true,
+      focusable: !disabled,
       ...style,
     },
     children,

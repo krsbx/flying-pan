@@ -8,20 +8,13 @@ const CHECK_INSET = 0.5;
 
 export function paintCheckbox(
   window: Window,
-  options: PaintOptions & { style: ViewStyle }
+  options: PaintOptions & { style: ViewStyle; checked: boolean }
 ) {
-  const { renderer, ctx, layout, style } = options;
+  const { renderer, layout, style, checked } = options;
   const { widget, x, y, width, height } = layout;
   const props = widget.props as CheckboxProps;
 
-  const current =
-    props.value ??
-    ctx.stateStore.stateFor({
-      stableId: layout.stableId,
-      initial: props.defaultValue ?? false,
-    });
-
-  if (!current) return;
+  if (!checked) return;
 
   const markWidth = width * (props.tickSize ?? CHECK_INSET);
   const markHeight = height * (props.tickSize ?? CHECK_INSET);
@@ -33,7 +26,7 @@ export function paintCheckbox(
     y: markY,
     width: markWidth,
     height: markHeight,
-    color: style.backgroundColor ?? CHECK_COLOR,
+    color: props.tickStyle?.backgroundColor ?? CHECK_COLOR,
     opacity: style.opacity,
     borderRadius: style.borderRadius,
   });

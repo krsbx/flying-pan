@@ -3,6 +3,7 @@ import {
   Overflow,
   WidgetType,
   type CheckboxProps,
+  type RadioProps,
   type TextInputStyle,
   type TextStyle,
   type ViewStyle,
@@ -23,7 +24,39 @@ export function paint(window: Window, options: PaintOptions) {
   const hovered = ctx.interactionManager.pointer.hoveredStableId === stableId;
   const focused = ctx.interactionManager.focus.focusedStableId === stableId;
   const pressed = ctx.interactionManager.pointer.pressedStableId === stableId;
-  const style = resolveStyle(baseStyle, hovered, focused, pressed);
+
+  let checked = false;
+
+  if (widget.type === WidgetType.Radio) {
+    const radioProps = widget.props as RadioProps;
+
+    if (radioProps.selected !== undefined) {
+      checked = radioProps.selected;
+    } else if (radioProps.name !== undefined) {
+      const current = ctx.stateStore.stateForByName<string>({
+        name: radioProps.name,
+        initial: radioProps.groupDefaultValue ?? '',
+      });
+
+      checked = current === radioProps.value;
+    }
+  } else if (widget.type === WidgetType.Checkbox) {
+    const cbProps = widget.props as CheckboxProps;
+    checked =
+      cbProps.value ??
+      ctx.stateStore.stateFor<boolean>({
+        stableId: layout.stableId,
+        initial: cbProps.defaultValue ?? false,
+      });
+  }
+
+  const style = resolveStyle({
+    style: baseStyle,
+    hovered,
+    focused,
+    pressed,
+    checked,
+  });
 
   const borderRadius = style.borderRadius;
   const opacity = style.opacity;
@@ -71,44 +104,52 @@ export function paint(window: Window, options: PaintOptions) {
     });
   }
 
-  if (widget.type === WidgetType.Image) {
-    paintImage(window, {
-      ctx,
-      layout,
-      renderer,
-      style,
-    });
-  }
+  switch (widget.type) {
+    case WidgetType.Image: {
+      paintImage(window, {
+        ctx,
+        layout,
+        renderer,
+        style,
+      });
+      break;
+    }
 
-  if (widget.type === WidgetType.Label) {
-    paintText(window, {
-      ctx,
-      layout,
-      renderer,
-      style: style as TextStyle,
-    });
-  }
+    case WidgetType.Label: {
+      paintText(window, {
+        ctx,
+        layout,
+        renderer,
+        style: style as TextStyle,
+      });
+      break;
+    }
 
-  if (widget.type === WidgetType.TextInput) {
-    paintTextInput(window, {
-      ctx,
-      layout,
-      renderer,
-      style: style as TextInputStyle,
-      focused,
-    });
-  }
+    case WidgetType.TextInput: {
+      paintTextInput(window, {
+        ctx,
+        layout,
+        renderer,
+        style: style as TextInputStyle,
+        focused,
+      });
+      break;
+    }
 
-  if (widget.type === WidgetType.Checkbox) {
-    const props = widget.props as CheckboxProps;
-    const mergedStyle = { ...style, ...props.tickStyle };
+    case WidgetType.Checkbox: {
+      paintCheckbox(window, {
+        ctx,
+        layout,
+        renderer,
+        style,
+        checked,
+      });
+      break;
+    }
 
-    paintCheckbox(window, {
-      ctx,
-      layout,
-      renderer,
-      style: resolveStyle(mergedStyle, hovered, focused, pressed),
-    });
+    case WidgetType.Radio: {
+      break;
+    }
   }
 
   const overflow = style.overflow;
