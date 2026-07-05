@@ -2,7 +2,7 @@ import type { Window } from '@/flying/app';
 import {
   Palette,
   ProgressBarOrientation,
-  ProgressFlowDirection,
+  ProgressDirection,
 } from '@/flying/widget';
 import type { ProgressBarProps } from '@/flying/widget/progress';
 import { clamp } from '@utility/common';
@@ -15,7 +15,7 @@ export function paintProgressBar(window: Window, options: PaintOptions): void {
   const props = widget.props as ProgressBarProps;
 
   const isHorizontal = props.orientation === ProgressBarOrientation.Horizontal;
-  const isForward = props.flowDirection === ProgressFlowDirection.Forward;
+  const isForward = props.direction === ProgressDirection.Forward;
 
   const min = props.min ?? 0;
   const max = props.max ?? 1;

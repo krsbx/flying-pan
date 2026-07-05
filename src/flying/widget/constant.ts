@@ -112,10 +112,10 @@ export const ProgressType = {
 
 export type ProgressType = (typeof ProgressType)[keyof typeof ProgressType];
 
-export const ProgressFlowDirection = {
+export const ProgressDirection = {
   Forward: 'forward',
   Backward: 'backward',
 } as const;
 
-export type ProgressFlowDirection =
-  (typeof ProgressFlowDirection)[keyof typeof ProgressFlowDirection];
+export type ProgressDirection =
+  (typeof ProgressDirection)[keyof typeof ProgressDirection];

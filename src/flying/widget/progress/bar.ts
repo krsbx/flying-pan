@@ -1,6 +1,6 @@
 import {
   ProgressBarOrientation,
-  ProgressFlowDirection,
+  ProgressDirection,
   ProgressType,
   WidgetType,
 } from '../constant';
@@ -11,7 +11,7 @@ export interface ProgressBarProps {
   min?: number;
   max?: number;
   orientation?: ProgressBarOrientation;
-  flowDirection?: ProgressFlowDirection;
+  direction?: ProgressDirection;
   style?: ViewStyle;
   fillStyle?: ViewStyle;
   type?: ProgressType;
@@ -21,7 +21,7 @@ export function ProgressBar(props: ProgressBarProps): WidgetDescriptor {
   const { value, min, max, style, fillStyle, ...rest } = props;
 
   const orientation = props.orientation || ProgressBarOrientation.Horizontal;
-  const flowDirection = props.flowDirection || ProgressFlowDirection.Forward;
+  const direction = props.direction || ProgressDirection.Forward;
   const type =
     value !== undefined
       ? ProgressType.Determinate
@@ -38,7 +38,7 @@ export function ProgressBar(props: ProgressBarProps): WidgetDescriptor {
       min,
       max,
       orientation,
-      flowDirection,
+      direction,
       fillStyle: {
         backgroundColor: Palette.accent,
         ...fillStyle,
