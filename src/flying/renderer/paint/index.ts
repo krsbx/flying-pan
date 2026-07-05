@@ -10,6 +10,7 @@ import {
 } from '@flying/widget';
 import { paintCheckbox } from './checkbox';
 import { paintImage } from './image';
+import { paintRadio } from './radio';
 import { paintText } from './text';
 import { paintTextInput } from './text/input';
 import type { PaintOptions } from './types';
@@ -148,6 +149,13 @@ export function paint(window: Window, options: PaintOptions) {
     }
 
     case WidgetType.Radio: {
+      paintRadio(window, {
+        ctx,
+        layout,
+        renderer,
+        style,
+        checked,
+      });
       break;
     }
   }
