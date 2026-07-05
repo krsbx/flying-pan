@@ -1,3 +1,4 @@
+import type { ToggleProps } from '@/flying/widget/toggle';
 import type { Window } from '@flying/app';
 import {
   Overflow,
@@ -13,6 +14,7 @@ import { paintImage } from './image';
 import { paintRadio } from './radio';
 import { paintText } from './text';
 import { paintTextInput } from './text/input';
+import { paintToggle } from './toggle';
 import type { PaintOptions } from './types';
 import { resolveStyle } from './utility';
 
@@ -43,11 +45,21 @@ export function paint(window: Window, options: PaintOptions) {
     }
   } else if (widget.type === WidgetType.Checkbox) {
     const cbProps = widget.props as CheckboxProps;
+
     checked =
       cbProps.value ??
       ctx.stateStore.stateFor<boolean>({
         stableId: layout.stableId,
         initial: cbProps.defaultValue ?? false,
+      });
+  } else if (widget.type === WidgetType.Toggle) {
+    const toggleProps = widget.props as ToggleProps;
+
+    checked =
+      toggleProps.value ??
+      ctx.stateStore.stateFor<boolean>({
+        stableId: layout.stableId,
+        initial: toggleProps.defaultValue ?? false,
       });
   }
 
@@ -150,6 +162,17 @@ export function paint(window: Window, options: PaintOptions) {
 
     case WidgetType.Radio: {
       paintRadio(window, {
+        ctx,
+        layout,
+        renderer,
+        style,
+        checked,
+      });
+      break;
+    }
+
+    case WidgetType.Toggle: {
+      paintToggle(window, {
         ctx,
         layout,
         renderer,

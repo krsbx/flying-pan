@@ -32,6 +32,7 @@ export class FocusDispatcher extends BaseDispatcher {
       WidgetType.Button,
       WidgetType.Checkbox,
       WidgetType.Radio,
+      WidgetType.Toggle,
     ]);
     this._focusedStableId = null;
     this.focusableNodes = [];

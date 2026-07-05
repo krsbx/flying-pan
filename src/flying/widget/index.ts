@@ -8,4 +8,5 @@ export * from './radio';
 export * from './radio-group';
 export * from './styles';
 export * from './text-input';
+export * from './toggle';
 export * from './view';
