@@ -113,6 +113,7 @@ export interface ViewStyle {
   _focus?: PseudoStateStyle;
   _hover?: PseudoStateStyle;
   _checked?: PseudoStateStyle;
+  _disabled?: PseudoStateStyle;
 
   overflow?: Overflow;
 

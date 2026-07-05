@@ -1,5 +1,6 @@
 import type { InteractionProps } from '@flying/interactions';
 import { WidgetType } from './constant';
+import { Metrics, Palette } from './styles';
 import type { ViewStyle, WidgetDescriptor, WidgetProps } from './styles';
 
 export interface RadioProps extends WidgetProps, InteractionProps {
@@ -52,16 +53,11 @@ export function Radio(props: RadioProps): WidgetDescriptor {
       label,
       disabled,
       dotStyle: {
+        backgroundColor: Palette.accent,
         ...dotStyle,
-        backgroundColor: '#1a73e8',
-        ...style,
-        _checked: {
-          backgroundColor: '#1a73e8',
-          ...style?._checked,
-        },
-        _focus: {
-          backgroundColor: '#1a73e8',
-          ...style?._focus,
+        _disabled: {
+          opacity: 0.5,
+          ...dotStyle?._disabled,
         },
       },
       dotSize,
@@ -70,22 +66,25 @@ export function Radio(props: RadioProps): WidgetDescriptor {
       ...rest,
     },
     style: {
-      width: 16,
-      height: 16,
-      borderRadius: 8,
-      borderWidth: 2,
-      borderColor: '#9ca3af',
+      width: Metrics.controlSize,
+      height: Metrics.controlSize,
+      borderRadius: Metrics.controlSize / 2,
+      borderWidth: Metrics.borderWidth,
+      borderColor: Palette.border,
       focusable: !disabled,
-      backgroundColor: '#ffffff',
+      backgroundColor: Palette.surface,
       ...style,
       _checked: {
-        borderColor: '#1a73e8',
+        borderColor: Palette.accent,
         ...style?._checked,
       },
       _focus: {
-        borderColor: '#1a73e8',
-        borderWidth: 2,
+        borderColor: Palette.borderFocus,
         ...style?._focus,
+      },
+      _disabled: {
+        opacity: 0.5,
+        ...style?._disabled,
       },
     },
     onClick,

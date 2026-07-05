@@ -4,6 +4,7 @@ import type {
   InteractionProps,
 } from '@flying/interactions';
 import { WidgetType } from './constant';
+import { Metrics, Palette } from './styles';
 import type { ViewStyle, WidgetDescriptor, WidgetProps } from './styles';
 
 export interface CheckboxProps extends WidgetProps, InteractionProps {
@@ -59,15 +60,49 @@ export function Checkbox(props: CheckboxProps): WidgetDescriptor {
     onUnmount,
     onUpdate,
     style,
+    tickStyle,
     ...rest
   } = props;
 
   return {
     type: WidgetType.Checkbox,
-    props: { value, defaultValue, onChange, disabled, ...rest },
+    props: {
+      value,
+      defaultValue,
+      onChange,
+      disabled,
+      tickStyle: {
+        backgroundColor: Palette.textOnAccent,
+        ...tickStyle,
+        _disabled: {
+          opacity: 0.5,
+          ...tickStyle?._disabled,
+        },
+      },
+      ...rest,
+    },
     style: {
+      width: Metrics.controlSize,
+      height: Metrics.controlSize,
+      borderRadius: Metrics.controlRadius,
+      borderWidth: Metrics.borderWidth,
+      borderColor: Palette.border,
+      backgroundColor: Palette.surface,
       focusable: !disabled,
       ...style,
+      _checked: {
+        borderColor: Palette.accent,
+        backgroundColor: Palette.accent,
+        ...style?._checked,
+      },
+      _focus: {
+        borderColor: Palette.borderFocus,
+        ...style?._focus,
+      },
+      _disabled: {
+        opacity: 0.5,
+        ...style?._disabled,
+      },
     },
     onClick: createCheckboxClickHandler({
       value,

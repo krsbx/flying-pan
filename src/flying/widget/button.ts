@@ -1,5 +1,6 @@
 import type { InteractionProps } from '@flying/interactions';
 import { WidgetType } from './constant';
+import { Metrics, Palette } from './styles';
 import type { ViewStyle, WidgetDescriptor, WidgetProps } from './styles';
 
 export interface ButtonProps extends WidgetProps, InteractionProps {
@@ -34,8 +35,29 @@ export function Button(props: ButtonProps): WidgetDescriptor {
     type: WidgetType.Button,
     props: rest,
     style: {
+      padding: Metrics.defaultPadding,
+      borderRadius: Metrics.buttonRadius,
+      borderWidth: Metrics.borderWidth,
+      borderColor: Palette.border,
+      backgroundColor: Palette.surface,
       focusable: !disabled,
       ...style,
+      _hover: {
+        backgroundColor: Palette.surfaceHover,
+        ...style?._hover,
+      },
+      _focus: {
+        borderColor: Palette.borderFocus,
+        ...style?._focus,
+      },
+      _active: {
+        backgroundColor: Palette.surfaceActive,
+        ...style?._active,
+      },
+      _disabled: {
+        opacity: 0.5,
+        ...style?._disabled,
+      },
     },
     children,
     onPointerDown,

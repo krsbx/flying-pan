@@ -1,14 +1,13 @@
 import type { Window } from '@/flying/app';
-import type { RadioProps } from '@/flying/widget';
+import { Palette, type RadioProps } from '@/flying/widget';
 import type { SubMarkPaintOptions } from '../types';
 import { paintBorder, resolveStyle } from '../utility';
-
-const DOT_COLOR = '#1a73e8';
 
 const DOT_INSET = 0.5;
 
 export function paintRadio(window: Window, options: SubMarkPaintOptions) {
-  const { renderer, layout, checked, hovered, focused, pressed } = options;
+  const { renderer, layout, checked, hovered, focused, pressed, disabled } =
+    options;
   const { widget, x, y, width, height } = layout;
   const props = widget.props as RadioProps;
 
@@ -24,6 +23,7 @@ export function paintRadio(window: Window, options: SubMarkPaintOptions) {
     focused,
     pressed,
     checked,
+    disabled,
   });
 
   paintBorder(window, {
@@ -40,7 +40,7 @@ export function paintRadio(window: Window, options: SubMarkPaintOptions) {
     y: dotY,
     width: dotSize,
     height: dotSize,
-    color: dot.backgroundColor ?? DOT_COLOR,
+    color: dot.backgroundColor ?? Palette.accent,
     opacity: dot.opacity,
     borderRadius: dot.borderRadius ?? dotSize / 2,
   });

@@ -5,6 +5,7 @@ import type {
 } from '@flying/interactions';
 import { WidgetType } from './constant';
 import type { ViewStyle, WidgetDescriptor, WidgetProps } from './styles';
+import { Metrics, Palette } from './styles';
 
 export interface ToggleProps extends WidgetProps, InteractionProps {
   value?: boolean;
@@ -12,7 +13,7 @@ export interface ToggleProps extends WidgetProps, InteractionProps {
   onChange?: (value: boolean) => void;
   disabled?: boolean;
   style?: ViewStyle;
-  indicatorStyle?: ViewStyle;
+  knobStyle?: ViewStyle;
 }
 
 function createToggleClickHandler(props: ToggleProps): ClickEventHandler {
@@ -58,29 +59,48 @@ export function Toggle(props: ToggleProps): WidgetDescriptor {
     onUnmount,
     onUpdate,
     style,
+    knobStyle,
     ...rest
   } = props;
 
   return {
     type: WidgetType.Toggle,
-    props: { value, defaultValue, onChange, disabled, ...rest },
+    props: {
+      value,
+      defaultValue,
+      onChange,
+      disabled,
+      knobStyle: {
+        backgroundColor: Palette.surface,
+        ...knobStyle,
+        _disabled: {
+          opacity: 0.5,
+          ...knobStyle?._disabled,
+        },
+      },
+      ...rest,
+    },
     style: {
       width: 48,
       height: 24,
-      borderRadius: 32,
-      borderWidth: 2,
-      borderColor: '#9ca3af',
+      borderRadius: 24,
+      borderWidth: Metrics.borderWidth,
+      borderColor: Palette.border,
       focusable: !disabled,
-      backgroundColor: '#ffffff',
+      backgroundColor: Palette.surfaceActive,
       ...style,
       _checked: {
-        backgroundColor: '#1a73e8',
-        borderColor: '#1a73e8',
+        backgroundColor: Palette.accent,
+        borderColor: Palette.accent,
         ...style?._checked,
       },
       _focus: {
-        borderColor: '#1a73e8',
+        borderColor: Palette.borderFocus,
         ...style?._focus,
+      },
+      _disabled: {
+        opacity: 0.5,
+        ...style?._disabled,
       },
     },
     onClick: createToggleClickHandler({

@@ -29,6 +29,7 @@ export function paint(window: Window, options: PaintOptions) {
   const focused = ctx.interactionManager.focus.focusedStableId === stableId;
   const pressed = ctx.interactionManager.pointer.pressedStableId === stableId;
   const checked = resolveWidgetCheckedState({ widget, layout, ctx });
+  const disabled = Boolean(widget.props.disabled);
 
   const style = resolveStyle({
     style: baseStyle,
@@ -36,6 +37,7 @@ export function paint(window: Window, options: PaintOptions) {
     focused,
     pressed,
     checked,
+    disabled,
   });
 
   const borderRadius = style.borderRadius;
@@ -122,6 +124,7 @@ export function paint(window: Window, options: PaintOptions) {
         hovered,
         focused,
         pressed,
+        disabled,
       });
       break;
     }
@@ -136,6 +139,7 @@ export function paint(window: Window, options: PaintOptions) {
         hovered,
         focused,
         pressed,
+        disabled,
       });
       break;
     }
@@ -150,6 +154,7 @@ export function paint(window: Window, options: PaintOptions) {
         hovered,
         focused,
         pressed,
+        disabled,
       });
       break;
     }

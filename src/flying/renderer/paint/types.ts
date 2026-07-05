@@ -27,6 +27,7 @@ export interface ResolveStyleOptions {
   hovered: boolean;
   focused: boolean;
   pressed: boolean;
+  disabled: boolean;
 }
 
 export interface SubMarkPaintOptions

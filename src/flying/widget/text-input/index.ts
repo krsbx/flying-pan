@@ -1,5 +1,6 @@
 import type { InteractionProps } from '../../interactions';
 import { WidgetType } from '../constant';
+import { Metrics, Palette } from '../styles';
 import type { WidgetProps } from '../styles';
 import type { TextInputStyle, WidgetDescriptor } from '../styles/types';
 import {
@@ -58,7 +59,24 @@ export function TextInput(props: TextInputProps): WidgetDescriptor {
   return {
     type: WidgetType.TextInput,
     props: { value, defaultValue, placeholder, disabled, ...rest },
-    style: { focusable: !disabled, ...style },
+    style: {
+      padding: Metrics.defaultPadding,
+      borderRadius: Metrics.inputRadius,
+      borderWidth: Metrics.borderWidth,
+      borderColor: Palette.border,
+      backgroundColor: Palette.surface,
+      color: Palette.text,
+      focusable: !disabled,
+      ...style,
+      _focus: {
+        borderColor: Palette.borderFocus,
+        ...style?._focus,
+      },
+      _disabled: {
+        opacity: 0.5,
+        ...style?._disabled,
+      },
+    },
     onChar: (event) => {
       createTextInputCharHandler(internalProps)(event);
       userOnChar?.(event);

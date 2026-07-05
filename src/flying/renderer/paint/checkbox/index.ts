@@ -1,21 +1,20 @@
 import type { Window } from '@/flying/app';
-import type { CheckboxProps } from '@/flying/widget';
+import { Palette, type CheckboxProps } from '@/flying/widget';
 import type { SubMarkPaintOptions } from '../types';
 import { paintBorder, resolveStyle } from '../utility';
 
-const CHECK_COLOR = '#ffffff';
-
-const CHECK_INSET = 0.5;
+const TICK_INSET = 0.5;
 
 export function paintCheckbox(window: Window, options: SubMarkPaintOptions) {
-  const { renderer, layout, checked, hovered, focused, pressed } = options;
+  const { renderer, layout, checked, hovered, focused, pressed, disabled } =
+    options;
   const { widget, x, y, width, height } = layout;
   const props = widget.props as CheckboxProps;
 
   if (!checked) return;
 
-  const markWidth = width * (props.tickSize ?? CHECK_INSET);
-  const markHeight = height * (props.tickSize ?? CHECK_INSET);
+  const markWidth = width * (props.tickSize ?? TICK_INSET);
+  const markHeight = height * (props.tickSize ?? TICK_INSET);
   const markX = x + (width - markWidth) / 2;
   const markY = y + (height - markHeight) / 2;
 
@@ -25,6 +24,7 @@ export function paintCheckbox(window: Window, options: SubMarkPaintOptions) {
     focused,
     pressed,
     checked,
+    disabled,
   });
 
   paintBorder(window, {
@@ -41,7 +41,7 @@ export function paintCheckbox(window: Window, options: SubMarkPaintOptions) {
     y: markY,
     width: markWidth,
     height: markHeight,
-    color: tick.backgroundColor ?? CHECK_COLOR,
+    color: tick.backgroundColor ?? Palette.textOnAccent,
     opacity: tick.opacity,
     borderRadius: tick.borderRadius,
   });

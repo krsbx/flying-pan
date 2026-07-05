@@ -16,3 +16,4 @@ export type {
   WidgetProps,
 } from './types';
 export * from './utility';
+export * from './palette';

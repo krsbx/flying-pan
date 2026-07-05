@@ -37,18 +37,25 @@ export function paintBorder(
 }
 
 export function resolveStyle(options: ResolveStyleOptions): ViewStyle {
-  const { style, focused, hovered, pressed, checked } = options;
+  const { style, focused, hovered, pressed, checked, disabled } = options;
 
-  if (!style._hover && !style._focus && !style._active && !style._checked)
+  if (
+    !style._hover &&
+    !style._focus &&
+    !style._active &&
+    !style._checked &&
+    !style._disabled
+  )
     return style;
 
-  const { _hover, _focus, _active, _checked, ...base } = style;
+  const { _hover, _focus, _active, _checked, _disabled, ...base } = style;
   let resolved: ViewStyle = base;
 
   if (hovered && _hover) resolved = { ...resolved, ..._hover };
   if (focused && _focus) resolved = { ...resolved, ..._focus };
   if (pressed && _active) resolved = { ...resolved, ..._active };
   if (checked && _checked) resolved = { ...resolved, ..._checked };
+  if (disabled && _disabled) resolved = { ...resolved, ..._disabled };
 
   return resolved;
 }
