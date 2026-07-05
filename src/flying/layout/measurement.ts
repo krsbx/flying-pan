@@ -2,6 +2,8 @@ import { clamp } from '@/utility/common';
 import type {
   ImageProps,
   LabelProps,
+  ProgressBarProps,
+  RadioProps,
   TextInputProps,
   TextInputState,
   TextInputStyle,
@@ -107,6 +109,30 @@ export function measureChildsComponent(
 
       width ||= measured.width;
       height ||= measured.height;
+    }
+
+    if (child.type === WidgetType.Radio) {
+      const props = child.props as RadioProps;
+
+      if (props.label && typeof props.label === 'string' && props.font) {
+        const fontAtlas = ctx.fontManager.get(props.font);
+        const measured = fontAtlas.measureText({ text: props.label });
+
+        if (width < measured.width) width = measured.width;
+        if (height < measured.height) height = measured.height;
+      }
+    }
+
+    if (child.type === WidgetType.ProgressBar) {
+      const props = child.props as ProgressBarProps;
+
+      if (props.label && props.font) {
+        const fontAtlas = ctx.fontManager.get(props.font);
+        const measured = fontAtlas.measureText({ text: props.label });
+
+        if (width < measured.width) width = measured.width;
+        if (height < measured.height) height = measured.height;
+      }
     }
 
     // Clamp to min/max constraints

@@ -7,10 +7,12 @@ import {
 import type { ProgressBarProps } from '@/flying/widget/progress';
 import { clamp } from '@utility/common';
 import type { PaintOptions } from '../types';
-import { paintBorder } from '../utility';
+import { paintContinuousFill } from './bar/continuous';
+import { paintInlineLabel } from './bar/label';
+import { paintSteppedFill } from './bar/step';
 
 export function paintProgressBar(window: Window, options: PaintOptions): void {
-  const { renderer, layout } = options;
+  const { renderer, ctx, layout } = options;
   const { widget, x, y, width, height } = layout;
   const props = widget.props as ProgressBarProps;
 
@@ -30,29 +32,48 @@ export function paintProgressBar(window: Window, options: PaintOptions): void {
           max: 1,
         });
 
-  const fillW = isHorizontal ? width * ratio : width;
-  const fillH = isHorizontal ? height : height * ratio;
-  const fillX = isHorizontal && !isForward ? x + width - fillW : x;
-  const fillY = isHorizontal ? y : isForward ? y : y + height - fillH;
+  const fillStyle = props.fillStyle ?? {};
+  const steps = props.steps ?? 0;
 
-  const bar = props.fillStyle ?? {};
+  if (steps > 1) {
+    paintSteppedFill(window, {
+      renderer,
+      x,
+      y,
+      width,
+      height,
+      isHorizontal,
+      isForward,
+      steps,
+      stepGap: props.stepGap ?? 2,
+      filledSegments: Math.round(ratio * steps),
+      fillStyle,
+    });
+  } else {
+    paintContinuousFill(window, {
+      renderer,
+      x,
+      y,
+      width,
+      height,
+      isHorizontal,
+      isForward,
+      ratio,
+      fillStyle,
+    });
+  }
 
-  paintBorder(window, {
-    x: fillX,
-    y: fillY,
-    width: fillW,
-    height: fillH,
-    renderer,
-    style: bar,
-  });
-
-  renderer.drawRect(window, {
-    x: fillX,
-    y: fillY,
-    width: fillW,
-    height: fillH,
-    color: bar.backgroundColor ?? Palette.accent,
-    borderRadius: bar.borderRadius,
-    opacity: bar.opacity,
-  });
+  if (props.label && props.font) {
+    paintInlineLabel(window, {
+      renderer,
+      ctx,
+      x,
+      y,
+      width,
+      height,
+      label: props.label,
+      font: props.font,
+      color: props.labelColor ?? Palette.text,
+    });
+  }
 }

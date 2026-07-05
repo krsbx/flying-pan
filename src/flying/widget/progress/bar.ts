@@ -1,3 +1,4 @@
+import type { ValidColor } from '@flying/types';
 import {
   ProgressBarOrientation,
   ProgressDirection,
@@ -15,10 +16,34 @@ export interface ProgressBarProps {
   style?: ViewStyle;
   fillStyle?: ViewStyle;
   type?: ProgressType;
+  /** When > 1, render the bar as N discrete segments instead of a continuous fill. */
+  steps?: number;
+  /** Pixel gap between segments in stepped mode. Defaults to 2. */
+  stepGap?: number;
+  /** Optional text rendered centered on the bar. */
+  label?: string;
+  /** Required if `label` is being set */
+  font?: string;
+  /** Label color. */
+  labelColor?: ValidColor;
 }
 
+const DEFAULT_STEP_GAP = 2;
+
 export function ProgressBar(props: ProgressBarProps): WidgetDescriptor {
-  const { value, min, max, style, fillStyle, ...rest } = props;
+  const {
+    value,
+    min,
+    max,
+    style,
+    fillStyle,
+    steps,
+    stepGap,
+    label,
+    font,
+    labelColor,
+    ...rest
+  } = props;
 
   const orientation = props.orientation || ProgressBarOrientation.Horizontal;
   const direction = props.direction || ProgressDirection.Forward;
@@ -44,6 +69,11 @@ export function ProgressBar(props: ProgressBarProps): WidgetDescriptor {
         ...fillStyle,
       },
       type,
+      steps,
+      stepGap: stepGap ?? DEFAULT_STEP_GAP,
+      label,
+      font,
+      labelColor,
       ...rest,
     },
     style: {
