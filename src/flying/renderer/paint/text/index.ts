@@ -9,10 +9,11 @@ export function paintText(
 ) {
   const { renderer, ctx, layout, style } = options;
   const { widget, y, width } = layout;
+  const props = widget.props as LabelProps;
 
-  const fontAtlas = ctx.fontManager.get(style.font);
+  const fontAtlas = ctx.fontManager.get(props.font);
 
-  const text = (widget.props as LabelProps)?.text ?? '';
+  const text = props?.text ?? '';
   const color = style.color ?? Color.white;
 
   if (!text) return;

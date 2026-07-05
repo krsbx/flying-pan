@@ -3,7 +3,6 @@ import type {
   ImageProps,
   LabelProps,
   ProgressBarProps,
-  RadioProps,
   TextInputProps,
   TextInputState,
   TextInputStyle,
@@ -62,9 +61,9 @@ export function measureChildsComponent(
     }
 
     if (child.type === WidgetType.TextInput) {
-      const style = child.style as TextInputStyle;
-      const fontAtlas = ctx.fontManager.get(style.font);
       const props = child.props as TextInputProps;
+      const style = child.style as TextInputStyle;
+      const fontAtlas = ctx.fontManager.get(props.font);
 
       const value =
         props.value ??
@@ -92,8 +91,9 @@ export function measureChildsComponent(
     }
 
     if (child.type === WidgetType.Label) {
+      const props = child.props as LabelProps;
       const style = child.style as TextStyle;
-      const fontAtlas = ctx.fontManager.get(style.font);
+      const fontAtlas = ctx.fontManager.get(props.font);
 
       const text = (child.props as LabelProps).text;
       const fontSize = style?.fontSize ?? 16;
@@ -109,18 +109,6 @@ export function measureChildsComponent(
 
       width ||= measured.width;
       height ||= measured.height;
-    }
-
-    if (child.type === WidgetType.Radio) {
-      const props = child.props as RadioProps;
-
-      if (props.label && typeof props.label === 'string' && props.font) {
-        const fontAtlas = ctx.fontManager.get(props.font);
-        const measured = fontAtlas.measureText({ text: props.label });
-
-        if (width < measured.width) width = measured.width;
-        if (height < measured.height) height = measured.height;
-      }
     }
 
     if (child.type === WidgetType.ProgressBar) {

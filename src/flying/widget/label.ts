@@ -1,10 +1,11 @@
 import type { InteractionProps } from '@flying/interactions';
 import { WidgetType } from './constant';
-import { Palette } from './styles';
 import type { TextStyle, WidgetDescriptor, WidgetProps } from './styles';
+import { Palette } from './styles';
 
 export interface LabelProps extends WidgetProps, InteractionProps {
   text: string;
+  font: string;
   style?: TextStyle;
 }
 
@@ -25,12 +26,16 @@ export function Label(props: LabelProps): WidgetDescriptor {
     onUnmount,
     onUpdate,
     style,
+    font,
     ...rest
   } = props;
 
   return {
     type: WidgetType.Label,
-    props: rest,
+    props: {
+      font,
+      ...rest,
+    },
     style: {
       color: Palette.text,
       ...style,
@@ -52,8 +57,9 @@ export function Label(props: LabelProps): WidgetDescriptor {
   };
 }
 
-export interface TextProps extends WidgetProps {
+export interface TextProps extends WidgetProps, InteractionProps {
   content: string;
+  font: string;
   style?: TextStyle;
 }
 

@@ -1,7 +1,7 @@
 import type { InteractionProps } from '../../interactions';
 import { WidgetType } from '../constant';
-import { Metrics, Palette } from '../styles';
 import type { WidgetProps } from '../styles';
+import { Metrics, Palette } from '../styles';
 import type { TextInputStyle, WidgetDescriptor } from '../styles/types';
 import {
   createTextInputCharHandler,
@@ -9,6 +9,7 @@ import {
 } from './handler';
 
 export interface TextInputProps extends WidgetProps, InteractionProps {
+  font: string;
   value?: string;
   defaultValue?: string;
   placeholder?: string;
@@ -45,6 +46,7 @@ export function TextInput(props: TextInputProps): WidgetDescriptor {
     onUnmount,
     onUpdate,
     style,
+    font,
     ...rest
   } = props;
 
@@ -54,11 +56,13 @@ export function TextInput(props: TextInputProps): WidgetDescriptor {
     placeholder,
     onChange,
     disabled,
+    font,
+    style,
   };
 
   return {
     type: WidgetType.TextInput,
-    props: { value, defaultValue, placeholder, disabled, ...rest },
+    props: { value, defaultValue, placeholder, disabled, font, ...rest },
     style: {
       padding: Metrics.defaultPadding,
       borderRadius: Metrics.inputRadius,

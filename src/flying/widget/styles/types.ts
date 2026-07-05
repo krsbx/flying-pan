@@ -126,7 +126,6 @@ export interface TextStyle extends ViewStyle {
   textAlign?: TextAlign;
   lineHeight?: number;
   letterSpacing?: number;
-  font: string;
 
   _active?: TextPseudoStateStyle;
   _focus?: TextPseudoStateStyle;

@@ -27,7 +27,7 @@ export function paintTextInput(
           },
         });
 
-  const fontAtlas = ctx.fontManager.get(style.font);
+  const fontAtlas = ctx.fontManager.get(props.font);
   const padding = resolveSpacing(style.padding, width);
   const contentX = x + padding.left;
 
