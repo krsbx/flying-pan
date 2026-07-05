@@ -58,6 +58,7 @@ export const WidgetType = {
   Checkbox: 'Checkbox',
   Radio: 'Radio',
   Toggle: 'Toggle',
+  ProgressBar: 'ProgressBar',
 } as const;
 
 export type WidgetType = (typeof WidgetType)[keyof typeof WidgetType];
@@ -95,3 +96,26 @@ export const Overflow = {
 } as const;
 
 export type Overflow = (typeof Overflow)[keyof typeof Overflow];
+
+export const ProgressBarOrientation = {
+  Horizontal: 'horizontal',
+  Vertical: 'vertical',
+} as const;
+
+export type ProgressBarOrientation =
+  (typeof ProgressBarOrientation)[keyof typeof ProgressBarOrientation];
+
+export const ProgressType = {
+  Determinate: 'determinate',
+  Indeterminate: 'indeterminate',
+} as const;
+
+export type ProgressType = (typeof ProgressType)[keyof typeof ProgressType];
+
+export const ProgressFlowDirection = {
+  Forward: 'forward',
+  Backward: 'backward',
+} as const;
+
+export type ProgressFlowDirection =
+  (typeof ProgressFlowDirection)[keyof typeof ProgressFlowDirection];

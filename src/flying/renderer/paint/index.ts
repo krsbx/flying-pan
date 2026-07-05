@@ -8,6 +8,7 @@ import {
 } from '@flying/widget';
 import { paintCheckbox } from './checkbox';
 import { paintImage } from './image';
+import { paintProgressBar } from './progress';
 import { paintRadio } from './radio';
 import { paintText } from './text';
 import { paintTextInput } from './text/input';
@@ -155,6 +156,15 @@ export function paint(window: Window, options: PaintOptions) {
         focused,
         pressed,
         disabled,
+      });
+      break;
+    }
+
+    case WidgetType.ProgressBar: {
+      paintProgressBar(window, {
+        ctx,
+        layout,
+        renderer,
       });
       break;
     }

@@ -4,6 +4,7 @@ export * from './constant';
 export * from './flex';
 export * from './image';
 export * from './label';
+export * from './progress';
 export * from './radio';
 export * from './radio-group';
 export * from './styles';
