@@ -18,6 +18,7 @@ import {
   WidgetType,
   type TextStyle,
 } from '@flying/widget';
+import { formatValueLabel } from '../renderer/paint/progress/utility';
 import type {
   CalculateMainContentSizeOptions,
   CalculateMainContentSizeResult,
@@ -115,9 +116,18 @@ export function measureChildsComponent(
     if (child.type === WidgetType.ProgressBar) {
       const props = child.props as ProgressBarProps;
 
-      if (props.label && props.font) {
+      const labelText =
+        props.label ??
+        formatValueLabel({
+          value: props.value,
+          min: props.min,
+          max: props.max,
+          format: props.showValue,
+        });
+
+      if (labelText && props.font) {
         const fontAtlas = ctx.fontManager.get(props.font);
-        const measured = fontAtlas.measureText({ text: props.label });
+        const measured = fontAtlas.measureText({ text: labelText });
 
         if (width < measured.width) width = measured.width;
         if (height < measured.height) height = measured.height;
@@ -127,13 +137,23 @@ export function measureChildsComponent(
     if (child.type === WidgetType.CircularProgress) {
       const props = child.props as CircularProgressProps;
 
-      if (props.label && props.font) {
+      const labelText =
+        props.label ??
+        formatValueLabel({
+          value: props.value,
+          min: props.min,
+          max: props.max,
+          format: props.showValue,
+        });
+
+      if (labelText && props.font) {
         const fontAtlas = ctx.fontManager.get(props.font);
-        const measured = fontAtlas.measureText({ text: props.label });
+        const measured = fontAtlas.measureText({ text: labelText });
         // Stay square so the circle stays circular — growing only width or
         // height would distort the box and drawRoundedRect's radius clamp
         // would then produce an ellipse.
         const minSize = Math.max(measured.width, measured.height);
+
         if (width < minSize) width = minSize;
         if (height < minSize) height = minSize;
       }

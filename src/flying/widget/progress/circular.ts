@@ -2,9 +2,11 @@ import type { ValidColor } from '@flying/types';
 import {
   CircularProgressDirection,
   ProgressType,
+  ProgressValueType,
   WidgetType,
 } from '../constant';
 import { Palette, type ViewStyle, type WidgetDescriptor } from '../styles';
+import type { ColorStop } from './bar';
 
 export interface CircularProgressProps {
   value?: number;
@@ -32,12 +34,23 @@ export interface CircularProgressProps {
   style?: ViewStyle;
   fillStyle?: ViewStyle;
   type?: ProgressType;
+  /**
+   * Value-driven fill color — same semantics as `ProgressBarProps.colorStops`.
+   * The whole arc uses a single color (resolved from the final ratio), since
+   * gradient arcs would need a per-segment color interpolation pass.
+   */
+  colorStops?: ColorStop[];
   /** Optional text rendered centered in the circle. */
   label?: string;
   /** Required if `label` is set. */
   font?: string;
   /** Label color. Defaults to Palette.text. */
   labelColor?: ValidColor;
+  /**
+   * Auto-compute the label from the value. Ignored if `label` is also set
+   * (explicit label wins). Same semantics as `ProgressBarProps.showValue`.
+   */
+  showValue?: ProgressValueType;
 }
 
 const DEFAULT_SIZE = 48;

@@ -3,9 +3,16 @@ import {
   ProgressBarOrientation,
   ProgressDirection,
   ProgressType,
+  ProgressValueType,
   WidgetType,
 } from '../constant';
 import { Palette, type ViewStyle, type WidgetDescriptor } from '../styles';
+
+export interface ColorStop {
+  /** Position along the track in [0, 1] (post-clamp ratio). */
+  at: number;
+  color: ValidColor;
+}
 
 export interface ProgressBarProps {
   value?: number;
@@ -21,12 +28,25 @@ export interface ProgressBarProps {
   steps?: number;
   /** Pixel gap between segments in stepped mode. Defaults to 2. */
   stepGap?: number;
+  /**
+   * Value-driven fill color. The stop with the highest `at` where
+   * `ratio >= at` wins (i.e. each stop colors everything below it).
+   * Stops should be sorted ascending by `at`; we sort defensively.
+   */
+  colorStops?: ColorStop[];
   /** Optional text rendered centered on the bar. */
   label?: string;
   /** Required if `label` is being set */
   font?: string;
   /** Label color. */
   labelColor?: ValidColor;
+  /**
+   * Auto-compute the label from the value. Ignored if `label` is also set
+   * (explicit label wins).
+   * - `'percent'` → `"65%"` (ratio × 100, rounded)
+   * - `'fraction'` → `"5/10"` (raw value / max)
+   */
+  showValue?: ProgressValueType;
 }
 
 const DEFAULT_STEP_GAP = 2;

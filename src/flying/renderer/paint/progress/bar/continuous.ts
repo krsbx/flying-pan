@@ -1,6 +1,7 @@
-import type { Window } from '@flying/app';
+import type { Window } from '@/flying/app';
 import type { Renderer } from '@flying/renderer/renderer';
-import { Palette, type ViewStyle } from '@flying/widget';
+import type { ValidColor } from '@flying/types';
+import { Palette, type ViewStyle } from '@/flying/widget';
 import { paintBorder } from '../../utility';
 
 interface ContinuousFillOptions {
@@ -13,6 +14,8 @@ interface ContinuousFillOptions {
   isForward: boolean;
   ratio: number;
   fillStyle: ViewStyle;
+  /** If set, overrides `fillStyle.backgroundColor` (used by `colorStops`). */
+  colorOverride?: ValidColor;
 }
 
 export function paintContinuousFill(
@@ -29,6 +32,7 @@ export function paintContinuousFill(
     isForward,
     ratio,
     fillStyle,
+    colorOverride,
   } = options;
 
   const fillW = isHorizontal ? width * ratio : width;
@@ -50,7 +54,7 @@ export function paintContinuousFill(
     y: fillY,
     width: fillW,
     height: fillH,
-    color: fillStyle.backgroundColor ?? Palette.accent,
+    color: colorOverride ?? fillStyle.backgroundColor ?? Palette.accent,
     borderRadius: fillStyle.borderRadius,
     opacity: fillStyle.opacity,
   });

@@ -6,7 +6,11 @@ import {
 } from '@flying/widget';
 import type { PaintOptions } from '../types';
 import { paintInlineLabel } from './label';
-import { calculateProgressRatio } from './utility';
+import {
+  calculateProgressRatio,
+  formatValueLabel,
+  resolveFillColorClamped,
+} from './utility';
 
 export function paintCircularProgress(
   window: Window,
@@ -28,7 +32,13 @@ export function paintCircularProgress(
   const endAngle = startAngle + directionSign * Math.PI * 2 * ratio;
 
   const fillStyle = props.fillStyle ?? {};
-  const color = fillStyle.backgroundColor ?? Palette.accent;
+  const color = props.colorStops
+    ? resolveFillColorClamped({
+        ratio,
+        fillStyle,
+        colorStops: props.colorStops,
+      })
+    : (fillStyle.backgroundColor ?? Palette.accent);
   const opacity = fillStyle.opacity;
   const thickness = props.thickness ?? 0.1;
 
@@ -56,7 +66,16 @@ export function paintCircularProgress(
     });
   }
 
-  if (props.label && props.font) {
+  const labelText =
+    props.label ??
+    formatValueLabel({
+      value: props.value,
+      min: props.min,
+      max: props.max,
+      format: props.showValue,
+    });
+
+  if (labelText && props.font) {
     paintInlineLabel(window, {
       renderer,
       ctx,
@@ -64,7 +83,7 @@ export function paintCircularProgress(
       y,
       width,
       height,
-      label: props.label,
+      label: labelText,
       font: props.font,
       color: props.labelColor ?? Palette.text,
     });

@@ -7,7 +7,11 @@ import {
 import type { ProgressBarProps } from '@/flying/widget/progress';
 import type { PaintOptions } from '../../types';
 import { paintInlineLabel } from '../label';
-import { calculateProgressRatio } from '../utility';
+import {
+  calculateProgressRatio,
+  formatValueLabel,
+  resolveFillColorClamped,
+} from '../utility';
 import { paintContinuousFill } from './continuous';
 import { paintSteppedFill } from './step';
 
@@ -37,6 +41,7 @@ export function paintProgressBar(window: Window, options: PaintOptions): void {
       stepGap: props.stepGap ?? 2,
       filledSegments: Math.round(ratio * steps),
       fillStyle,
+      colorStops: props.colorStops,
     });
   } else {
     paintContinuousFill(window, {
@@ -49,10 +54,27 @@ export function paintProgressBar(window: Window, options: PaintOptions): void {
       isForward,
       ratio,
       fillStyle,
+      colorOverride: props.colorStops
+        ? resolveFillColorClamped({
+            ratio,
+            fillStyle,
+            colorStops: props.colorStops,
+          })
+        : undefined,
     });
   }
 
-  if (props.label && props.font) {
+  // Explicit label wins over `showValue`.
+  const labelText =
+    props.label ??
+    formatValueLabel({
+      value: props.value,
+      min: props.min,
+      max: props.max,
+      format: props.showValue,
+    });
+
+  if (labelText && props.font) {
     paintInlineLabel(window, {
       renderer,
       ctx,
@@ -60,7 +82,7 @@ export function paintProgressBar(window: Window, options: PaintOptions): void {
       y,
       width,
       height,
-      label: props.label,
+      label: labelText,
       font: props.font,
       color: props.labelColor ?? Palette.text,
     });

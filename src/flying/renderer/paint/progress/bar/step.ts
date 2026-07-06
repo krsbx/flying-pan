@@ -1,7 +1,9 @@
-import type { Window } from '@flying/app';
+import type { Window } from '@/flying/app';
 import type { Renderer } from '@flying/renderer/renderer';
-import { Palette, type ViewStyle } from '@flying/widget';
+import type { ColorStop, ViewStyle } from '@/flying/widget';
+import { Palette } from '@/flying/widget';
 import { paintBorder } from '../../utility';
+import { resolveFillColorClamped } from '../utility';
 
 export interface SteppedFillOptions {
   renderer: Renderer;
@@ -15,6 +17,12 @@ export interface SteppedFillOptions {
   stepGap: number;
   filledSegments: number;
   fillStyle: ViewStyle;
+  /**
+   * If provided, each segment is colored by its midpoint ratio (segment `i`
+   * of `steps` sits at `(i + 0.5) / steps`). Falls back to
+   * `fillStyle.backgroundColor`.
+   */
+  colorStops?: ColorStop[];
 }
 
 export function paintSteppedFill(window: Window, options: SteppedFillOptions) {
@@ -30,6 +38,7 @@ export function paintSteppedFill(window: Window, options: SteppedFillOptions) {
     stepGap,
     filledSegments,
     fillStyle,
+    colorStops,
   } = options;
 
   // Total extent along the fill axis, minus the gaps between segments.
@@ -54,6 +63,15 @@ export function paintSteppedFill(window: Window, options: SteppedFillOptions) {
     const segW = isHorizontal ? segmentLong : segmentShort;
     const segH = isHorizontal ? segmentShort : segmentLong;
 
+    // For color stops, this segment sits at the midpoint of [i/steps, (i+1)/steps].
+    const colorOverride = colorStops
+      ? resolveFillColorClamped({
+          ratio: (i + 0.5) / steps,
+          fillStyle,
+          colorStops,
+        })
+      : undefined;
+
     paintBorder(window, {
       x: segX,
       y: segY,
@@ -68,7 +86,7 @@ export function paintSteppedFill(window: Window, options: SteppedFillOptions) {
       y: segY,
       width: segW,
       height: segH,
-      color: fillStyle.backgroundColor ?? Palette.accent,
+      color: colorOverride ?? fillStyle.backgroundColor ?? Palette.accent,
       borderRadius: fillStyle.borderRadius,
       opacity: fillStyle.opacity,
     });

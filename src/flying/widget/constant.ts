@@ -128,3 +128,11 @@ export const CircularProgressDirection = {
 
 export type CircularProgressDirection =
   (typeof CircularProgressDirection)[keyof typeof CircularProgressDirection];
+
+export const ProgressValueType = {
+  Percent: 'percent',
+  Fraction: 'fraction',
+} as const;
+
+export type ProgressValueType =
+  (typeof ProgressValueType)[keyof typeof ProgressValueType];
