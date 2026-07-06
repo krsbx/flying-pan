@@ -1,6 +1,6 @@
 import type { BaseFontAtlas } from '@flying/fonts';
 import type { Coordinate2D, RGBA, Size, ValidColor } from '@flying/types';
-import type { BoxShadow } from '@/flying/widget';
+import type { BoxShadow } from '@flying/widget';
 import type { Texture } from '../texture/texture';
 
 export interface DrawRectOptions extends Coordinate2D, Size {
@@ -14,6 +14,45 @@ export interface DrawShadowOptions extends Coordinate2D, Size {
   borderRadius?: number | null;
 }
 
+export interface DrawRingOptions {
+  /** The center of the arc */
+  cx: number;
+  cy: number;
+
+  /** The radius of the arc */
+  outerRadius: number;
+  innerRadius: number;
+
+  /** The starting angle of the arc in radians, defaults to 0 */
+  startAngle?: number;
+  /** The ending angle of the arc in radians, defaults to 2 * Math.PI */
+  endAngle?: number;
+
+  /** The number of segments to use to draw the arc */
+  segments?: number;
+  color: ValidColor;
+  opacity?: number;
+}
+
+export interface DrawArcOptions {
+  /** The center of the arc */
+  cx: number;
+  cy: number;
+
+  /** The radius of the arc */
+  radius: number;
+
+  /** The starting angle of the arc in radians, defaults to 0 */
+  startAngle?: number;
+  /** The ending angle of the arc in radians, defaults to 2 * Math.PI */
+  endAngle?: number;
+
+  /** The number of segments to use to draw the arc */
+  segments?: number;
+  color: ValidColor;
+  opacity?: number;
+}
+
 export interface DrawRectGLOptions extends Coordinate2D, Size {
   rgba: RGBA;
   opacity?: number;
@@ -25,7 +64,7 @@ export interface DrawRoundedRectOptions extends Coordinate2D, Size {
   opacity?: number;
 }
 
-export interface DrawCornerArcOptions {
+export interface DrawArcGLOptions {
   /** The center of the arc */
   cx: number;
   cy: number;

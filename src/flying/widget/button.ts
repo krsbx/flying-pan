@@ -1,7 +1,7 @@
 import type { InteractionProps } from '@flying/interactions';
 import { WidgetType } from './constant';
-import { Metrics, Palette } from './styles';
 import type { ViewStyle, WidgetDescriptor, WidgetProps } from './styles';
+import { Metrics, Palette } from './styles';
 
 export interface ButtonProps extends WidgetProps, InteractionProps {
   style?: ViewStyle;

@@ -6,10 +6,10 @@ import {
 } from '@/flying/widget';
 import type { ProgressBarProps } from '@/flying/widget/progress';
 import { clamp } from '@utility/common';
-import type { PaintOptions } from '../types';
-import { paintContinuousFill } from './bar/continuous';
-import { paintInlineLabel } from './bar/label';
-import { paintSteppedFill } from './bar/step';
+import type { PaintOptions } from '../../types';
+import { paintContinuousFill } from './continuous';
+import { paintInlineLabel } from './label';
+import { paintSteppedFill } from './step';
 
 export function paintProgressBar(window: Window, options: PaintOptions): void {
   const { renderer, ctx, layout } = options;

@@ -16,9 +16,11 @@ import {
   GL_TRIANGLES,
 } from '../constant';
 import type {
-  DrawCornerArcOptions,
+  DrawArcGLOptions,
+  DrawArcOptions,
   DrawRectGLOptions,
   DrawRectOptions,
+  DrawRingOptions,
   DrawRoundedRectOptions,
   DrawShadowOptions,
   DrawTextOptions,
@@ -172,6 +174,75 @@ export class Renderer {
     });
   }
 
+  public drawRing(window: Window, options: DrawRingOptions): void {
+    const { cx, cy, outerRadius, innerRadius, color } = options;
+
+    this.wrap(window, () => {
+      const rgba = parseColor(color);
+
+      if (options.opacity !== undefined) {
+        rgba.alpha *= options.opacity;
+      }
+
+      const startAngle = options.startAngle ?? 0;
+      const endAngle = options.endAngle ?? Math.PI * 2;
+      const segments =
+        options.segments ?? Math.max(16, Math.ceil(outerRadius * 1.5));
+
+      const step = (endAngle - startAngle) / segments;
+
+      this.gl.glColor4f(rgba);
+      this.gl.glBegin({ mode: GL_TRIANGLES });
+
+      for (let i = 0; i < segments; i++) {
+        const a1 = startAngle + step * i;
+        const a2 = a1 + step;
+
+        const ox0 = cx + Math.cos(a1) * outerRadius;
+        const oy0 = cy + Math.sin(a1) * outerRadius;
+        const ox1 = cx + Math.cos(a2) * outerRadius;
+        const oy1 = cy + Math.sin(a2) * outerRadius;
+
+        const ix0 = cx + Math.cos(a1) * innerRadius;
+        const iy0 = cy + Math.sin(a1) * innerRadius;
+        const ix1 = cx + Math.cos(a2) * innerRadius;
+        const iy1 = cy + Math.sin(a2) * innerRadius;
+
+        this.gl.glVertex2f({ x: ix0, y: iy0 });
+        this.gl.glVertex2f({ x: ox0, y: oy0 });
+        this.gl.glVertex2f({ x: ox1, y: oy1 });
+
+        this.gl.glVertex2f({ x: ox1, y: oy1 });
+        this.gl.glVertex2f({ x: ix0, y: iy0 });
+        this.gl.glVertex2f({ x: ix1, y: iy1 });
+      }
+
+      this.gl.glEnd();
+    });
+  }
+
+  public drawArc(window: Window, options: DrawArcOptions): void {
+    const { cx, cy, radius, color } = options;
+
+    this.wrap(window, () => {
+      const rgba = parseColor(color);
+
+      if (options.opacity !== undefined) {
+        rgba.alpha *= options.opacity;
+      }
+
+      this.drawArcGL({
+        cx,
+        cy,
+        radius,
+        startAngle: options.startAngle ?? 0,
+        endAngle: options.endAngle ?? Math.PI * 2,
+        segments: options.segments ?? Math.max(16, Math.ceil(radius * 1.5)),
+        rgba,
+      });
+    });
+  }
+
   protected drawRectGL(options: DrawRectGLOptions): void {
     const { x, y, width, height, rgba } = options;
 
@@ -223,7 +294,7 @@ export class Renderer {
     const segments = Math.max(4, Math.ceil(r / 2));
 
     // Top-left
-    this.drawCornerArc({
+    this.drawArcGL({
       cx: x + r,
       cy: y + r,
       radius: r,
@@ -234,7 +305,7 @@ export class Renderer {
     });
 
     // Top-right
-    this.drawCornerArc({
+    this.drawArcGL({
       cx: x + width - r,
       cy: y + r,
       radius: r,
@@ -245,7 +316,7 @@ export class Renderer {
     });
 
     // Bottom-right
-    this.drawCornerArc({
+    this.drawArcGL({
       cx: x + width - r,
       cy: y + height - r,
       radius: r,
@@ -256,7 +327,7 @@ export class Renderer {
     });
 
     // Bottom-left
-    this.drawCornerArc({
+    this.drawArcGL({
       cx: x + r,
       cy: y + height - r,
       radius: r,
@@ -267,7 +338,7 @@ export class Renderer {
     });
   }
 
-  protected drawCornerArc(options: DrawCornerArcOptions): void {
+  protected drawArcGL(options: DrawArcGLOptions): void {
     const { cx, cy, radius, startAngle, endAngle, segments, rgba } = options;
     const step = (endAngle - startAngle) / segments;
 
@@ -278,15 +349,14 @@ export class Renderer {
       const a1 = startAngle + step * i;
       const a2 = a1 + step;
 
+      const x0 = cx + Math.cos(a1) * radius;
+      const y0 = cy + Math.sin(a1) * radius;
+      const x1 = cx + Math.cos(a2) * radius;
+      const y1 = cy + Math.sin(a2) * radius;
+
       this.gl.glVertex2f({ x: cx, y: cy });
-      this.gl.glVertex2f({
-        x: cx + Math.cos(a1) * radius,
-        y: cy + Math.sin(a1) * radius,
-      });
-      this.gl.glVertex2f({
-        x: cx + Math.cos(a2) * radius,
-        y: cy + Math.sin(a2) * radius,
-      });
+      this.gl.glVertex2f({ x: x0, y: y0 });
+      this.gl.glVertex2f({ x: x1, y: y1 });
     }
 
     this.gl.glEnd();
