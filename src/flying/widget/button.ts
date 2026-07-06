@@ -35,6 +35,8 @@ export function Button(props: ButtonProps): WidgetDescriptor {
     type: WidgetType.Button,
     props: rest,
     style: {
+      width: Metrics.buttonWidth,
+      height: Metrics.buttonHeight,
       padding: Metrics.defaultPadding,
       borderRadius: Metrics.buttonRadius,
       borderWidth: Metrics.borderWidth,
@@ -48,6 +50,7 @@ export function Button(props: ButtonProps): WidgetDescriptor {
       },
       _focus: {
         borderColor: Palette.borderFocus,
+        backgroundColor: Palette.surfaceHover,
         ...style?._focus,
       },
       _active: {

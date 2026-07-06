@@ -14,6 +14,7 @@ import {
   Position,
   resolveSize,
   resolveSpacing,
+  ROOT_FONT_SIZE,
   SpacingType,
   WidgetType,
   type TextStyle,
@@ -82,7 +83,7 @@ export function measureChildsComponent(
       if (text) {
         const measured = fontAtlas.measureText({
           text,
-          fontSize: style.fontSize ?? 16,
+          fontSize: style.fontSize ?? ROOT_FONT_SIZE,
           letterSpacing: style.letterSpacing,
           lineHeight: style.lineHeight,
         });
@@ -98,7 +99,7 @@ export function measureChildsComponent(
       const fontAtlas = ctx.fontManager.get(props.font);
 
       const text = (child.props as LabelProps).text;
-      const fontSize = style?.fontSize ?? 16;
+      const fontSize = style?.fontSize ?? ROOT_FONT_SIZE;
       const letterSpacing = style?.letterSpacing;
       const lineHeight = style?.lineHeight;
 

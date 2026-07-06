@@ -43,6 +43,8 @@ export const Metrics = {
   borderWidthThick: 2, // for emphasis states / larger controls
   controlRadius: 4, // checkbox / radio / small input
   buttonRadius: 6,
+  buttonWidth: 88, // default Button size — content-sized when overridden
+  buttonHeight: 32,
   inputRadius: 4,
   defaultPadding: 8,
   controlSize: 16, // checkbox / radio default dimension

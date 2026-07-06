@@ -1,5 +1,5 @@
 import type { InteractionProps } from '../../interactions';
-import { WidgetType } from '../constant';
+import { ROOT_FONT_SIZE, WidgetType } from '../constant';
 import type { WidgetProps } from '../styles';
 import { Metrics, Palette } from '../styles';
 import type { TextInputStyle, WidgetDescriptor } from '../styles/types';
@@ -63,8 +63,15 @@ export function TextInput(props: TextInputProps): WidgetDescriptor {
       borderColor: Palette.border,
       backgroundColor: Palette.surface,
       color: Palette.text,
+      fontSize: ROOT_FONT_SIZE,
+      placeholderColor: Palette.textMuted,
+      caretColor: Palette.text,
       focusable: !disabled,
       ...style,
+      _hover: {
+        backgroundColor: Palette.surfaceHover,
+        ...style?._hover,
+      },
       _focus: {
         borderColor: Palette.borderFocus,
         ...style?._focus,
