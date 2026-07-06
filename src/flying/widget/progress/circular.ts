@@ -14,7 +14,13 @@ import type { ColorStop } from './bar';
 
 export interface CircularProgressProps {
   value?: number;
+  /**
+   * Optional secondary "buffer" arc rendered behind the main arc.
+   * Same units/scale as `value` — normalized via `min`/`max`.
+   */
   buffer?: number;
+  /** Style override for the buffer arc. Defaults to `fillStyle` at 0.35 opacity. */
+  bufferStyle?: ViewStyle;
   min?: number;
   max?: number;
   /** Diameter in px. Default 48. */

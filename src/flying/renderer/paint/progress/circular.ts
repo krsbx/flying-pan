@@ -7,6 +7,7 @@ import {
 import type { PaintOptions } from '../types';
 import { paintInlineLabel } from './label';
 import {
+  bufferRatio,
   calculateProgressRatio,
   formatValueLabel,
   resolveFillColorClamped,
@@ -29,42 +30,62 @@ export function paintCircularProgress(
   const startAngle = props.startAngle ?? -Math.PI / 2;
   const directionSign =
     props.direction === CircularProgressDirection.CounterClockwise ? -1 : 1;
-  const endAngle = startAngle + directionSign * Math.PI * 2 * ratio;
 
   const fillStyle = props.fillStyle ?? {};
-  const color = props.colorStops
+  const thickness = props.thickness ?? 0.1;
+  const innerRadius = radius * (1 - thickness);
+
+  const drawArcShape = (
+    arcRatio: number,
+    arcColor: string,
+    arcOpacity?: number
+  ) => {
+    if (arcRatio <= 0) return;
+    const endAngle = startAngle + directionSign * Math.PI * 2 * arcRatio;
+
+    if (thickness >= 1) {
+      renderer.drawArc(window, {
+        cx,
+        cy,
+        radius,
+        startAngle,
+        endAngle,
+        color: arcColor,
+        opacity: arcOpacity,
+      });
+    } else {
+      renderer.drawRing(window, {
+        cx,
+        cy,
+        outerRadius: radius,
+        innerRadius,
+        startAngle,
+        endAngle,
+        color: arcColor,
+        opacity: arcOpacity,
+      });
+    }
+  };
+
+  // Buffer arc first (behind main). Default to 0.35 opacity.
+  const bufRatio = bufferRatio(props);
+  if (bufRatio > 0) {
+    const bufferColor =
+      props.bufferStyle?.backgroundColor ??
+      fillStyle.backgroundColor ??
+      Palette.accent;
+    const bufferOpacity = props.bufferStyle?.opacity ?? 0.35;
+    drawArcShape(bufRatio, bufferColor, bufferOpacity);
+  }
+
+  const mainColor = props.colorStops
     ? resolveFillColorClamped({
         ratio,
         fillStyle,
         colorStops: props.colorStops,
       })
     : (fillStyle.backgroundColor ?? Palette.accent);
-  const opacity = fillStyle.opacity;
-  const thickness = props.thickness ?? 0.1;
-
-  if (thickness >= 1) {
-    renderer.drawArc(window, {
-      cx,
-      cy,
-      radius,
-      startAngle,
-      endAngle,
-      color,
-      opacity,
-    });
-  } else {
-    const innerRadius = radius * (1 - thickness);
-    renderer.drawRing(window, {
-      cx,
-      cy,
-      outerRadius: radius,
-      innerRadius,
-      startAngle,
-      endAngle,
-      color,
-      opacity,
-    });
-  }
+  drawArcShape(ratio, mainColor, fillStyle.opacity);
 
   const labelText =
     props.label ??

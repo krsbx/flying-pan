@@ -4,6 +4,7 @@ import type { ProgressBarProps } from '@/flying/widget/progress';
 import type { PaintOptions } from '../../types';
 import { paintInlineLabel } from '../label';
 import {
+  bufferRatio,
   calculateProgressRatio,
   formatValueLabel,
   resolveFillColorClamped,
@@ -23,6 +24,45 @@ export function paintProgressBar(window: Window, options: PaintOptions): void {
 
   const fillStyle = props.fillStyle ?? {};
   const steps = props.steps ?? 0;
+
+  // Buffer fill draws first (behind the main fill). Default to 0.35 opacity
+  // so the main fill reads as foreground even with identical colors.
+  const bufRatio = bufferRatio(props);
+  if (bufRatio > 0) {
+    const bufferStyle = {
+      ...fillStyle,
+      opacity: props.bufferStyle?.opacity ?? 0.35,
+      ...props.bufferStyle,
+    };
+
+    if (steps > 1) {
+      paintSteppedFill(window, {
+        renderer,
+        x,
+        y,
+        width,
+        height,
+        isHorizontal,
+        isForward,
+        steps,
+        stepGap: props.stepGap ?? 2,
+        filledSegments: Math.round(bufRatio * steps),
+        fillStyle: bufferStyle,
+      });
+    } else {
+      paintContinuousFill(window, {
+        renderer,
+        x,
+        y,
+        width,
+        height,
+        isHorizontal,
+        isForward,
+        ratio: bufRatio,
+        fillStyle: bufferStyle,
+      });
+    }
+  }
 
   if (steps > 1) {
     paintSteppedFill(window, {

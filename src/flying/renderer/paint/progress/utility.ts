@@ -28,6 +28,28 @@ export function calculateProgressRatio(
   return ratio;
 }
 
+/**
+ * Same normalization as `calculateProgressRatio`, but reads `props.buffer`
+ * instead of `props.value`. Returns 0 if `buffer` is undefined.
+ */
+export function bufferRatio(
+  props: ProgressBarProps | CircularProgressProps
+): number {
+  if (props.buffer === undefined) return 0;
+
+  const min = props.min ?? 0;
+  const max = props.max ?? 1;
+  const span = max - min;
+
+  if (span === 0) return 0;
+
+  return clamp({
+    value: (props.buffer - min) / span,
+    min: 0,
+    max: 1,
+  });
+}
+
 export function resolveFillColor(options: {
   ratio: number;
   fillStyle?: ViewStyle;

@@ -21,7 +21,15 @@ export interface ColorStop {
 
 export interface ProgressBarProps {
   value?: number;
+  /**
+   * Optional secondary "buffer" fill rendered behind the main fill
+   * (YouTube/Netflix seek bar pattern). Same units/scale as `value` —
+   * normalized via `min`/`max`. Drawn at lower opacity unless
+   * `bufferStyle.opacity` is set.
+   */
   buffer?: number;
+  /** Style override for the buffer fill. Defaults to `fillStyle` at 0.35 opacity. */
+  bufferStyle?: ViewStyle;
   min?: number;
   max?: number;
   orientation?: ProgressBarOrientation;
