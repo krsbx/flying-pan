@@ -1,5 +1,6 @@
 import { clamp } from '@/utility/common';
 import type {
+  CircularProgressProps,
   ImageProps,
   LabelProps,
   ProgressBarProps,
@@ -120,6 +121,21 @@ export function measureChildsComponent(
 
         if (width < measured.width) width = measured.width;
         if (height < measured.height) height = measured.height;
+      }
+    }
+
+    if (child.type === WidgetType.CircularProgress) {
+      const props = child.props as CircularProgressProps;
+
+      if (props.label && props.font) {
+        const fontAtlas = ctx.fontManager.get(props.font);
+        const measured = fontAtlas.measureText({ text: props.label });
+        // Stay square so the circle stays circular — growing only width or
+        // height would distort the box and drawRoundedRect's radius clamp
+        // would then produce an ellipse.
+        const minSize = Math.max(measured.width, measured.height);
+        if (width < minSize) width = minSize;
+        if (height < minSize) height = minSize;
       }
     }
 
