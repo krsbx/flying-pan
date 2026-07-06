@@ -1,11 +1,15 @@
-import type { ValidColor } from '@flying/types';
 import {
   CircularProgressDirection,
   ProgressType,
   ProgressValueType,
   WidgetType,
 } from '../constant';
-import { Palette, type ViewStyle, type WidgetDescriptor } from '../styles';
+import {
+  Palette,
+  type TextStyle,
+  type ViewStyle,
+  type WidgetDescriptor,
+} from '../styles';
 import type { ColorStop } from './bar';
 
 export interface CircularProgressProps {
@@ -44,8 +48,7 @@ export interface CircularProgressProps {
   label?: string;
   /** Required if `label` is set. */
   font?: string;
-  /** Label color. Defaults to Palette.text. */
-  labelColor?: ValidColor;
+  labelStyle?: TextStyle;
   /**
    * Auto-compute the label from the value. Ignored if `label` is also set
    * (explicit label wins). Same semantics as `ProgressBarProps.showValue`.

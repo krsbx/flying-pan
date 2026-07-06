@@ -37,7 +37,7 @@ export function RadioGroup(props: RadioGroupProps): WidgetDescriptor {
     if (child.type !== WidgetType.Radio) return child;
 
     const radioProps = child.props as RadioProps;
-    const { label, labelColor, font, ...radioOnly } = radioProps;
+    const { label, labelStyle, font, ...radioOnly } = radioProps;
 
     const isDisabled = radioProps.disabled === true;
 
@@ -89,7 +89,7 @@ export function RadioGroup(props: RadioGroupProps): WidgetDescriptor {
         ? Label({
             text: label,
             font: font!,
-            style: { color: labelColor },
+            style: labelStyle,
           })
         : label;
 

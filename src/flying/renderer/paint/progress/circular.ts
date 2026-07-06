@@ -85,7 +85,7 @@ export function paintCircularProgress(
       height,
       label: labelText,
       font: props.font,
-      color: props.labelColor ?? Palette.text,
+      style: props.labelStyle ?? {},
     });
   }
 }

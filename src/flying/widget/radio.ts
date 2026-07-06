@@ -1,15 +1,19 @@
 import type { InteractionProps } from '@flying/interactions';
-import type { ValidColor } from '../types';
 import { WidgetType } from './constant';
-import type { ViewStyle, WidgetDescriptor, WidgetProps } from './styles';
+import type {
+  TextStyle,
+  ViewStyle,
+  WidgetDescriptor,
+  WidgetProps,
+} from './styles';
 import { Metrics, Palette } from './styles';
 
 export interface RadioProps extends WidgetProps, InteractionProps {
   value: string;
   selected?: boolean;
+  /** Rendered only if the `Radio` is used in a `RadioGroup` */
   label?: string | WidgetDescriptor;
-  /** Label color. */
-  labelColor?: ValidColor;
+  labelStyle?: TextStyle;
   disabled?: boolean;
   name?: string;
   groupDefaultValue?: string;

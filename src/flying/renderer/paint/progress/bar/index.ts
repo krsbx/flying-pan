@@ -1,9 +1,5 @@
 import type { Window } from '@/flying/app';
-import {
-  Palette,
-  ProgressBarOrientation,
-  ProgressDirection,
-} from '@/flying/widget';
+import { ProgressBarOrientation, ProgressDirection } from '@/flying/widget';
 import type { ProgressBarProps } from '@/flying/widget/progress';
 import type { PaintOptions } from '../../types';
 import { paintInlineLabel } from '../label';
@@ -84,7 +80,7 @@ export function paintProgressBar(window: Window, options: PaintOptions): void {
       height,
       label: labelText,
       font: props.font,
-      color: props.labelColor ?? Palette.text,
+      style: props.labelStyle ?? {},
     });
   }
 }

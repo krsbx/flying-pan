@@ -6,7 +6,12 @@ import {
   ProgressValueType,
   WidgetType,
 } from '../constant';
-import { Palette, type ViewStyle, type WidgetDescriptor } from '../styles';
+import {
+  Palette,
+  type TextStyle,
+  type ViewStyle,
+  type WidgetDescriptor,
+} from '../styles';
 
 export interface ColorStop {
   /** Position along the track in [0, 1] (post-clamp ratio). */
@@ -38,8 +43,7 @@ export interface ProgressBarProps {
   label?: string;
   /** Required if `label` is being set */
   font?: string;
-  /** Label color. */
-  labelColor?: ValidColor;
+  labelStyle?: TextStyle;
   /**
    * Auto-compute the label from the value. Ignored if `label` is also set
    * (explicit label wins).
