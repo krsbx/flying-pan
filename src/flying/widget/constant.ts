@@ -59,6 +59,7 @@ export const WidgetType = {
   Radio: 'Radio',
   Toggle: 'Toggle',
   ProgressBar: 'ProgressBar',
+  CircularProgress: 'CircularProgress',
 } as const;
 
 export type WidgetType = (typeof WidgetType)[keyof typeof WidgetType];
@@ -119,3 +120,11 @@ export const ProgressDirection = {
 
 export type ProgressDirection =
   (typeof ProgressDirection)[keyof typeof ProgressDirection];
+
+export const CircularProgressDirection = {
+  Clockwise: 'clockwise',
+  CounterClockwise: 'counterClockwise',
+} as const;
+
+export type CircularProgressDirection =
+  (typeof CircularProgressDirection)[keyof typeof CircularProgressDirection];

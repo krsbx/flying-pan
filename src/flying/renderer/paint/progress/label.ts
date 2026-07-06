@@ -1,7 +1,7 @@
 import type { Window } from '@flying/app';
 import type { Renderer } from '@flying/renderer/renderer';
 import type { ValidColor } from '@flying/types';
-import type { PaintContext } from '../../types';
+import type { PaintContext } from '../types';
 
 export interface InlineLabelOptions {
   renderer: Renderer;
