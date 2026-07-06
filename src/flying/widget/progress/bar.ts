@@ -9,6 +9,7 @@ import { Palette, type ViewStyle, type WidgetDescriptor } from '../styles';
 
 export interface ProgressBarProps {
   value?: number;
+  buffer?: number;
   min?: number;
   max?: number;
   orientation?: ProgressBarOrientation;
@@ -31,19 +32,7 @@ export interface ProgressBarProps {
 const DEFAULT_STEP_GAP = 2;
 
 export function ProgressBar(props: ProgressBarProps): WidgetDescriptor {
-  const {
-    value,
-    min,
-    max,
-    style,
-    fillStyle,
-    steps,
-    stepGap,
-    label,
-    font,
-    labelColor,
-    ...rest
-  } = props;
+  const { value, style, fillStyle, steps, stepGap, ...rest } = props;
 
   const orientation = props.orientation || ProgressBarOrientation.Horizontal;
   const direction = props.direction || ProgressDirection.Forward;
@@ -60,21 +49,16 @@ export function ProgressBar(props: ProgressBarProps): WidgetDescriptor {
     type: WidgetType.ProgressBar,
     props: {
       value,
-      min,
-      max,
-      orientation,
-      direction,
       fillStyle: {
         backgroundColor: Palette.accent,
         ...fillStyle,
       },
-      type,
       steps,
       stepGap: stepGap ?? DEFAULT_STEP_GAP,
-      label,
-      font,
-      labelColor,
       ...rest,
+      type,
+      orientation,
+      direction,
     },
     style: {
       width: isHorizontal ? 48 : 4,

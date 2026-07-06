@@ -22,16 +22,8 @@ export interface RadioProps extends WidgetProps, InteractionProps {
 
 export function Radio(props: RadioProps): WidgetDescriptor {
   const {
-    value,
-    selected,
-    label,
-    labelColor,
-    font,
-    disabled = false,
+    disabled,
     dotStyle,
-    dotSize,
-    name,
-    groupDefaultValue,
     onPointerDown,
     onPointerUp,
     onPointerMove,
@@ -53,11 +45,6 @@ export function Radio(props: RadioProps): WidgetDescriptor {
   return {
     type: WidgetType.Radio,
     props: {
-      value,
-      selected,
-      label,
-      labelColor,
-      font,
       disabled,
       dotStyle: {
         backgroundColor: Palette.accent,
@@ -67,9 +54,6 @@ export function Radio(props: RadioProps): WidgetDescriptor {
           ...dotStyle?._disabled,
         },
       },
-      dotSize,
-      name,
-      groupDefaultValue,
       ...rest,
     },
     style: {

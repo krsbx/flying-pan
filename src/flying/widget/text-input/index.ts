@@ -25,9 +25,6 @@ export interface TextInputState {
 
 export function TextInput(props: TextInputProps): WidgetDescriptor {
   const {
-    value,
-    defaultValue,
-    placeholder,
     onChange,
     disabled,
     onChar: userOnChar,
@@ -46,23 +43,19 @@ export function TextInput(props: TextInputProps): WidgetDescriptor {
     onUnmount,
     onUpdate,
     style,
-    font,
     ...rest
   } = props;
 
   const internalProps = {
-    value,
-    defaultValue,
-    placeholder,
     onChange,
     disabled,
-    font,
     style,
+    ...rest,
   };
 
   return {
     type: WidgetType.TextInput,
-    props: { value, defaultValue, placeholder, disabled, font, ...rest },
+    props: internalProps,
     style: {
       padding: Metrics.defaultPadding,
       borderRadius: Metrics.inputRadius,

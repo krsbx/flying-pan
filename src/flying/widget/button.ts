@@ -12,7 +12,7 @@ export interface ButtonProps extends WidgetProps, InteractionProps {
 export function Button(props: ButtonProps): WidgetDescriptor {
   const {
     children,
-    disabled = false,
+    disabled,
     onPointerDown,
     onPointerUp,
     onPointerMove,

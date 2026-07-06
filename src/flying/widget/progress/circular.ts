@@ -8,6 +8,7 @@ import { Palette, type ViewStyle, type WidgetDescriptor } from '../styles';
 
 export interface CircularProgressProps {
   value?: number;
+  buffer?: number;
   min?: number;
   max?: number;
   /** Diameter in px. Default 48. */
@@ -46,51 +47,37 @@ const DEFAULT_START_ANGLE = -Math.PI / 2;
 export function CircularProgress(
   props: CircularProgressProps
 ): WidgetDescriptor {
-  const {
-    value,
-    min,
-    max,
-    size,
-    thickness,
-    startAngle,
-    direction,
-    style,
-    fillStyle,
-    type,
-    label,
-    font,
-    labelColor,
-    ...rest
-  } = props;
+  const { value, style, fillStyle, ...rest } = props;
 
-  const resolvedSize = size ?? DEFAULT_SIZE;
+  const size = props.size ?? DEFAULT_SIZE;
+  const startAngle = props.startAngle ?? DEFAULT_START_ANGLE;
+  const direction = props.direction || CircularProgressDirection.Clockwise;
+  const type =
+    value !== undefined
+      ? ProgressType.Determinate
+      : props.type || ProgressType.Indeterminate;
   // thickness undefined → ring (default). >= 1 → pie. < 1 → ring.
-  const resolvedThickness = thickness ?? DEFAULT_THICKNESS;
+  const thickness = props.thickness ?? DEFAULT_THICKNESS;
 
   return {
     type: WidgetType.CircularProgress,
     props: {
       value,
-      min,
-      max,
-      size: resolvedSize,
-      thickness: resolvedThickness,
-      startAngle: startAngle ?? DEFAULT_START_ANGLE,
-      direction: direction ?? CircularProgressDirection.Clockwise,
       fillStyle: {
         backgroundColor: Palette.accent,
         ...fillStyle,
       },
-      type: type ?? ProgressType.Determinate,
-      label,
-      font,
-      labelColor,
       ...rest,
+      thickness,
+      startAngle,
+      direction,
+      type,
+      size,
     },
     style: {
-      width: resolvedSize,
-      height: resolvedSize,
-      borderRadius: resolvedSize / 2,
+      width: size,
+      height: size,
+      borderRadius: size / 2,
       backgroundColor: Palette.surfaceActive,
       ...style,
     },

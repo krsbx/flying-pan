@@ -28,6 +28,7 @@ export function Flex(props: FlexProps): WidgetDescriptor {
     onMount,
     onUnmount,
     onUpdate,
+    style,
     ...rest
   } = props;
 
@@ -39,7 +40,7 @@ export function Flex(props: FlexProps): WidgetDescriptor {
       gap: props.gap,
       justifyContent: props.justifyContent,
       alignItems: props.alignItems,
-      ...props.style,
+      ...style,
     },
     children,
     onPointerDown,

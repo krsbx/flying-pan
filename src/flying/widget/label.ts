@@ -26,16 +26,12 @@ export function Label(props: LabelProps): WidgetDescriptor {
     onUnmount,
     onUpdate,
     style,
-    font,
     ...rest
   } = props;
 
   return {
     type: WidgetType.Label,
-    props: {
-      font,
-      ...rest,
-    },
+    props: rest,
     style: {
       color: Palette.text,
       ...style,
