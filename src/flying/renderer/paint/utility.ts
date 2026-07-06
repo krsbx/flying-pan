@@ -1,5 +1,4 @@
 import type { LayoutNode } from '@/flying/layout';
-import type { Coordinate2D, Resolution } from '@/flying/types';
 import type { Window } from '@flying/app';
 import {
   WidgetType,
@@ -9,17 +8,36 @@ import {
   type ViewStyle,
   type WidgetDescriptor,
 } from '@flying/widget';
-import type { Renderer } from '../renderer';
-import type { PaintContext, ResolveStyleOptions } from './types';
+import type {
+  PaintBackgroundOptions,
+  PaintBorderOptions,
+  PaintContext,
+  PaintShadowOptions,
+  ResolveStyleOptions,
+} from './types';
 
-export function paintBorder(
-  window: Window,
-  options: Resolution &
-    Coordinate2D & {
-      style: ViewStyle;
-      renderer: Renderer;
+export function paintShadow(window: Window, options: PaintShadowOptions) {
+  const { renderer, style, width, height, x, y } = options;
+
+  if (style.boxShadow) {
+    const shadows = Array.isArray(style.boxShadow)
+      ? style.boxShadow
+      : [style.boxShadow];
+
+    for (const shadow of shadows) {
+      renderer.drawShadow(window, {
+        x,
+        y,
+        width,
+        height,
+        shadow,
+        borderRadius: style.borderRadius,
+      });
     }
-): void {
+  }
+}
+
+export function paintBorder(window: Window, options: PaintBorderOptions): void {
   const { renderer, style, width, height, x, y } = options;
 
   // Render the border by drawing a rectangle with a bigger size as the requested
@@ -32,6 +50,34 @@ export function paintBorder(
       color: style.borderColor,
       borderRadius: style.borderRadius,
       opacity: style.opacity,
+    });
+  }
+}
+
+export function paintBackground(
+  window: Window,
+  options: PaintBackgroundOptions
+): void {
+  const { renderer, style, width, height, x, y, colorOverride } = options;
+
+  const drawOptions = {
+    x,
+    y,
+    width,
+    height,
+    opacity: style.opacity,
+    borderRadius: style.borderRadius,
+  };
+
+  if (colorOverride) {
+    renderer.drawRect(window, {
+      ...drawOptions,
+      color: colorOverride,
+    });
+  } else if (style.backgroundColor) {
+    renderer.drawRect(window, {
+      ...drawOptions,
+      color: style.backgroundColor,
     });
   }
 }

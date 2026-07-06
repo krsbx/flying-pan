@@ -2,7 +2,7 @@ import type { Window } from '@/flying/app';
 import { Palette } from '@/flying/widget';
 import type { ToggleProps } from '@/flying/widget/toggle';
 import type { SubMarkPaintOptions } from '../types';
-import { paintBorder, resolveStyle } from '../utility';
+import { paintBackground, paintBorder, resolveStyle } from '../utility';
 
 const KNOB_INSET = 1;
 
@@ -32,17 +32,23 @@ export function paintToggle(window: Window, options: SubMarkPaintOptions) {
     y: markY,
     width: markWidth,
     height: markHeight,
+    style: {
+      borderRadius: markHeight / 2,
+      ...knob,
+    },
     renderer,
-    style: knob,
   });
 
-  renderer.drawRect(window, {
+  paintBackground(window, {
     x: markX,
     y: markY,
     width: markWidth,
     height: markHeight,
-    color: knob.backgroundColor ?? Palette.surface,
-    opacity: knob.opacity,
-    borderRadius: knob.borderRadius ?? markHeight / 2,
+    style: {
+      backgroundColor: Palette.surface,
+      borderRadius: markHeight / 2,
+      ...knob,
+    },
+    renderer,
   });
 }

@@ -1,8 +1,8 @@
 import type { Window } from '@/flying/app';
-import type { Renderer } from '@flying/renderer/renderer';
 import type { ColorStop, ViewStyle } from '@/flying/widget';
 import { Palette } from '@/flying/widget';
-import { paintBorder } from '../../utility';
+import type { Renderer } from '@flying/renderer/renderer';
+import { paintBackground, paintBorder } from '../../utility';
 import { resolveFillColorClamped } from '../utility';
 
 export interface SteppedFillOptions {
@@ -77,18 +77,21 @@ export function paintSteppedFill(window: Window, options: SteppedFillOptions) {
       y: segY,
       width: segW,
       height: segH,
-      renderer,
       style: fillStyle,
+      renderer,
     });
 
-    renderer.drawRect(window, {
+    paintBackground(window, {
       x: segX,
       y: segY,
       width: segW,
       height: segH,
-      color: colorOverride ?? fillStyle.backgroundColor ?? Palette.accent,
-      borderRadius: fillStyle.borderRadius,
-      opacity: fillStyle.opacity,
+      style: {
+        backgroundColor: Palette.accent,
+        ...fillStyle,
+      },
+      renderer,
+      colorOverride,
     });
   }
 }

@@ -15,7 +15,9 @@ import { paintTextInput } from './text/input';
 import { paintToggle } from './toggle';
 import type { PaintOptions } from './types';
 import {
+  paintBackground,
   paintBorder,
+  paintShadow,
   resolveStyle,
   resolveWidgetCheckedState,
 } from './utility';
@@ -41,47 +43,18 @@ export function paint(window: Window, options: PaintOptions) {
     disabled,
   });
 
-  const borderRadius = style.borderRadius;
-  const opacity = style.opacity;
-
-  // Drop shadow first, so its rendered behind the requested
-  if (style.boxShadow) {
-    const shadows = Array.isArray(style.boxShadow)
-      ? style.boxShadow
-      : [style.boxShadow];
-
-    for (const shadow of shadows) {
-      renderer.drawShadow(window, {
-        x,
-        y,
-        width,
-        height,
-        shadow,
-        borderRadius,
-      });
-    }
-  }
-
-  paintBorder(window, {
+  const paintOptions = {
     x,
     y,
     width,
     height,
     style,
     renderer,
-  });
+  };
 
-  if (style.backgroundColor) {
-    renderer.drawRect(window, {
-      x,
-      y,
-      width,
-      height,
-      color: style.backgroundColor,
-      borderRadius,
-      opacity,
-    });
-  }
+  paintShadow(window, paintOptions);
+  paintBorder(window, paintOptions);
+  paintBackground(window, paintOptions);
 
   switch (widget.type) {
     case WidgetType.Image: {

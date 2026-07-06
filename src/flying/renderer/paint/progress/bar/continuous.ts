@@ -1,8 +1,8 @@
 import type { Window } from '@/flying/app';
+import { Palette, type ViewStyle } from '@/flying/widget';
 import type { Renderer } from '@flying/renderer/renderer';
 import type { ValidColor } from '@flying/types';
-import { Palette, type ViewStyle } from '@/flying/widget';
-import { paintBorder } from '../../utility';
+import { paintBackground, paintBorder } from '../../utility';
 
 interface ContinuousFillOptions {
   renderer: Renderer;
@@ -49,13 +49,16 @@ export function paintContinuousFill(
     style: fillStyle,
   });
 
-  renderer.drawRect(window, {
+  paintBackground(window, {
     x: fillX,
     y: fillY,
     width: fillW,
     height: fillH,
-    color: colorOverride ?? fillStyle.backgroundColor ?? Palette.accent,
-    borderRadius: fillStyle.borderRadius,
-    opacity: fillStyle.opacity,
+    style: {
+      backgroundColor: Palette.accent,
+      ...fillStyle,
+    },
+    colorOverride,
+    renderer,
   });
 }

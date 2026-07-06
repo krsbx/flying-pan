@@ -1,7 +1,7 @@
 import type { Window } from '@/flying/app';
 import { Palette, type CheckboxProps } from '@/flying/widget';
 import type { SubMarkPaintOptions } from '../types';
-import { paintBorder, resolveStyle } from '../utility';
+import { paintBackground, paintBorder, resolveStyle } from '../utility';
 
 const TICK_INSET = 0.5;
 
@@ -32,17 +32,19 @@ export function paintCheckbox(window: Window, options: SubMarkPaintOptions) {
     y: markY,
     width: markWidth,
     height: markHeight,
-    renderer,
     style: tick,
+    renderer,
   });
 
-  renderer.drawRect(window, {
+  paintBackground(window, {
     x: markX,
     y: markY,
     width: markWidth,
     height: markHeight,
-    color: tick.backgroundColor ?? Palette.textOnAccent,
-    opacity: tick.opacity,
-    borderRadius: tick.borderRadius,
+    style: {
+      backgroundColor: Palette.textOnAccent,
+      ...tick,
+    },
+    renderer,
   });
 }

@@ -1,6 +1,7 @@
 import type { InteractionManager } from '@/flying/interactions';
 import type { GetStableIdFn } from '@/flying/reconcile/reconciler/types';
 import type { StateStore } from '@/flying/state';
+import type { Coordinate2D, Resolution } from '@/flying/types';
 import type { ViewStyle } from '@/flying/widget';
 import type { FontManager } from '@flying/app';
 import type { LayoutNode } from '@flying/layout';
@@ -32,3 +33,19 @@ export interface ResolveStyleOptions {
 
 export interface SubMarkPaintOptions
   extends PaintOptions, ResolveStyleOptions {}
+
+export interface PaintShadowOptions extends Resolution, Coordinate2D {
+  style: ViewStyle;
+  renderer: Renderer;
+}
+
+export interface PaintBorderOptions extends Resolution, Coordinate2D {
+  style: ViewStyle;
+  renderer: Renderer;
+}
+
+export interface PaintBackgroundOptions extends Resolution, Coordinate2D {
+  style: ViewStyle;
+  renderer: Renderer;
+  colorOverride?: string;
+}
