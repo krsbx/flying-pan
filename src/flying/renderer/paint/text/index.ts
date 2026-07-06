@@ -1,6 +1,10 @@
-import { TextAlign, type LabelProps, type TextStyle } from '@/flying/widget';
+import {
+  Palette,
+  TextAlign,
+  type LabelProps,
+  type TextStyle,
+} from '@/flying/widget';
 import type { Window } from '@flying/app';
-import { Color } from '../../color';
 import type { PaintOptions } from '../types';
 
 export function paintText(
@@ -14,7 +18,7 @@ export function paintText(
   const fontAtlas = ctx.fontManager.get(props.font);
 
   const text = props?.text ?? '';
-  const color = style.color ?? Color.white;
+  const color = style.color ?? Palette.text;
 
   if (!text) return;
 

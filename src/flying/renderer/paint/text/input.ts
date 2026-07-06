@@ -1,11 +1,11 @@
 import type { Window } from '@/flying/app';
 import {
+  Palette,
   resolveSpacing,
   ROOT_FONT_SIZE,
   type TextInputProps,
   type TextInputStyle,
 } from '@flying/widget';
-import { Color } from '../../color';
 import type { PaintOptions } from '../types';
 
 export function paintTextInput(
@@ -47,8 +47,8 @@ export function paintTextInput(
 
   if (text) {
     const color = !hasValue
-      ? (style.placeholderColor ?? '#888888')
-      : (style.color ?? Color.white);
+      ? (style.placeholderColor ?? Palette.textMuted)
+      : (style.color ?? Palette.text);
 
     renderer.drawText(window, {
       text: text,
@@ -78,7 +78,7 @@ export function paintTextInput(
         y: contentY,
         width: style.caretWidth ?? 1,
         height: style.fontSize ?? measured.height ?? ROOT_FONT_SIZE,
-        color: style.caretColor ?? style.color ?? Color.white,
+        color: style.caretColor ?? style.color ?? Palette.text,
       });
     }
   }
