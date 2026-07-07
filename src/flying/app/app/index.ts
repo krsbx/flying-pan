@@ -134,12 +134,7 @@ export class App {
             y: 0,
             availableWidth: window.size.width,
             availableHeight: window.size.height,
-            ctx: {
-              fontManager: this.manager.font,
-              textureManager: this.manager.texture,
-              getStableId: this.manager.reconciler.getStableId,
-              stateStore: this.manager.stateStore,
-            },
+            ctx: this.manager.paintContext,
           });
 
           this.manager.interaction.dispatch({
@@ -151,13 +146,7 @@ export class App {
           paint(window, {
             renderer: this.renderer,
             layout: layout,
-            ctx: {
-              fontManager: this.manager.font,
-              interactionManager: this.manager.interaction,
-              textureManager: this.manager.texture,
-              getStableId: this.manager.reconciler.getStableId,
-              stateStore: this.manager.stateStore,
-            },
+            ctx: this.manager.paintContext,
           });
         }
       }

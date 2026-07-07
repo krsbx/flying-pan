@@ -1,5 +1,6 @@
 import { InteractionManager } from '@flying/interactions';
 import { Reconciler } from '@flying/reconcile';
+import type { PaintContext } from '@flying/renderer';
 import { TextureManager } from '@flying/renderer/texture/manager';
 import { StateStore } from '@flying/state';
 import type { GLFW } from '@glfw';
@@ -27,6 +28,7 @@ export class AppManager {
   public readonly texture: TextureManager | null;
   public readonly reconciler: Reconciler;
   public readonly stateStore: StateStore;
+  public readonly paintContext: PaintContext;
 
   public constructor(options: AppManagerOptions) {
     this.window = new WindowManager(options.gl);
@@ -36,7 +38,12 @@ export class AppManager {
       fonts: options.fonts,
       gl: options.gl,
     });
-    this.interaction = new InteractionManager(this.input);
+    this.interaction = new InteractionManager({
+      ctx: {
+        fontManager: this.font,
+      },
+      input: this.input,
+    });
     this.audio = options.audio ? new AudioManager(options.audio) : null;
     this.texture = options.texture
       ? new TextureManager({
@@ -46,5 +53,13 @@ export class AppManager {
       : null;
     this.stateStore = new StateStore();
     this.reconciler = new Reconciler(this.stateStore);
+
+    this.paintContext = {
+      fontManager: this.font,
+      textureManager: this.texture,
+      getStableId: this.reconciler.getStableId,
+      stateStore: this.stateStore,
+      interactionManager: this.interaction,
+    };
   }
 }

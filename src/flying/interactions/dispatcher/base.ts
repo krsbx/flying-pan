@@ -1,13 +1,16 @@
-import type { InputManager } from '@/flying/app';
-import type { LayoutNode } from '@/flying/layout';
-import type { WidgetDescriptor } from '@/flying/widget';
-import type { DispatchOptions } from './types';
+import type { InputManager } from '@flying/app';
+import type { LayoutNode } from '@flying/layout';
+import type { WidgetDescriptor } from '@flying/widget';
+import type { EventContext } from '../event/types';
+import type { DispatcherConfig, DispatchOptions } from './types';
 
 export abstract class BaseDispatcher {
-  public input: InputManager;
+  public readonly input: InputManager;
+  public readonly ctx: EventContext;
 
-  public constructor(input: InputManager) {
-    this.input = input;
+  public constructor(options: DispatcherConfig) {
+    this.input = options.input;
+    this.ctx = options.ctx;
   }
 
   public abstract dispatch(options: DispatchOptions): void;
@@ -61,11 +64,5 @@ export abstract class BaseDispatcher {
     }
 
     return null;
-  }
-
-  protected assertInput(input: InputManager | null): asserts input {
-    if (input) return;
-
-    throw new Error('InputManager is required');
   }
 }

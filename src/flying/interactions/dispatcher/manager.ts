@@ -1,18 +1,17 @@
-import type { InputManager } from '@flying/app';
 import { FocusDispatcher } from './focus';
 import { PointerDispatcher } from './pointer';
 import { ScrollDispatcher } from './scroll';
-import type { DispatchOptions } from './types';
+import type { DispatcherConfig, DispatchOptions } from './types';
 
 export class InteractionManager {
   public readonly pointer: PointerDispatcher;
   public readonly focus: FocusDispatcher;
   public readonly scroll: ScrollDispatcher;
 
-  public constructor(input: InputManager) {
-    this.pointer = new PointerDispatcher(input);
-    this.focus = new FocusDispatcher(input);
-    this.scroll = new ScrollDispatcher(input);
+  public constructor(options: DispatcherConfig) {
+    this.pointer = new PointerDispatcher(options);
+    this.focus = new FocusDispatcher(options);
+    this.scroll = new ScrollDispatcher(options);
   }
 
   public dispatch(options: DispatchOptions): void {

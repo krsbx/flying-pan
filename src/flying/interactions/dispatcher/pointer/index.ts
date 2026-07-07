@@ -7,7 +7,7 @@ import {
   GLFW_MOUSE_BUTTON_RIGHT,
 } from '@glfw/enums';
 import { BaseDispatcher } from '../base';
-import type { DispatchOptions } from '../types';
+import type { DispatcherConfig, DispatchOptions } from '../types';
 import type { LastClick, PointerEventOptions } from './types';
 
 const DOUBLE_CLICK_MS = 500;
@@ -24,8 +24,8 @@ export class PointerDispatcher extends BaseDispatcher {
   protected _pressedButton: number | null;
   protected lastClick: LastClick | null;
 
-  public constructor(input: InputManager) {
-    super(input);
+  public constructor(options: DispatcherConfig) {
+    super(options);
 
     this._hoveredStableId = null;
     this._pressedStableId = null;
@@ -35,10 +35,7 @@ export class PointerDispatcher extends BaseDispatcher {
 
   public dispatch(options: DispatchOptions): void {
     const { window, layout, stateStore } = options;
-
-    const input = options.input ?? this.input;
-
-    this.assertInput(input);
+    const { input, ctx } = this;
 
     const position = input.mousePosition;
     const modifiers = input.current.modifiers;
@@ -63,6 +60,8 @@ export class PointerDispatcher extends BaseDispatcher {
         node: prevNode,
         position,
         modifiers,
+        ctx,
+        input,
       });
 
       // Press cancellation: if the pointer left the widget it was pressed on
@@ -84,6 +83,8 @@ export class PointerDispatcher extends BaseDispatcher {
         node: hit,
         position,
         modifiers,
+        ctx,
+        input,
       });
     }
 
@@ -96,6 +97,8 @@ export class PointerDispatcher extends BaseDispatcher {
         position,
         modifiers,
         stateStore,
+        ctx,
+        input,
       });
     }
 
@@ -109,6 +112,8 @@ export class PointerDispatcher extends BaseDispatcher {
           modifiers,
           button,
           stateStore,
+          ctx,
+          input,
         });
 
         this._pressedStableId = hitId;
@@ -123,6 +128,8 @@ export class PointerDispatcher extends BaseDispatcher {
           modifiers,
           button,
           stateStore,
+          ctx,
+          input,
         });
 
         // Click = pointer down and up on the same widget with the same button
@@ -142,6 +149,8 @@ export class PointerDispatcher extends BaseDispatcher {
             modifiers,
             count,
             stateStore,
+            ctx,
+            input,
           });
         }
 

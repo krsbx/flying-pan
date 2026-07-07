@@ -1,17 +1,21 @@
-import type { Window } from '@flying/app';
+import type { FontManager, InputManager, Window } from '@flying/app';
 import type { LayoutNode } from '@flying/layout';
 import type { StateStore } from '@flying/state';
 import type { Coordinate2D } from '@flying/types';
 import type { WidgetDescriptor } from '@flying/widget';
 
-/**
- * Base shape for every interaction event. Carries the hit-tested layout node
- * and the window the event originated from.
- */
+export interface EventContext {
+  fontManager: FontManager;
+}
+
 export interface InteractionEvent {
   window: Window;
   node: LayoutNode;
   stateStore: StateStore;
+  /** Font manager etc. — populated by dispatchers. */
+  ctx: EventContext;
+  /** Current input state (mouse buttons, keys, modifiers) — populated by dispatchers. */
+  input: InputManager;
 }
 
 // #region Pointer

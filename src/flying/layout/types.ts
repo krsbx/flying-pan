@@ -1,6 +1,3 @@
-import type { FontManager } from '@flying/app/fonts/manager';
-import type { GetStableIdFn } from '@flying/reconcile/reconciler/types';
-import type { TextureManager } from '@flying/renderer/texture/manager';
 import type {
   FlexAlign,
   FlexJustify,
@@ -8,15 +5,10 @@ import type {
   ViewStyle,
   WidgetDescriptor,
 } from '@flying/widget';
-import type { StateStore } from '../state';
+import type { PaintContext } from '../renderer';
 import type { Coordinate2D, Size } from '../types';
 
-export interface LayoutContext {
-  fontManager: FontManager;
-  textureManager: TextureManager | null;
-  getStableId: GetStableIdFn;
-  stateStore: StateStore;
-}
+export type LayoutContext = PaintContext;
 
 export interface LayoutNode extends Coordinate2D, Size {
   stableId: number;

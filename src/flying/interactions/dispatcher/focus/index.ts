@@ -1,4 +1,3 @@
-import type { InputManager } from '@flying/app';
 import { hitTest } from '@flying/interactions/utility/hit-test';
 import type { LayoutNode } from '@flying/layout';
 import { WidgetType, type WidgetDescriptor } from '@flying/widget';
@@ -9,7 +8,7 @@ import {
   GLFW_MOUSE_BUTTON_LEFT,
 } from '@glfw/enums';
 import { BaseDispatcher } from '../base';
-import type { DispatchOptions } from '../types';
+import type { DispatcherConfig, DispatchOptions } from '../types';
 import type {
   HandleClickOptions,
   HandleTabOptions,
@@ -25,8 +24,8 @@ export class FocusDispatcher extends BaseDispatcher {
   protected _pendingFocusWidget: WidgetDescriptor | null;
   protected _pendingBlur: boolean;
 
-  public constructor(input: InputManager) {
-    super(input);
+  public constructor(options: DispatcherConfig) {
+    super(options);
 
     this.activableWidgets = new Set([
       WidgetType.Button,
@@ -42,9 +41,7 @@ export class FocusDispatcher extends BaseDispatcher {
 
   public dispatch(options: DispatchOptions): void {
     const { window, layout, stateStore } = options;
-    const input = options.input ?? this.input;
-
-    this.assertInput(input);
+    const input = this.input;
 
     // 1. Collect focusable nodes (tree order = tab order)
     this.focusableNodes = [];
@@ -62,6 +59,8 @@ export class FocusDispatcher extends BaseDispatcher {
           node,
           relatedTarget: null,
           stateStore: stateStore,
+          ctx: this.ctx,
+          input: this.input,
         });
       }
     }
@@ -113,6 +112,8 @@ export class FocusDispatcher extends BaseDispatcher {
           node: oldNode,
           relatedTarget: null,
           stateStore,
+          ctx: this.ctx,
+          input: this.input,
         });
       }
     }
@@ -180,6 +181,8 @@ export class FocusDispatcher extends BaseDispatcher {
         node: oldNode,
         relatedTarget: null,
         stateStore,
+        ctx: this.ctx,
+        input: this.input,
       });
     }
   }
@@ -203,6 +206,8 @@ export class FocusDispatcher extends BaseDispatcher {
         node: oldNode,
         relatedTarget: target,
         stateStore,
+        ctx: this.ctx,
+        input: this.input,
       });
     }
 
@@ -211,6 +216,8 @@ export class FocusDispatcher extends BaseDispatcher {
       node: target,
       relatedTarget: oldNode ?? null,
       stateStore,
+      ctx: this.ctx,
+      input: this.input,
     });
   }
 
@@ -218,7 +225,14 @@ export class FocusDispatcher extends BaseDispatcher {
     const { window, node, input, stateStore } = options;
 
     for (const codepoint of input.current.chars) {
-      node.widget.onChar?.({ window, node, stateStore, codepoint });
+      node.widget.onChar?.({
+        window,
+        node,
+        stateStore,
+        codepoint,
+        ctx: this.ctx,
+        input: this.input,
+      });
     }
   }
 
@@ -245,6 +259,8 @@ export class FocusDispatcher extends BaseDispatcher {
           modifiers,
           repeat: isRepeat,
           stateStore,
+          ctx: this.ctx,
+          input: this.input,
         });
 
         // Activate focused widget on Enter / Space (HTML semantics).
@@ -263,6 +279,8 @@ export class FocusDispatcher extends BaseDispatcher {
             modifiers,
             count: 1,
             stateStore,
+            ctx: this.ctx,
+            input: this.input,
           });
         }
       }
@@ -280,6 +298,8 @@ export class FocusDispatcher extends BaseDispatcher {
           modifiers,
           repeat: false,
           stateStore,
+          ctx: this.ctx,
+          input: this.input,
         });
       }
     }

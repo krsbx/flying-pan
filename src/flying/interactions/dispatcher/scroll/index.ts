@@ -1,25 +1,22 @@
 import type { Coordinate2D } from '@/flying/types';
 import { clamp } from '@/utility/common';
-import type { InputManager } from '@flying/app';
 import { hitTest } from '@flying/interactions';
 import type { LayoutNode } from '@flying/layout';
 import { Overflow } from '@flying/widget';
 import { BaseDispatcher } from '../base';
-import type { DispatchOptions } from '../types';
+import type { DispatcherConfig, DispatchOptions } from '../types';
 
 export class ScrollDispatcher extends BaseDispatcher {
   protected offsets: Map<number, Coordinate2D>;
 
-  public constructor(input: InputManager) {
-    super(input);
+  public constructor(options: DispatcherConfig) {
+    super(options);
     this.offsets = new Map();
   }
 
   public dispatch(options: DispatchOptions): void {
     const { layout } = options;
-    const input = options.input ?? this.input;
-
-    this.assertInput(input);
+    const input = this.input;
 
     // 1. Drop orphan offsets (scrollable widgets that unmounted)
     if (this.offsets.size > 0) {
