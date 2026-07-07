@@ -1,5 +1,6 @@
 import {
   CircularProgressDirection,
+  PointerEvents,
   ProgressType,
   ProgressValueType,
   WidgetType,
@@ -97,6 +98,7 @@ export function CircularProgress(
       size,
     },
     style: {
+      pointerEvents: PointerEvents.None,
       width: size,
       height: size,
       borderRadius: size / 2,

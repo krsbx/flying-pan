@@ -1,5 +1,6 @@
 import type { ValidColor } from '@flying/types';
 import {
+  PointerEvents,
   ProgressBarOrientation,
   ProgressDirection,
   ProgressType,
@@ -93,6 +94,7 @@ export function ProgressBar(props: ProgressBarProps): WidgetDescriptor {
       direction,
     },
     style: {
+      pointerEvents: PointerEvents.None,
       width: isHorizontal ? 48 : 4,
       height: isHorizontal ? 4 : 48,
       backgroundColor: Palette.surfaceActive,

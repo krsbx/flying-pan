@@ -1,5 +1,5 @@
 import type { InteractionProps } from '@flying/interactions';
-import { ROOT_FONT_SIZE, WidgetType } from './constant';
+import { PointerEvents, ROOT_FONT_SIZE, WidgetType } from './constant';
 import type { TextStyle, WidgetDescriptor, WidgetProps } from './styles';
 import { Palette } from './styles';
 
@@ -33,6 +33,7 @@ export function Label(props: LabelProps): WidgetDescriptor {
     type: WidgetType.Label,
     props: rest,
     style: {
+      pointerEvents: PointerEvents.None,
       color: Palette.text,
       fontSize: ROOT_FONT_SIZE,
       ...style,

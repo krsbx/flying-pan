@@ -1,5 +1,5 @@
 import type { InteractionProps } from '@flying/interactions';
-import { WidgetType } from './constant';
+import { PointerEvents, WidgetType } from './constant';
 import type { ViewStyle, WidgetDescriptor, WidgetProps } from './styles';
 
 export interface ImageProps extends WidgetProps, InteractionProps {
@@ -32,7 +32,10 @@ export function Image(props: ImageProps): WidgetDescriptor {
   return {
     type: WidgetType.Image,
     props: rest,
-    style,
+    style: {
+      pointerEvents: PointerEvents.None,
+      ...style,
+    },
     onPointerDown,
     onPointerUp,
     onPointerMove,
