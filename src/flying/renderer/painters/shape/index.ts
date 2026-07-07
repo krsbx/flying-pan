@@ -4,18 +4,16 @@ import { parseColor } from '../../color';
 import { GL_TRIANGLES } from '../../constant';
 import type {
   DrawArcOptions,
+  DrawGradientRectOptions,
   DrawRectOptions,
   DrawRingOptions,
   DrawShadowOptions,
 } from '../../renderer/types';
+import { createGradientCtx } from '../gradient';
 import { drawArcGL, drawRectGL, drawRoundedRectGL } from './gl';
 
 export function drawRect(gl: GLFW, options: DrawRectOptions): void {
   const rgba = parseColor(options.color);
-
-  if (options.opacity !== undefined) {
-    rgba.alpha *= options.opacity;
-  }
 
   if (options.borderRadius && options.borderRadius > 0) {
     drawRoundedRectGL(gl, {
@@ -120,10 +118,6 @@ export function drawArc(gl: GLFW, options: DrawArcOptions): void {
 
   const rgba = parseColor(options.color);
 
-  if (options.opacity !== undefined) {
-    rgba.alpha *= options.opacity;
-  }
-
   drawArcGL(gl, {
     cx,
     cy,
@@ -133,4 +127,35 @@ export function drawArc(gl: GLFW, options: DrawArcOptions): void {
     segments: options.segments ?? Math.max(16, Math.ceil(radius * 1.5)),
     rgba,
   });
+}
+
+export function drawGradientRect(
+  gl: GLFW,
+  options: DrawGradientRectOptions
+): void {
+  const { x, y, width, height, gradient, opacity } = options;
+  const radius = options.borderRadius ?? 0;
+
+  const gradientCtx = createGradientCtx(gradient, { x, y, width, height });
+
+  if (options.borderRadius && options.borderRadius > 0) {
+    drawRoundedRectGL(gl, {
+      x,
+      y,
+      width,
+      height,
+      radius,
+      gradientCtx,
+      opacity,
+    });
+  } else {
+    drawRectGL(gl, {
+      x,
+      y,
+      width,
+      height,
+      gradientCtx,
+      opacity,
+    });
+  }
 }

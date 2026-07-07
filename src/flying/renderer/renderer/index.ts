@@ -14,6 +14,7 @@ import {
 } from '../constant';
 import {
   drawArc,
+  drawGradientRect,
   drawRect,
   drawRing,
   drawShadow,
@@ -22,6 +23,7 @@ import {
 } from '../painters';
 import type {
   DrawArcOptions,
+  DrawGradientRectOptions,
   DrawRectOptions,
   DrawRingOptions,
   DrawShadowOptions,
@@ -174,6 +176,13 @@ export class Renderer {
 
   public drawRect(window: Window, options: DrawRectOptions): void {
     this.wrap(window, () => drawRect(this.gl, options));
+  }
+
+  public drawGradientRect(
+    window: Window,
+    options: DrawGradientRectOptions
+  ): void {
+    this.wrap(window, () => drawGradientRect(this.gl, options));
   }
 
   public drawShadow(window: Window, options: DrawShadowOptions): void {

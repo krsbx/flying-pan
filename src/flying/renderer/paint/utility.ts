@@ -74,6 +74,11 @@ export function paintBackground(
       ...drawOptions,
       color: colorOverride,
     });
+  } else if (style.background) {
+    renderer.drawGradientRect(window, {
+      ...drawOptions,
+      gradient: style.background,
+    });
   } else if (style.backgroundColor) {
     renderer.drawRect(window, {
       ...drawOptions,
