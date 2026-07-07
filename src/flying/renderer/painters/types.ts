@@ -5,13 +5,9 @@ export interface DrawRectGLOptions extends Coordinate2D, Size {
   rgba?: RGBA;
   opacity?: number;
   gradientCtx?: GradientCtx;
-  skipRendering?: boolean;
 }
 
-export interface DrawRoundedGLRectOptions extends Omit<
-  DrawRectGLOptions,
-  'skipRendering'
-> {
+export interface DrawRoundedGLRectOptions extends DrawRectGLOptions {
   radius: number;
 }
 
@@ -35,5 +31,4 @@ export interface DrawArcGLOptions {
 
   gradientCtx?: GradientCtx;
   opacity?: number;
-  skipRendering?: boolean;
 }
