@@ -1,6 +1,9 @@
 export type {
+  Background,
   BoxShadow,
+  GradientStop,
   LayoutConstraints,
+  LinearGradient,
   PseudoStateStyle,
   Rect,
   ResolvedSpacing,

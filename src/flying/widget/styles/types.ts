@@ -5,6 +5,7 @@ import type {
   FlexDirection,
   FlexJustify,
   FlexWrap,
+  GradientType,
   Overflow,
   PointerEvents,
   Position,
@@ -39,9 +40,23 @@ export type SpacingInput =
   | [SizeInput, SizeInput, SizeInput, SizeInput]
   | Spacing;
 
+export interface GradientStop {
+  position: number;
+  color: ValidColor;
+}
+
+export interface LinearGradient {
+  type: typeof GradientType.Linear;
+  angle?: number;
+  stops: GradientStop[];
+}
+
+export type Background = LinearGradient;
+
 // Properties that actually take effect when applied via _hover / _focus.
 export interface PseudoStateStyle {
   backgroundColor?: ValidColor;
+  background?: Background;
   borderColor?: ValidColor;
   borderWidth?: number;
   borderRadius?: number;
@@ -91,6 +106,8 @@ export interface ViewStyle {
 
   // Visual
   backgroundColor?: ValidColor;
+  /** Linear-gradient fill. Wins over `backgroundColor` when both set. */
+  background?: Background;
   borderRadius?: number;
   borderWidth?: number;
   borderColor?: ValidColor;

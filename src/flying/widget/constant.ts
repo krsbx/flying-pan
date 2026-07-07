@@ -136,3 +136,10 @@ export const ProgressValueType = {
 
 export type ProgressValueType =
   (typeof ProgressValueType)[keyof typeof ProgressValueType];
+
+export const GradientType = {
+  Linear: 'linear',
+  Radial: 'radial',
+} as const;
+
+export type GradientType = (typeof GradientType)[keyof typeof GradientType];

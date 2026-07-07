@@ -1,7 +1,7 @@
 import type { Rect } from '@/flying/widget';
 import type { GLFW } from '@glfw';
 import type { Window, WindowManager } from '../../app';
-import type { Coordinate2D, Resolution, RGBA } from '../../types';
+import type { Coordinate2D, Resolution } from '../../types';
 import { Color, parseColor } from '../color';
 import {
   GL_BLEND,
@@ -9,19 +9,21 @@ import {
   GL_MODELVIEW,
   GL_ONE_MINUS_SRC_ALPHA,
   GL_PROJECTION,
-  GL_QUADS,
   GL_SCISSOR_TEST,
   GL_SRC_ALPHA,
-  GL_TEXTURE_2D,
-  GL_TRIANGLES,
 } from '../constant';
+import {
+  drawArc,
+  drawRect,
+  drawRing,
+  drawShadow,
+  drawText,
+  drawTexture,
+} from '../painters';
 import type {
-  DrawArcGLOptions,
   DrawArcOptions,
-  DrawRectGLOptions,
   DrawRectOptions,
   DrawRingOptions,
-  DrawRoundedRectOptions,
   DrawShadowOptions,
   DrawTextOptions,
   DrawTextureOptions,
@@ -59,6 +61,10 @@ export class Renderer {
       this.gl.glfwMakeContextCurrent({ window: currentContext });
     }
   }
+
+  // -------------------------------------------------------------------------
+  // Lifecycle
+  // -------------------------------------------------------------------------
 
   public init(window: Window): void {
     this.wrap(window, () => {
@@ -107,333 +113,6 @@ export class Renderer {
 
       this.gl.glClearColor(rgba);
       this.gl.glClear({ mask: GL_COLOR_BUFFER_BIT });
-    });
-  }
-
-  public drawRect(window: Window, options: DrawRectOptions): void {
-    this.wrap(window, () => {
-      const rgba = parseColor(options.color);
-
-      if (options.opacity !== undefined) {
-        rgba.alpha *= options.opacity;
-      }
-
-      if (options.borderRadius && options.borderRadius > 0) {
-        this.drawRoundedRect({
-          ...options,
-          radius: options.borderRadius,
-          rgba,
-        });
-      } else {
-        this.drawRectGL({ ...options, rgba });
-      }
-    });
-  }
-
-  public drawShadow(window: Window, options: DrawShadowOptions): void {
-    const { x, y, width, height, shadow, borderRadius } = options;
-
-    this.wrap(window, () => {
-      const baseRgba = parseColor(shadow.color);
-      const offsetX = shadow.x ?? 0;
-      const offsetY = shadow.y ?? 0;
-      const blur = shadow.blur ?? 0;
-      const spread = shadow.spread ?? 0;
-      const radius = borderRadius ?? 0;
-
-      const layers = Math.max(1, Math.min(12, Math.round(blur / 2)));
-
-      for (let i = layers; i >= 1; i--) {
-        const t = (i - 1) / layers;
-        const expand = spread + blur * t;
-        const alpha = baseRgba.alpha * (1 - t) * (1 - t);
-
-        if (alpha <= 0) continue;
-
-        const layerRgba: RGBA = { ...baseRgba, alpha };
-
-        if (radius > 0) {
-          this.drawRoundedRect({
-            x: x - expand + offsetX,
-            y: y - expand + offsetY,
-            width: width + expand * 2,
-            height: height + expand * 2,
-            radius: radius + expand,
-            rgba: layerRgba,
-          });
-        } else {
-          this.drawRectGL({
-            x: x - expand + offsetX,
-            y: y - expand + offsetY,
-            width: width + expand * 2,
-            height: height + expand * 2,
-            rgba: layerRgba,
-          });
-        }
-      }
-    });
-  }
-
-  public drawRing(window: Window, options: DrawRingOptions): void {
-    const { cx, cy, outerRadius, innerRadius, color } = options;
-
-    this.wrap(window, () => {
-      const rgba = parseColor(color);
-
-      if (options.opacity !== undefined) {
-        rgba.alpha *= options.opacity;
-      }
-
-      const startAngle = options.startAngle ?? 0;
-      const endAngle = options.endAngle ?? Math.PI * 2;
-      const segments =
-        options.segments ?? Math.max(16, Math.ceil(outerRadius * 1.5));
-
-      const step = (endAngle - startAngle) / segments;
-
-      this.gl.glColor4f(rgba);
-      this.gl.glBegin({ mode: GL_TRIANGLES });
-
-      for (let i = 0; i < segments; i++) {
-        const a1 = startAngle + step * i;
-        const a2 = a1 + step;
-
-        const ox0 = cx + Math.cos(a1) * outerRadius;
-        const oy0 = cy + Math.sin(a1) * outerRadius;
-        const ox1 = cx + Math.cos(a2) * outerRadius;
-        const oy1 = cy + Math.sin(a2) * outerRadius;
-
-        const ix0 = cx + Math.cos(a1) * innerRadius;
-        const iy0 = cy + Math.sin(a1) * innerRadius;
-        const ix1 = cx + Math.cos(a2) * innerRadius;
-        const iy1 = cy + Math.sin(a2) * innerRadius;
-
-        this.gl.glVertex2f({ x: ix0, y: iy0 });
-        this.gl.glVertex2f({ x: ox0, y: oy0 });
-        this.gl.glVertex2f({ x: ox1, y: oy1 });
-
-        this.gl.glVertex2f({ x: ox1, y: oy1 });
-        this.gl.glVertex2f({ x: ix0, y: iy0 });
-        this.gl.glVertex2f({ x: ix1, y: iy1 });
-      }
-
-      this.gl.glEnd();
-    });
-  }
-
-  public drawArc(window: Window, options: DrawArcOptions): void {
-    const { cx, cy, radius, color } = options;
-
-    this.wrap(window, () => {
-      const rgba = parseColor(color);
-
-      if (options.opacity !== undefined) {
-        rgba.alpha *= options.opacity;
-      }
-
-      this.drawArcGL({
-        cx,
-        cy,
-        radius,
-        startAngle: options.startAngle ?? 0,
-        endAngle: options.endAngle ?? Math.PI * 2,
-        segments: options.segments ?? Math.max(16, Math.ceil(radius * 1.5)),
-        rgba,
-      });
-    });
-  }
-
-  protected drawRectGL(options: DrawRectGLOptions): void {
-    const { x, y, width, height, rgba } = options;
-
-    this.gl.glColor4f(rgba);
-    this.gl.glBegin({ mode: GL_QUADS });
-
-    // Render on top-left
-    this.gl.glVertex2f({ x: x, y: y });
-    // Render on top-right
-    this.gl.glVertex2f({ x: x + width, y: y });
-    // Render on bottom-right
-    this.gl.glVertex2f({ x: x + width, y: y + height });
-    // Render on bottom-left
-    this.gl.glVertex2f({ x: x, y: y + height });
-
-    this.gl.glEnd();
-  }
-
-  protected drawRoundedRect(options: DrawRoundedRectOptions): void {
-    const { x, y, width, height, rgba, radius } = options;
-
-    // Clamp radius
-    const maxRadius = Math.min(width, height) / 2;
-    const r = Math.min(radius, maxRadius);
-
-    this.gl.glColor4f(rgba);
-    this.gl.glBegin({ mode: GL_QUADS });
-
-    // Center rectangle (full width, reduced height)
-    this.gl.glVertex2f({ x, y: y + r });
-    this.gl.glVertex2f({ x: x + width, y: y + r });
-    this.gl.glVertex2f({ x: x + width, y: y + height - r });
-    this.gl.glVertex2f({ x, y: y + height - r });
-
-    // Top rectangle
-    this.gl.glVertex2f({ x: x + r, y });
-    this.gl.glVertex2f({ x: x + width - r, y });
-    this.gl.glVertex2f({ x: x + width - r, y: y + r });
-    this.gl.glVertex2f({ x: x + r, y: y + r });
-
-    // Bottom rectangle
-    this.gl.glVertex2f({ x: x + r, y: y + height - r });
-    this.gl.glVertex2f({ x: x + width - r, y: y + height - r });
-    this.gl.glVertex2f({ x: x + width - r, y: y + height });
-    this.gl.glVertex2f({ x: x + r, y: y + height });
-
-    this.gl.glEnd();
-
-    const segments = Math.max(4, Math.ceil(r / 2));
-
-    // Top-left
-    this.drawArcGL({
-      cx: x + r,
-      cy: y + r,
-      radius: r,
-      startAngle: Math.PI,
-      endAngle: Math.PI * 1.5,
-      segments,
-      rgba,
-    });
-
-    // Top-right
-    this.drawArcGL({
-      cx: x + width - r,
-      cy: y + r,
-      radius: r,
-      startAngle: Math.PI * 1.5,
-      endAngle: Math.PI * 2,
-      segments,
-      rgba,
-    });
-
-    // Bottom-right
-    this.drawArcGL({
-      cx: x + width - r,
-      cy: y + height - r,
-      radius: r,
-      startAngle: 0,
-      endAngle: Math.PI * 0.5,
-      segments,
-      rgba,
-    });
-
-    // Bottom-left
-    this.drawArcGL({
-      cx: x + r,
-      cy: y + height - r,
-      radius: r,
-      startAngle: Math.PI * 0.5,
-      endAngle: Math.PI,
-      segments,
-      rgba,
-    });
-  }
-
-  protected drawArcGL(options: DrawArcGLOptions): void {
-    const { cx, cy, radius, startAngle, endAngle, segments, rgba } = options;
-    const step = (endAngle - startAngle) / segments;
-
-    this.gl.glColor4f(rgba);
-    this.gl.glBegin({ mode: GL_TRIANGLES });
-
-    for (let i = 0; i < segments; i++) {
-      const a1 = startAngle + step * i;
-      const a2 = a1 + step;
-
-      const x0 = cx + Math.cos(a1) * radius;
-      const y0 = cy + Math.sin(a1) * radius;
-      const x1 = cx + Math.cos(a2) * radius;
-      const y1 = cy + Math.sin(a2) * radius;
-
-      this.gl.glVertex2f({ x: cx, y: cy });
-      this.gl.glVertex2f({ x: x0, y: y0 });
-      this.gl.glVertex2f({ x: x1, y: y1 });
-    }
-
-    this.gl.glEnd();
-  }
-
-  public drawText(window: Window, options: DrawTextOptions): void {
-    this.wrap(window, () => {
-      const rgba = parseColor(options.color);
-
-      if (options.opacity !== undefined) {
-        rgba.alpha *= options.opacity;
-      }
-
-      const quads = options.atlas.getQuads(options);
-
-      // Enable texturing
-      this.gl.glEnable({ cap: GL_TEXTURE_2D });
-      this.gl.glBindTexture({
-        target: GL_TEXTURE_2D,
-        texture: options.atlas.textureId,
-      });
-      this.gl.glColor4f(rgba);
-
-      this.gl.glBegin({ mode: GL_QUADS });
-
-      for (const q of quads) {
-        // Top-left
-        this.gl.glTexCoord2f({ s: q.s0, t: q.t0 });
-        this.gl.glVertex2f({ x: q.x0, y: q.y0 });
-        // Bottom-left
-        this.gl.glTexCoord2f({ s: q.s0, t: q.t1 });
-        this.gl.glVertex2f({ x: q.x0, y: q.y1 });
-        // Bottom-right
-        this.gl.glTexCoord2f({ s: q.s1, t: q.t1 });
-        this.gl.glVertex2f({ x: q.x1, y: q.y1 });
-        // Top-right
-        this.gl.glTexCoord2f({ s: q.s1, t: q.t0 });
-        this.gl.glVertex2f({ x: q.x1, y: q.y0 });
-      }
-
-      this.gl.glEnd();
-
-      // Disable texturing
-      this.gl.glBindTexture({ target: GL_TEXTURE_2D, texture: 0 });
-      this.gl.glDisable({ cap: GL_TEXTURE_2D });
-    });
-  }
-
-  public drawTexture(window: Window, options: DrawTextureOptions): void {
-    this.wrap(window, () => {
-      const { texture, x, y, width, height, opacity } = options;
-
-      // Enable texturing
-      this.gl.glEnable({ cap: GL_TEXTURE_2D });
-      this.gl.glBindTexture({ target: GL_TEXTURE_2D, texture: texture.id });
-      this.gl.glColor4f({ red: 1, green: 1, blue: 1, alpha: opacity ?? 1 });
-
-      this.gl.glBegin({ mode: GL_QUADS });
-
-      // Top-left
-      this.gl.glTexCoord2f({ s: 0, t: 0 });
-      this.gl.glVertex2f({ x, y });
-      // Bottom-left
-      this.gl.glTexCoord2f({ s: 0, t: 1 });
-      this.gl.glVertex2f({ x, y: y + height });
-      // Bottom-right
-      this.gl.glTexCoord2f({ s: 1, t: 1 });
-      this.gl.glVertex2f({ x: x + width, y: y + height });
-      // Top-right
-      this.gl.glTexCoord2f({ s: 1, t: 0 });
-      this.gl.glVertex2f({ x: x + width, y });
-
-      this.gl.glEnd();
-
-      // Disable texturing
-      this.gl.glBindTexture({ target: GL_TEXTURE_2D, texture: 0 });
-      this.gl.glDisable({ cap: GL_TEXTURE_2D });
     });
   }
 
@@ -491,5 +170,29 @@ export class Renderer {
     this.wrap(window, () => {
       this.gl.glPopMatrix();
     });
+  }
+
+  public drawRect(window: Window, options: DrawRectOptions): void {
+    this.wrap(window, () => drawRect(this.gl, options));
+  }
+
+  public drawShadow(window: Window, options: DrawShadowOptions): void {
+    this.wrap(window, () => drawShadow(this.gl, options));
+  }
+
+  public drawRing(window: Window, options: DrawRingOptions): void {
+    this.wrap(window, () => drawRing(this.gl, options));
+  }
+
+  public drawArc(window: Window, options: DrawArcOptions): void {
+    this.wrap(window, () => drawArc(this.gl, options));
+  }
+
+  public drawText(window: Window, options: DrawTextOptions): void {
+    this.wrap(window, () => drawText(this.gl, options));
+  }
+
+  public drawTexture(window: Window, options: DrawTextureOptions): void {
+    this.wrap(window, () => drawTexture(this.gl, options));
   }
 }
