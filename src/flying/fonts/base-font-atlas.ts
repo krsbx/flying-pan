@@ -18,6 +18,7 @@ import {
   NUM_CHARS,
 } from './constant';
 import type {
+  CharIndexAtXOptions,
   FontAtlasContract,
   GetQuadsOptions,
   MeasureTextOptions,
@@ -165,6 +166,8 @@ export abstract class BaseFontAtlas implements FontAtlasContract {
   public abstract measureText(options: MeasureTextOptions): MeasureTextResult;
 
   public abstract getQuads(options: GetQuadsOptions): TextQuad[];
+
+  public abstract charIndexAtX(options: CharIndexAtXOptions): number;
 
   protected computeVerticalMetrics(): void {
     const bakedChars = CStruct.readArrayLazy(

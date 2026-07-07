@@ -24,8 +24,25 @@ export interface MeasureTextResult {
   height: number;
 }
 
+export interface CharIndexAtXOptions {
+  text: string;
+  /** X relative to the text's left edge (i.e. screen x minus contentX). */
+  x: number;
+  fontSize?: number;
+  letterSpacing?: number;
+}
+
 export interface TextMeasurer {
   measureText(options: MeasureTextOptions): MeasureTextResult;
+}
+
+export interface CharIndexResolver {
+  /**
+   * Returns the char index whose left edge is nearest to `options.x`.
+   * Used by TextInput click-to-caret. Returns 0 for empty text / x <= 0;
+   * `text.length` for x past the end.
+   */
+  charIndexAtX(options: CharIndexAtXOptions): number;
 }
 
 export interface GetQuadsOptions {
@@ -41,4 +58,4 @@ export interface GetQuads {
   getQuads(options: GetQuadsOptions): TextQuad[];
 }
 
-export type FontAtlasContract = TextMeasurer & GetQuads;
+export type FontAtlasContract = TextMeasurer & GetQuads & CharIndexResolver;

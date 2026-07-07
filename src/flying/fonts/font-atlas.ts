@@ -5,6 +5,7 @@ import { BakedChar } from './baked-char';
 import { BaseFontAtlas } from './base-font-atlas';
 import { ATLAS_HEIGHT, ATLAS_WIDTH, FIRST_CHAR, NUM_CHARS } from './constant';
 import type {
+  CharIndexAtXOptions,
   GetQuadsOptions,
   MeasureTextOptions,
   MeasureTextResult,
@@ -47,6 +48,39 @@ export class FontAtlas extends BaseFontAtlas {
       width: maxWidth * scale,
       height: lines.length * effectiveLineHeight,
     };
+  }
+
+  public override charIndexAtX(options: CharIndexAtXOptions): number {
+    const { text, x, fontSize, letterSpacing: ls = 0 } = options;
+
+    if (text.length === 0 || x <= 0) return 0;
+
+    const scale = fontSize ? fontSize / this.fontSize : 1;
+    const bakedChars = CStruct.readArrayLazy(
+      BakedChar,
+      this.bakedChars.$address,
+      NUM_CHARS
+    );
+
+    let running = 0;
+
+    for (let i = 0; i < text.length; i++) {
+      const code = text.charCodeAt(i);
+      const idx = code - FIRST_CHAR;
+
+      if (idx < 0 || idx >= NUM_CHARS) {
+        continue;
+      }
+
+      const advance = (bakedChars[idx]?.xAdvance ?? 0) * scale;
+      const midpoint = running + advance / 2;
+
+      if (midpoint >= x) return i;
+
+      running += advance + ls;
+    }
+
+    return text.length;
   }
 
   public override getQuads(options: GetQuadsOptions): TextQuad[] {

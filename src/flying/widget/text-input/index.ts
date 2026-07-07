@@ -7,6 +7,7 @@ import {
   createTextInputCharHandler,
   createTextInputKeyHandler,
 } from './handler';
+import { createTextInputPointerHandler } from './pointer';
 
 export interface TextInputProps extends WidgetProps, InteractionProps {
   font: string;
@@ -89,7 +90,10 @@ export function TextInput(props: TextInputProps): WidgetDescriptor {
       createTextInputKeyHandler(internalProps)(event);
       userOnKeyDown?.(event);
     },
-    onPointerDown,
+    onPointerDown: (event) => {
+      createTextInputPointerHandler(internalProps).onPointerDown(event);
+      onPointerDown?.(event);
+    },
     onPointerUp,
     onPointerMove,
     onClick,
