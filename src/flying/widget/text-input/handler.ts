@@ -6,14 +6,21 @@ import type {
 } from '@flying/interactions';
 import { type TextInputProps, type TextInputState } from '@flying/widget';
 import {
+  GLFW_KEY_A,
   GLFW_KEY_BACKSPACE,
+  GLFW_KEY_C,
   GLFW_KEY_DELETE,
   GLFW_KEY_END,
   GLFW_KEY_HOME,
   GLFW_KEY_LEFT,
   GLFW_KEY_RIGHT,
+  GLFW_KEY_V,
+  GLFW_KEY_X,
+  GLFW_MOD_CONTROL,
   GLFW_MOD_SHIFT,
+  GLFW_MOD_SUPER,
 } from '@glfw/enums';
+import { platform } from 'node:os';
 import {
   makeTextInputState,
   measureTextInputScrollX,
@@ -71,7 +78,7 @@ export function createTextInputKeyHandler(
   return (event: KeyEvent) => {
     if (props.disabled) return;
 
-    const { node, stateStore, ctx } = event;
+    const { node, stateStore, ctx, window } = event;
 
     const state = stateStore.stateFor<TextInputState>({
       stableId: node.stableId,
@@ -81,6 +88,10 @@ export function createTextInputKeyHandler(
     let nextValue = value;
 
     const shift = (event.modifiers & GLFW_MOD_SHIFT) !== 0;
+    const ctrl =
+      platform() === 'darwin'
+        ? (event.modifiers & GLFW_MOD_SUPER) !== 0
+        : (event.modifiers & GLFW_MOD_CONTROL) !== 0;
     const range = selectionRange(state);
 
     let caret = state.caret;
@@ -137,6 +148,61 @@ export function createTextInputKeyHandler(
       case GLFW_KEY_END: {
         caret = value.length;
         anchor = shift ? state.anchor : caret;
+        break;
+      }
+
+      case GLFW_KEY_A: {
+        if (ctrl) {
+          caret = value.length;
+          anchor = 0;
+        }
+
+        break;
+      }
+
+      case GLFW_KEY_C: {
+        if (ctrl && range) {
+          ctx.gl.glfwSetClipboardString({
+            window: window.$address,
+            string: value.slice(range.start, range.end),
+          });
+        }
+
+        break;
+      }
+
+      case GLFW_KEY_V: {
+        if (ctrl) {
+          const clipboard = ctx.gl.glfwGetClipboardString({
+            window: window.$address,
+          });
+          const text = clipboard?.toString?.() ?? '';
+
+          if (text) {
+            const insertAt = range?.start ?? state.caret;
+            const replaceUntil = range?.end ?? state.caret;
+            nextValue =
+              value.slice(0, insertAt) + text + value.slice(replaceUntil);
+            caret = insertAt + text.length;
+            anchor = caret;
+          }
+        }
+
+        break;
+      }
+
+      case GLFW_KEY_X: {
+        if (ctrl && range) {
+          ctx.gl.glfwSetClipboardString({
+            window: window.$address,
+            string: value.slice(range.start, range.end),
+          });
+
+          nextValue = value.slice(0, range.start) + value.slice(range.end);
+          caret = range.start;
+          anchor = caret;
+        }
+
         break;
       }
     }

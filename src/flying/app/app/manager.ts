@@ -41,6 +41,7 @@ export class AppManager {
     this.interaction = new InteractionManager({
       ctx: {
         fontManager: this.font,
+        gl: options.gl,
       },
       input: this.input,
     });

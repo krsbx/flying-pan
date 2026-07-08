@@ -3,9 +3,11 @@ import type { LayoutNode } from '@flying/layout';
 import type { StateStore } from '@flying/state';
 import type { Coordinate2D } from '@flying/types';
 import type { WidgetDescriptor } from '@flying/widget';
+import type { GLFW } from '@glfw';
 
 export interface EventContext {
   fontManager: FontManager;
+  gl: GLFW;
 }
 
 export interface InteractionEvent {
