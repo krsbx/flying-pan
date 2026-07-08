@@ -4,8 +4,10 @@ import {
   resolveSpacing,
   ROOT_FONT_SIZE,
   type TextInputProps,
+  type TextInputState,
   type TextInputStyle,
 } from '@flying/widget';
+import { makeTextInputState } from '@/flying/widget/text-input/state';
 import type { PaintOptions } from '../types';
 
 export function paintTextInput(
@@ -16,15 +18,12 @@ export function paintTextInput(
   const { widget, x, y, width, height } = layout;
   const props = widget.props as TextInputProps;
 
-  const state =
+  const state: TextInputState =
     props.value !== undefined
-      ? { value: props.value, caret: props.value.length }
-      : ctx.stateStore.stateFor<{ value: string; caret: number }>({
+      ? makeTextInputState(props)
+      : ctx.stateStore.stateFor<TextInputState>({
           stableId: layout.stableId,
-          initial: {
-            value: props.defaultValue ?? '',
-            caret: (props.defaultValue ?? '').length,
-          },
+          initial: makeTextInputState(props),
         });
 
   const fontAtlas = ctx.fontManager.get(props.font);
@@ -45,6 +44,8 @@ export function paintTextInput(
 
   const contentY = y + (height - measured.height) / 2;
 
+  renderer.pushClip(window, { x, y, width, height });
+
   if (text) {
     const color = !hasValue
       ? (style.placeholderColor ?? Palette.textMuted)
@@ -52,7 +53,7 @@ export function paintTextInput(
 
     renderer.drawText(window, {
       text: text,
-      x: contentX,
+      x: contentX - state.scrollX,
       y: contentY,
       color,
       atlas: fontAtlas,
@@ -74,7 +75,7 @@ export function paintTextInput(
       });
 
       renderer.drawRect(window, {
-        x: contentX + measured.width,
+        x: contentX + measured.width - state.scrollX,
         y: contentY,
         width: style.caretWidth ?? 1,
         height: style.fontSize ?? measured.height ?? ROOT_FONT_SIZE,
@@ -82,4 +83,6 @@ export function paintTextInput(
       });
     }
   }
+
+  renderer.popClip(window);
 }

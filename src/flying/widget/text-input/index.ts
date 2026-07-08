@@ -22,6 +22,8 @@ export interface TextInputProps extends WidgetProps, InteractionProps {
 export interface TextInputState {
   value: string;
   caret: number;
+  anchor: number;
+  scrollX: number;
 }
 
 export function TextInput(props: TextInputProps): WidgetDescriptor {

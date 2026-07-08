@@ -2,6 +2,7 @@ import type { PointerEvent, PointerEventHandler } from '@/flying/interactions';
 import { resolveSpacing } from '@flying/widget';
 import type { TextInputStyle } from '../styles/types';
 import type { TextInputProps, TextInputState } from './';
+import { makeTextInputState, recomputeTextInputScrollX } from './state';
 
 export function createTextInputPointerHandler(props: TextInputProps): {
   onPointerDown: PointerEventHandler;
@@ -18,10 +19,7 @@ export function createTextInputPointerHandler(props: TextInputProps): {
 
       const state = stateStore.stateFor<TextInputState>({
         stableId: node.stableId,
-        initial: {
-          value: props.defaultValue ?? '',
-          caret: (props.defaultValue ?? '').length,
-        },
+        initial: makeTextInputState(props),
       });
 
       const style = node.widget.style as TextInputStyle | undefined;
@@ -39,9 +37,23 @@ export function createTextInputPointerHandler(props: TextInputProps): {
         letterSpacing: style.letterSpacing,
       });
 
+      const caretX = fontAtlas.measureText({
+        text: state.value.substring(0, caret),
+        fontSize: style.fontSize,
+        letterSpacing: style.letterSpacing,
+      }).width;
+
+      const visibleWidth = node.width - padding.left - padding.right;
+
+      const scrollX = recomputeTextInputScrollX({
+        caretX,
+        currentScrollX: state.scrollX,
+        visibleWidth,
+      });
+
       stateStore.setState({
         stableId: node.stableId,
-        value: { ...state, caret },
+        value: { ...state, caret, anchor: caret, scrollX },
       });
     },
   };

@@ -19,6 +19,7 @@ import {
   WidgetType,
   type TextStyle,
 } from '@flying/widget';
+import { makeTextInputState } from '@/flying/widget/text-input/state';
 import { formatValueLabel } from '../renderer/paint/progress/utility';
 import type {
   CalculateMainContentSizeOptions,
@@ -72,10 +73,7 @@ export function measureChildsComponent(
         props.value ??
         ctx.stateStore.stateFor<TextInputState>({
           stableId: ctx.getStableId(child),
-          initial: {
-            value: props.defaultValue ?? '',
-            caret: (props.defaultValue ?? '').length,
-          },
+          initial: makeTextInputState(props),
         }).value;
 
       const text = value || (props.placeholder ?? '');
