@@ -1,5 +1,5 @@
-import type { InputManager, Window } from '@/flying/app';
-import type { EventContext } from '@flying/interactions/event/types';
+import type { InputManager, Window } from '@flying/app';
+import type { EventContext } from '@flying/interactions';
 import type { LayoutNode } from '@flying/layout';
 import type { Coordinate2D } from '@flying/types';
 

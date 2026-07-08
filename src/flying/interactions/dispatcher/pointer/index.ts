@@ -1,6 +1,6 @@
 import type { InputManager } from '@flying/app';
-import type { PointerEvent } from '@flying/interactions/event/types';
-import { hitTest } from '@flying/interactions/utility/hit-test';
+import type { PointerEvent } from '@flying/interactions';
+import { hitTest } from '@flying/interactions';
 import {
   GLFW_MOUSE_BUTTON_LEFT,
   GLFW_MOUSE_BUTTON_MIDDLE,

@@ -1,6 +1,6 @@
-import { FVector2, Vector2 } from '@/utility/vectors';
 import type { Coordinate2D, Resolution } from '@flying/types';
 import type { GLFW } from '@glfw';
+import { FVector2, Vector2 } from '@utility/vectors';
 import { type Pointer } from 'bun:ffi';
 
 export interface MonitorOptions {

@@ -1,10 +1,10 @@
+import type { Window } from '@flying/app';
 import {
   Palette,
   TextAlign,
   type LabelProps,
   type TextStyle,
-} from '@/flying/widget';
-import type { Window } from '@flying/app';
+} from '@flying/widget';
 import type { PaintOptions } from '../types';
 
 export function paintText(

@@ -1,7 +1,7 @@
-import type { Window } from '@/flying/app';
-import type { ColorStop, ViewStyle } from '@/flying/widget';
-import { Palette } from '@/flying/widget';
-import type { Renderer } from '@flying/renderer/renderer';
+import type { Window } from '@flying/app';
+import type { Renderer } from '@flying/renderer';
+import type { ColorStop, ViewStyle } from '@flying/widget';
+import { Palette } from '@flying/widget';
 import { paintBackground, paintBorder } from '../../utility';
 import { resolveFillColorClamped } from '../utility';
 

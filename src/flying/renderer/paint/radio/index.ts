@@ -1,5 +1,5 @@
-import type { Window } from '@/flying/app';
-import { Palette, type RadioProps } from '@/flying/widget';
+import type { Window } from '@flying/app';
+import { Palette, type RadioProps } from '@flying/widget';
 import type { SubMarkPaintOptions } from '../types';
 import { paintBackground, paintBorder, resolveStyle } from '../utility';
 

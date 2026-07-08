@@ -1,5 +1,5 @@
-import type { InputManager } from '@/flying/app';
-import type { LayoutNode } from '@/flying/layout';
+import type { InputManager } from '@flying/app';
+import type { LayoutNode } from '@flying/layout';
 import type { DispatchOptions } from '../types';
 
 export interface HandleTabOptions extends DispatchOptions {

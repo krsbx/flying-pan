@@ -1,8 +1,8 @@
-import type { Coordinate2D } from '@/flying/types';
-import { clamp } from '@/utility/common';
 import { hitTest } from '@flying/interactions';
 import type { LayoutNode } from '@flying/layout';
+import type { Coordinate2D } from '@flying/types';
 import { Overflow } from '@flying/widget';
+import { clamp } from '@utility/common';
 import { BaseDispatcher } from '../base';
 import type { DispatcherConfig, DispatchOptions } from '../types';
 

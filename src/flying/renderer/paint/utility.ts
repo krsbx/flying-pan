@@ -1,5 +1,5 @@
-import type { LayoutNode } from '@/flying/layout';
 import type { Window } from '@flying/app';
+import type { LayoutNode } from '@flying/layout';
 import {
   WidgetType,
   type CheckboxProps,

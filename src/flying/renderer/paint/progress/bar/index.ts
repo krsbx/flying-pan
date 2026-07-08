@@ -1,6 +1,6 @@
-import type { Window } from '@/flying/app';
-import { ProgressBarOrientation, ProgressDirection } from '@/flying/widget';
-import type { ProgressBarProps } from '@/flying/widget/progress';
+import type { Window } from '@flying/app';
+import type { ProgressBarProps } from '@flying/widget';
+import { ProgressBarOrientation, ProgressDirection } from '@flying/widget';
 import type { PaintOptions } from '../../types';
 import { paintInlineLabel } from '../label';
 import {

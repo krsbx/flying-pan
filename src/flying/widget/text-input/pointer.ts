@@ -1,4 +1,4 @@
-import type { PointerEvent, PointerEventHandler } from '@/flying/interactions';
+import type { PointerEvent, PointerEventHandler } from '@flying/interactions';
 import { resolveSpacing } from '@flying/widget';
 import type { TextInputStyle } from '../styles/types';
 import type { TextInputProps, TextInputState } from './';

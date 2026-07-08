@@ -1,6 +1,6 @@
-import type { Window } from '@/flying/app';
-import { Palette } from '@/flying/widget';
-import type { ToggleProps } from '@/flying/widget/toggle';
+import type { Window } from '@flying/app';
+import type { ToggleProps } from '@flying/widget';
+import { Palette } from '@flying/widget';
 import type { SubMarkPaintOptions } from '../types';
 import { paintBackground, paintBorder, resolveStyle } from '../utility';
 

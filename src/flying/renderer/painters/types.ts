@@ -1,4 +1,4 @@
-import type { Coordinate2D, RGBA, Size } from '@/flying/types';
+import type { Coordinate2D, RGBA, Size } from '@flying/types';
 import type { GradientCtx } from './gradient/types';
 
 export interface DrawRectGLOptions extends Coordinate2D, Size {

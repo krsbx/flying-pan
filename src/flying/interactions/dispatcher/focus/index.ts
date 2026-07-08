@@ -1,4 +1,4 @@
-import { hitTest } from '@flying/interactions/utility/hit-test';
+import { hitTest } from '@flying/interactions';
 import type { LayoutNode } from '@flying/layout';
 import { WidgetType, type WidgetDescriptor } from '@flying/widget';
 import {

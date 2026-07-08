@@ -1,7 +1,7 @@
-import type { EventContext } from '@/flying/interactions/event/types';
-import type { StateStore } from '@/flying/state';
 import type { InputManager, Window } from '@flying/app';
+import type { EventContext } from '@flying/interactions';
 import type { LayoutNode } from '@flying/layout';
+import type { StateStore } from '@flying/state';
 
 export interface DispatcherConfig {
   input: InputManager;

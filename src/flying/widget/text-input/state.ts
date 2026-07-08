@@ -1,5 +1,5 @@
-import type { EventContext } from '@/flying/interactions';
-import type { LayoutNode } from '@/flying/layout';
+import type { EventContext } from '@flying/interactions';
+import type { LayoutNode } from '@flying/layout';
 import { resolveSpacing, type TextInputStyle } from '../styles';
 import type { TextInputProps, TextInputState } from './';
 

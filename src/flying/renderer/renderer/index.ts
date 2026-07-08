@@ -1,4 +1,4 @@
-import type { Rect } from '@/flying/widget';
+import type { Rect } from '@flying/widget';
 import type { GLFW } from '@glfw';
 import type { Window, WindowManager } from '../../app';
 import type { Coordinate2D, Resolution } from '../../types';

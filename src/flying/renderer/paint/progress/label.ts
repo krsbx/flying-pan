@@ -1,6 +1,6 @@
-import { Palette, TextAlign, type TextStyle } from '@/flying/widget';
 import type { Window } from '@flying/app';
-import type { Renderer } from '@flying/renderer/renderer';
+import type { Renderer } from '@flying/renderer';
+import { Palette, TextAlign, type TextStyle } from '@flying/widget';
 import type { PaintContext } from '../types';
 
 export interface InlineLabelOptions {

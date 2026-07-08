@@ -1,4 +1,4 @@
-import type { Window } from '@/flying/app';
+import type { Window } from '@flying/app';
 import {
   CircularProgressDirection,
   Palette,

@@ -1,4 +1,4 @@
-import type { Window } from '@/flying/app';
+import type { Window } from '@flying/app';
 import {
   Palette,
   resolveSpacing,
@@ -7,7 +7,7 @@ import {
   type TextInputState,
   type TextInputStyle,
 } from '@flying/widget';
-import { makeTextInputState } from '@/flying/widget/text-input/state';
+import { makeTextInputState } from '@flying/widget/text-input/state';
 import type { PaintOptions } from '../types';
 
 export function paintTextInput(

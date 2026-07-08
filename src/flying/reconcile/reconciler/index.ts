@@ -1,5 +1,5 @@
-import type { StateStore } from '@/flying/state';
-import type { WidgetDescriptor } from '@/flying/widget';
+import type { StateStore } from '@flying/state';
+import type { WidgetDescriptor } from '@flying/widget';
 import type { ReconciledNode } from '../types.ts';
 import type {
   GetStableId,

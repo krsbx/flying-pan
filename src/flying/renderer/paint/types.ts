@@ -1,11 +1,11 @@
-import type { InteractionManager } from '@/flying/interactions';
-import type { GetStableIdFn } from '@/flying/reconcile/reconciler/types';
-import type { StateStore } from '@/flying/state';
-import type { Coordinate2D, Resolution } from '@/flying/types';
-import type { ViewStyle } from '@/flying/widget';
 import type { FontManager } from '@flying/app';
+import type { InteractionManager } from '@flying/interactions';
 import type { LayoutNode } from '@flying/layout';
+import type { GetStableIdFn } from '@flying/reconcile';
 import type { Renderer } from '@flying/renderer';
+import type { StateStore } from '@flying/state';
+import type { Coordinate2D, Resolution } from '@flying/types';
+import type { ViewStyle } from '@flying/widget';
 import type { TextureManager } from '../texture/manager';
 
 export interface PaintContext {

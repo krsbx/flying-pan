@@ -1,3 +1,4 @@
+import type { ValidColor } from '@flying/types';
 import {
   Palette,
   ProgressValueType,
@@ -5,9 +6,8 @@ import {
   type ColorStop,
   type ProgressBarProps,
   type ViewStyle,
-} from '@/flying/widget';
-import { clamp } from '@/utility/common';
-import type { ValidColor } from '@flying/types';
+} from '@flying/widget';
+import { clamp } from '@utility/common';
 
 export function calculateProgressRatio(
   props: ProgressBarProps | CircularProgressProps

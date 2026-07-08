@@ -1,4 +1,4 @@
-import type { RGBA } from '@/flying/types';
+import type { RGBA } from '@flying/types';
 import type { GLFW } from '@glfw';
 import { parseColor } from '../../color';
 import { GL_TRIANGLES } from '../../constant';

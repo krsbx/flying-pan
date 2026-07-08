@@ -3,7 +3,7 @@ import type {
   CharEventHandler,
   KeyEvent,
   KeyEventHandler,
-} from '@/flying/interactions';
+} from '@flying/interactions';
 import { type TextInputProps, type TextInputState } from '@flying/widget';
 import {
   GLFW_KEY_BACKSPACE,

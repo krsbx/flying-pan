@@ -1,5 +1,5 @@
-import type { Window } from '@/flying/app';
-import type { ImageProps, ViewStyle } from '@/flying/widget';
+import type { Window } from '@flying/app';
+import type { ImageProps, ViewStyle } from '@flying/widget';
 import type { PaintOptions } from '../types';
 
 export function paintImage(
