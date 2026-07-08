@@ -14,6 +14,17 @@ export function makeTextInputState(props: TextInputProps): TextInputState {
   };
 }
 
+export function selectionRange(
+  state: Pick<TextInputState, 'caret' | 'anchor'>
+): { start: number; end: number } | null {
+  if (state.caret === state.anchor) return null;
+
+  return {
+    start: Math.min(state.caret, state.anchor),
+    end: Math.max(state.caret, state.anchor),
+  };
+}
+
 export function recomputeTextInputScrollX(options: {
   caretX: number;
   currentScrollX: number;

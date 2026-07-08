@@ -7,7 +7,10 @@ import {
   type TextInputState,
   type TextInputStyle,
 } from '@flying/widget';
-import { makeTextInputState } from '@flying/widget/text-input/state';
+import {
+  makeTextInputState,
+  selectionRange,
+} from '@flying/widget/text-input/state';
 import type { PaintOptions } from '../types';
 
 export function paintTextInput(
@@ -45,8 +48,7 @@ export function paintTextInput(
   renderer.pushClip(window, { x, y, width, height });
 
   if (hasValue && state.caret !== state.anchor) {
-    const start = Math.min(state.caret, state.anchor);
-    const end = Math.max(state.caret, state.anchor);
+    const { start, end } = selectionRange(state)!;
 
     const startWidth = fontAtlas.measureText({
       text: value.substring(0, start),
