@@ -236,3 +236,13 @@ export function createTextInputKeyHandler(
     }
   };
 }
+
+export function createTextInputKeyHanlder(props: TextInputProps): {
+  onChar: CharEventHandler;
+  onKeyDown: KeyEventHandler;
+} {
+  return {
+    onChar: createTextInputCharHandler(props),
+    onKeyDown: createTextInputKeyHandler(props),
+  };
+}

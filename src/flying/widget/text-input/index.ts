@@ -3,10 +3,7 @@ import { ROOT_FONT_SIZE, WidgetType } from '../constant';
 import type { WidgetProps } from '../styles';
 import { Metrics, Palette } from '../styles';
 import type { TextInputStyle, WidgetDescriptor } from '../styles/types';
-import {
-  createTextInputCharHandler,
-  createTextInputKeyHandler,
-} from './handler';
+import { createTextInputKeyHanlder } from './handler';
 import { createTextInputPointerHandler } from './pointer';
 
 export interface TextInputProps extends WidgetProps, InteractionProps {
@@ -56,6 +53,7 @@ export function TextInput(props: TextInputProps): WidgetDescriptor {
     ...rest,
   };
 
+  const keyHandler = createTextInputKeyHanlder(internalProps);
   const pointerHandler = createTextInputPointerHandler(internalProps);
 
   return {
@@ -88,11 +86,11 @@ export function TextInput(props: TextInputProps): WidgetDescriptor {
       },
     },
     onChar: (event) => {
-      createTextInputCharHandler(internalProps)(event);
+      keyHandler.onChar(event);
       userOnChar?.(event);
     },
     onKeyDown: (event) => {
-      createTextInputKeyHandler(internalProps)(event);
+      keyHandler.onKeyDown(event);
       userOnKeyDown?.(event);
     },
     onPointerDown: (event) => {
