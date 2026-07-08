@@ -1,26 +1,13 @@
-import type {
-  CircularProgressProps,
-  ImageProps,
-  LabelProps,
-  ProgressBarProps,
-  TextInputProps,
-  TextInputState,
-  TextInputStyle,
-} from '@flying/widget';
 import {
   FlexAlign,
   FlexJustify,
   Position,
   resolveSize,
   resolveSpacing,
-  ROOT_FONT_SIZE,
   SpacingType,
-  WidgetType,
-  type TextStyle,
 } from '@flying/widget';
-import { makeTextInputState } from '@flying/widget/text-input/state';
 import { clamp } from '@utility/common';
-import { formatValueLabel } from '../renderer/paint/progress/utility';
+import { resolveChildSize } from './resolver';
 import type {
   CalculateMainContentSizeOptions,
   CalculateMainContentSizeResult,
@@ -34,7 +21,7 @@ import type {
 export function measureChildsComponent(
   options: MeasureChildsComponentOptions
 ): MeasureChildsComponentResult {
-  const { parentWidth, parentHeight, ctx } = options;
+  const { parentWidth, parentHeight } = options;
   const flow: ChildMeasurements[] = [];
   const absolute: ChildMeasurements[] = [];
 
@@ -51,119 +38,12 @@ export function measureChildsComponent(
     const flex = isAbsolute ? 0 : flexValue;
     const flexShrink = isAbsolute ? 0 : flexShrinkValue;
 
-    let width = resolveSize(child.style?.width, parentWidth);
-    let height = resolveSize(child.style?.height, parentHeight);
-
-    if (child.type === WidgetType.Image && !width && !height) {
-      const props = child.props as ImageProps;
-      const info = ctx.textureManager?.info?.(props.src);
-
-      if (info) {
-        width ||= props.width || info.width;
-        height ||= props.height || info.height;
-      }
-    }
-
-    if (child.type === WidgetType.TextInput) {
-      const props = child.props as TextInputProps;
-      const style = child.style as TextInputStyle;
-      const fontAtlas = ctx.fontManager.get(props.font);
-
-      const state = ctx.stateStore.stateFor<TextInputState>({
-        stableId: ctx.getStableId(child),
-        initial: makeTextInputState(props),
-      });
-      const value = props.value ?? state.value;
-
-      const text = value || (props.placeholder ?? '');
-
-      if (text) {
-        const measured = fontAtlas.measureText({
-          text,
-          fontSize: style.fontSize ?? ROOT_FONT_SIZE,
-          letterSpacing: style.letterSpacing,
-          lineHeight: style.lineHeight,
-        });
-
-        width ||= measured.width;
-        height ||= measured.height;
-      }
-    }
-
-    if (child.type === WidgetType.Label) {
-      const props = child.props as LabelProps;
-      const style = child.style as TextStyle;
-      const fontAtlas = ctx.fontManager.get(props.font);
-
-      const text = props.text;
-      const fontSize = style?.fontSize ?? ROOT_FONT_SIZE;
-      const letterSpacing = style?.letterSpacing;
-      const lineHeight = style?.lineHeight;
-
-      const measured = fontAtlas.measureText({
-        text,
-        fontSize,
-        letterSpacing,
-        lineHeight,
-      });
-
-      width ||= measured.width;
-      height ||= measured.height;
-    }
-
-    if (child.type === WidgetType.ProgressBar) {
-      const props = child.props as ProgressBarProps;
-      const fontSize = props.labelStyle?.fontSize ?? ROOT_FONT_SIZE;
-      const letterSpacing = props.labelStyle?.letterSpacing;
-      const lineHeight = props.labelStyle?.lineHeight;
-
-      const text =
-        props.label ??
-        formatValueLabel({
-          value: props.value,
-          min: props.min,
-          max: props.max,
-          format: props.showValue,
-        });
-
-      if (text && props.font) {
-        const fontAtlas = ctx.fontManager.get(props.font);
-        const measured = fontAtlas.measureText({
-          text,
-          fontSize,
-          letterSpacing,
-          lineHeight,
-        });
-
-        if (width < measured.width) width = measured.width;
-        if (height < measured.height) height = measured.height;
-      }
-    }
-
-    if (child.type === WidgetType.CircularProgress) {
-      const props = child.props as CircularProgressProps;
-
-      const labelText =
-        props.label ??
-        formatValueLabel({
-          value: props.value,
-          min: props.min,
-          max: props.max,
-          format: props.showValue,
-        });
-
-      if (labelText && props.font) {
-        const fontAtlas = ctx.fontManager.get(props.font);
-        const measured = fontAtlas.measureText({ text: labelText });
-        // Stay square so the circle stays circular — growing only width or
-        // height would distort the box and drawRoundedRect's radius clamp
-        // would then produce an ellipse.
-        const minSize = Math.max(measured.width, measured.height);
-
-        if (width < minSize) width = minSize;
-        if (height < minSize) height = minSize;
-      }
-    }
+    let { height, width } = resolveChildSize({
+      ctx: options.ctx,
+      widget: child,
+      parentHeight,
+      parentWidth,
+    });
 
     // Clamp to min/max constraints
     width = clamp({

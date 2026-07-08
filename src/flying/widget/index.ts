@@ -7,6 +7,7 @@ export * from './label';
 export * from './progress';
 export * from './radio';
 export * from './radio-group';
+export * from './slider';
 export * from './styles';
 export * from './text-input';
 export * from './toggle';

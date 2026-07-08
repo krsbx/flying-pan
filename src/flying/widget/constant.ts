@@ -138,6 +138,14 @@ export const ProgressValueType = {
 export type ProgressValueType =
   (typeof ProgressValueType)[keyof typeof ProgressValueType];
 
+export const SliderOrientation = {
+  Horizontal: 'horizontal',
+  Vertical: 'vertical',
+} as const;
+
+export type SliderOrientation =
+  (typeof SliderOrientation)[keyof typeof SliderOrientation];
+
 export const GradientType = {
   Linear: 'linear',
   Radial: 'radial',

@@ -1,4 +1,4 @@
-import type { PointerEvent, PointerEventHandler } from '@/flying/interactions';
+import type { PointerEvent, PointerEventHandler } from '@flying/interactions';
 import { resolveSpacing } from '@flying/widget';
 import { GLFW_MOUSE_BUTTON_LEFT } from '@glfw/enums';
 import type { TextInputStyle } from '../styles/types';
