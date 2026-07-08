@@ -56,6 +56,8 @@ export function TextInput(props: TextInputProps): WidgetDescriptor {
     ...rest,
   };
 
+  const pointerHandler = createTextInputPointerHandler(internalProps);
+
   return {
     type: WidgetType.TextInput,
     props: internalProps,
@@ -69,6 +71,7 @@ export function TextInput(props: TextInputProps): WidgetDescriptor {
       fontSize: ROOT_FONT_SIZE,
       placeholderColor: Palette.textMuted,
       caretColor: Palette.text,
+      selectionColor: Palette.selection,
       focusable: !disabled,
       ...style,
       _hover: {
@@ -93,11 +96,14 @@ export function TextInput(props: TextInputProps): WidgetDescriptor {
       userOnKeyDown?.(event);
     },
     onPointerDown: (event) => {
-      createTextInputPointerHandler(internalProps).onPointerDown(event);
+      pointerHandler.onPointerDown(event);
       onPointerDown?.(event);
     },
     onPointerUp,
-    onPointerMove,
+    onPointerMove: (event) => {
+      pointerHandler.onPointerMove(event);
+      onPointerMove?.(event);
+    },
     onClick,
     onPointerEnter,
     onPointerLeave,

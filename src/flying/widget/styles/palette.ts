@@ -30,6 +30,9 @@ export const Palette = {
   accent: '#3b82f6', // blue-500
   accentHover: '#2563eb', // blue-600
   accentActive: '#1d4ed8', // blue-700
+
+  // Selection — light blue so text stays legible over the highlight
+  selection: '#bfdbfe', // blue-200
 } as const;
 
 export type PaletteColor = keyof typeof Palette;

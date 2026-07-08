@@ -69,12 +69,11 @@ export function measureChildsComponent(
       const style = child.style as TextInputStyle;
       const fontAtlas = ctx.fontManager.get(props.font);
 
-      const value =
-        props.value ??
-        ctx.stateStore.stateFor<TextInputState>({
-          stableId: ctx.getStableId(child),
-          initial: makeTextInputState(props),
-        }).value;
+      const state = ctx.stateStore.stateFor<TextInputState>({
+        stableId: ctx.getStableId(child),
+        initial: makeTextInputState(props),
+      });
+      const value = props.value ?? state.value;
 
       const text = value || (props.placeholder ?? '');
 

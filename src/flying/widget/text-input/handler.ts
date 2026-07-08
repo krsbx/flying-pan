@@ -23,19 +23,15 @@ export function createTextInputCharHandler(
 
     const { node, stateStore, ctx } = event;
 
-    if (props.value !== undefined) {
-      props.onChange?.(props.value);
-      return;
-    }
-
     const state = stateStore.stateFor<TextInputState>({
       stableId: node.stableId,
       initial: makeTextInputState(props),
     });
+    const value = props.value ?? state.value;
 
     const text = String.fromCodePoint(event.codepoint);
     const nextValue =
-      state.value.slice(0, state.caret) + text + state.value.slice(state.caret);
+      value.slice(0, state.caret) + text + value.slice(state.caret);
     const nextCaret = state.caret + text.length;
 
     const scrollX = measureTextInputScrollX({
@@ -68,19 +64,11 @@ export function createTextInputKeyHandler(
 
     const { node, stateStore, ctx } = event;
 
-    if (props.value) {
-      if (event.key === GLFW_KEY_BACKSPACE && props.value.length > 0) {
-        props.onChange?.(props.value.slice(0, -1));
-      } else if (event.key === GLFW_KEY_DELETE && props.value.length > 0) {
-        props.onChange?.(props.value.slice(1));
-      }
-      return;
-    }
-
     const state = stateStore.stateFor<TextInputState>({
       stableId: node.stableId,
       initial: makeTextInputState(props),
     });
+    const value = props.value ?? state.value;
 
     let next: TextInputState = state;
 
@@ -89,9 +77,7 @@ export function createTextInputKeyHandler(
         if (state.caret > 0) {
           next = {
             ...state,
-            value:
-              state.value.slice(0, state.caret - 1) +
-              state.value.slice(state.caret),
+            value: value.slice(0, state.caret - 1) + value.slice(state.caret),
             caret: state.caret - 1,
             anchor: state.caret - 1,
           };
@@ -99,12 +85,10 @@ export function createTextInputKeyHandler(
         break;
 
       case GLFW_KEY_DELETE:
-        if (state.caret < state.value.length) {
+        if (state.caret < value.length) {
           next = {
             ...state,
-            value:
-              state.value.slice(0, state.caret) +
-              state.value.slice(state.caret + 1),
+            value: value.slice(0, state.caret) + value.slice(state.caret + 1),
           };
         }
         break;
@@ -115,7 +99,7 @@ export function createTextInputKeyHandler(
         break;
 
       case GLFW_KEY_RIGHT:
-        if (state.caret < state.value.length)
+        if (state.caret < value.length)
           next = { ...state, caret: state.caret + 1, anchor: state.caret + 1 };
         break;
 
@@ -126,8 +110,8 @@ export function createTextInputKeyHandler(
       case GLFW_KEY_END:
         next = {
           ...state,
-          caret: state.value.length,
-          anchor: state.value.length,
+          caret: value.length,
+          anchor: value.length,
         };
         break;
     }
@@ -145,7 +129,7 @@ export function createTextInputKeyHandler(
 
       stateStore.setState({ stableId: node.stableId, value: finalized });
 
-      if (finalized.value !== state.value) props.onChange?.(finalized.value);
+      if (finalized.value !== value) props.onChange?.(finalized.value);
     }
   };
 }

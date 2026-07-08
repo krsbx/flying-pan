@@ -153,6 +153,7 @@ export interface TextInputStyle extends TextStyle {
   placeholderColor?: ValidColor;
   caretColor?: ValidColor;
   caretWidth?: number;
+  selectionColor?: ValidColor;
 }
 
 export type WidgetProps = Record<string, unknown>;
