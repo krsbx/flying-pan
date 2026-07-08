@@ -23,21 +23,27 @@ export function paintInlineLabel(window: Window, options: InlineLabelOptions) {
   if (!label) return;
 
   const fontAtlas = ctx.fontManager.get(font);
-  const measured = fontAtlas.measureText({ text: label });
+  const measured = fontAtlas.measureText({
+    text: label,
+    letterSpacing: style.letterSpacing,
+    lineHeight: style.lineHeight,
+    fontSize: style.fontSize,
+  });
 
-  let textX = x + (width - measured.width) / 2;
+  const textAlign = style.textAlign ?? TextAlign.Center;
+  let textX = x;
   const textY = y + (height - measured.height) / 2;
 
-  switch (style?.textAlign) {
-    case TextAlign.Left:
-      textX = x;
+  switch (textAlign) {
+    case TextAlign.Center:
+      textX += (width - measured.width) / 2;
       break;
 
     case TextAlign.Right:
       textX += width - measured.width;
       break;
 
-    case TextAlign.Center:
+    case TextAlign.Left:
     default:
       break;
   }

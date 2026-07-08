@@ -1,4 +1,3 @@
-import { clamp } from '@/utility/common';
 import type {
   CircularProgressProps,
   ImageProps,
@@ -19,7 +18,8 @@ import {
   WidgetType,
   type TextStyle,
 } from '@flying/widget';
-import { makeTextInputState } from '@/flying/widget/text-input/state';
+import { makeTextInputState } from '@flying/widget/text-input/state';
+import { clamp } from '@utility/common';
 import { formatValueLabel } from '../renderer/paint/progress/utility';
 import type {
   CalculateMainContentSizeOptions,
@@ -96,7 +96,7 @@ export function measureChildsComponent(
       const style = child.style as TextStyle;
       const fontAtlas = ctx.fontManager.get(props.font);
 
-      const text = (child.props as LabelProps).text;
+      const text = props.text;
       const fontSize = style?.fontSize ?? ROOT_FONT_SIZE;
       const letterSpacing = style?.letterSpacing;
       const lineHeight = style?.lineHeight;
@@ -114,8 +114,11 @@ export function measureChildsComponent(
 
     if (child.type === WidgetType.ProgressBar) {
       const props = child.props as ProgressBarProps;
+      const fontSize = props.labelStyle?.fontSize ?? ROOT_FONT_SIZE;
+      const letterSpacing = props.labelStyle?.letterSpacing;
+      const lineHeight = props.labelStyle?.lineHeight;
 
-      const labelText =
+      const text =
         props.label ??
         formatValueLabel({
           value: props.value,
@@ -124,9 +127,14 @@ export function measureChildsComponent(
           format: props.showValue,
         });
 
-      if (labelText && props.font) {
+      if (text && props.font) {
         const fontAtlas = ctx.fontManager.get(props.font);
-        const measured = fontAtlas.measureText({ text: labelText });
+        const measured = fontAtlas.measureText({
+          text,
+          fontSize,
+          letterSpacing,
+          lineHeight,
+        });
 
         if (width < measured.width) width = measured.width;
         if (height < measured.height) height = measured.height;
