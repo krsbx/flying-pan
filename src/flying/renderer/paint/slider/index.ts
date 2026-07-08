@@ -1,6 +1,6 @@
 import type { Window } from '@flying/app';
 import { valueToRatio } from '@flying/utility/common';
-import type { SliderProps } from '@flying/widget';
+import type { SliderBarProps } from '@flying/widget';
 import { Metrics, Palette, SliderOrientation } from '@flying/widget';
 import { HANDLE_SIZE, TRACK_THICKNESS } from '@flying/widget/slider/constant';
 import { makeSliderState } from '@flying/widget/slider/state';
@@ -19,7 +19,7 @@ export function paintSlider(window: Window, options: SubMarkPaintOptions) {
     disabled,
   } = options;
   const { widget, x, y, width, height, stableId } = layout;
-  const props = widget.props as SliderProps;
+  const props = widget.props as SliderBarProps;
 
   const min = props.min ?? 0;
   const max = props.max ?? 100;

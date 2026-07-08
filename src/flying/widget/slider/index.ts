@@ -3,10 +3,13 @@ import { SliderOrientation, WidgetType } from '../constant';
 import type { ViewStyle, WidgetDescriptor, WidgetProps } from '../styles';
 import { Metrics, Palette } from '../styles';
 import { HANDLE_SIZE, TRACK_THICKNESS } from './constant';
-import { createSliderClickHandler, createSliderKeyHandler } from './handler';
-import { createSliderPointerHandler } from './pointer';
+import {
+  createSliderBarClickHandler,
+  createSliderBarKeyHandler,
+} from './handler';
+import { createSliderBarPointerHandler } from './pointer';
 
-export interface SliderProps extends WidgetProps, InteractionProps {
+export interface SliderBarProps extends WidgetProps, InteractionProps {
   /** Controlled value. When set, the widget is controlled — parent must update. */
   value?: number;
 
@@ -25,7 +28,7 @@ export interface SliderProps extends WidgetProps, InteractionProps {
   handleStyle?: ViewStyle;
 }
 
-export function Slider(props: SliderProps): WidgetDescriptor {
+export function SliderBar(props: SliderBarProps): WidgetDescriptor {
   const {
     value,
     defaultValue,
@@ -67,14 +70,14 @@ export function Slider(props: SliderProps): WidgetDescriptor {
     orientation,
   };
 
-  const pointerHandler = createSliderPointerHandler(internalProps);
-  const clickHandler = createSliderClickHandler(internalProps);
-  const keyHandler = createSliderKeyHandler(internalProps);
+  const pointerHandler = createSliderBarPointerHandler(internalProps);
+  const clickHandler = createSliderBarClickHandler(internalProps);
+  const keyHandler = createSliderBarKeyHandler(internalProps);
 
   const isHorizontal = orientation === SliderOrientation.Horizontal;
 
   return {
-    type: WidgetType.Slider,
+    type: WidgetType.SliderBar,
     props: {
       ...internalProps,
       trackStyle: {

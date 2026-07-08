@@ -134,7 +134,7 @@ export function paint(window: Window, options: PaintOptions) {
       break;
     }
 
-    case WidgetType.Slider: {
+    case WidgetType.SliderBar: {
       paintSlider(window, {
         ctx,
         layout,

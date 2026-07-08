@@ -1,12 +1,12 @@
 import { GLFW_MOUSE_BUTTON_LEFT } from '@/library/glfw/enums';
 import type { PointerEvent, PointerEventHandler } from '@flying/interactions';
 import { clamp } from '@utility/common';
-import type { SliderProps } from '.';
+import type { SliderBarProps } from '.';
 import { SliderOrientation } from '../constant';
 import { makeSliderState } from './state';
 import { pointerToValue } from './utility';
 
-export function createSliderPointerHandler(props: SliderProps): {
+export function createSliderBarPointerHandler(props: SliderBarProps): {
   onPointerDown: PointerEventHandler;
   onPointerMove: PointerEventHandler;
 } {

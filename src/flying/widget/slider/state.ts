@@ -1,6 +1,6 @@
-import type { SliderProps } from '.';
+import type { SliderBarProps } from '.';
 
-export function makeSliderState(props: SliderProps): number {
+export function makeSliderState(props: SliderBarProps): number {
   const min = props.min ?? 0;
   const value = props.value ?? props.defaultValue ?? 0;
 

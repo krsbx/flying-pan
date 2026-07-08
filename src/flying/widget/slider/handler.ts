@@ -14,13 +14,13 @@ import {
   GLFW_MOD_SHIFT,
 } from '@glfw/enums';
 import { clamp } from '@utility/common';
-import type { SliderProps } from '.';
+import type { SliderBarProps } from '.';
 import { SliderOrientation } from '../constant';
 import { makeSliderState } from './state';
 import { pointerToValue } from './utility';
 
-export function createSliderClickHandler(
-  props: SliderProps
+export function createSliderBarClickHandler(
+  props: SliderBarProps
 ): ClickEventHandler {
   return (event: ClickEvent) => {
     if (props.disabled) return;
@@ -58,7 +58,9 @@ export function createSliderClickHandler(
   };
 }
 
-export function createSliderKeyHandler(props: SliderProps): KeyEventHandler {
+export function createSliderBarKeyHandler(
+  props: SliderBarProps
+): KeyEventHandler {
   return (event: KeyEvent) => {
     if (props.disabled) return;
 
