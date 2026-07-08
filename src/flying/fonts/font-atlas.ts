@@ -87,14 +87,14 @@ export class FontAtlas extends BaseFontAtlas {
     const quads: TextQuad[] = [];
     const alignedQuad = AlignedQuad.create();
     const letterSpacing = options.letterSpacing ?? 0;
-    const effectiveLineHeight = options.lineHeight ?? this.fontSize;
     const effectiveFontSize = options.fontSize ?? this.fontSize;
+    const scale = effectiveFontSize / this.fontSize;
+    const effectiveLineHeight = options.lineHeight ?? this.fontSize * scale;
 
     const lines = options.text.split('\n');
 
     for (let lineIdx = 0; lineIdx < lines.length; lineIdx++) {
       const line = lines[lineIdx]!;
-      const scale = effectiveFontSize / this.fontSize;
       const ascent = this.ascent * scale;
       const baselineY = options.y + lineIdx * effectiveLineHeight + ascent;
       const pos = new FVector2({
@@ -108,6 +108,8 @@ export class FontAtlas extends BaseFontAtlas {
 
         if (charIndex < 0 || charIndex >= NUM_CHARS) continue;
 
+        const preX = pos.x;
+
         this.truetype.stbtt_GetBakedQuad({
           chardata: this.bakedChars.$address,
           pw: ATLAS_WIDTH,
@@ -120,15 +122,17 @@ export class FontAtlas extends BaseFontAtlas {
         });
 
         quads.push({
-          x0: alignedQuad.x0,
-          y0: alignedQuad.y0,
+          x0: preX + (alignedQuad.x0 - preX) * scale,
+          y0: baselineY + (alignedQuad.y0 - baselineY) * scale,
           s0: alignedQuad.s0,
           t0: alignedQuad.t0,
-          x1: alignedQuad.x1,
-          y1: alignedQuad.y1,
+          x1: preX + (alignedQuad.x1 - preX) * scale,
+          y1: baselineY + (alignedQuad.y1 - baselineY) * scale,
           s1: alignedQuad.s1,
           t1: alignedQuad.t1,
         });
+
+        pos.x = preX + (pos.x - preX) * scale;
 
         if (letterSpacing) {
           pos.x += letterSpacing;

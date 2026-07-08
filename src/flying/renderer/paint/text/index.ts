@@ -15,12 +15,12 @@ export function paintText(
   const { widget, y, width } = layout;
   const props = widget.props as LabelProps;
 
-  const fontAtlas = ctx.fontManager.get(props.font);
-
-  const text = props?.text ?? '';
   const color = style.color ?? Palette.text;
+  const text = props?.text ?? '';
 
   if (!text) return;
+
+  const fontAtlas = ctx.fontManager.get(props.font);
 
   let x = options.layout.x;
 
