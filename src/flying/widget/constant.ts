@@ -60,6 +60,7 @@ export const WidgetType = {
   Toggle: 'Toggle',
   ProgressBar: 'ProgressBar',
   CircularProgress: 'CircularProgress',
+  Slider: 'Slider',
 } as const;
 
 export type WidgetType = (typeof WidgetType)[keyof typeof WidgetType];

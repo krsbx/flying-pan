@@ -1,4 +1,5 @@
 import type { Window } from '@flying/app';
+import { valueToRatio } from '@flying/utility/common';
 import {
   CircularProgressDirection,
   Palette,
@@ -6,12 +7,7 @@ import {
 } from '@flying/widget';
 import type { PaintOptions } from '../types';
 import { paintInlineLabel } from './label';
-import {
-  bufferRatio,
-  calculateProgressRatio,
-  formatValueLabel,
-  resolveFillColorClamped,
-} from './utility';
+import { formatValueLabel, resolveFillColorClamped } from './utility';
 
 export function paintCircularProgress(
   window: Window,
@@ -21,7 +17,11 @@ export function paintCircularProgress(
   const { widget, x, y, width, height } = layout;
   const props = widget.props as CircularProgressProps;
 
-  const ratio = calculateProgressRatio(props);
+  const ratio = valueToRatio({
+    value: props.value ?? 0,
+    max: props.max ?? 1,
+    min: props.min ?? 0,
+  });
 
   const cx = x + width / 2;
   const cy = y + height / 2;
@@ -67,13 +67,18 @@ export function paintCircularProgress(
     }
   };
 
-  // Buffer arc first (behind main). Default to 0.35 opacity.
-  const bufRatio = bufferRatio(props);
+  const bufRatio = valueToRatio({
+    value: props.buffer ?? 0,
+    max: props.max ?? 1,
+    min: props.min ?? 0,
+  });
+
   if (bufRatio > 0) {
     const bufferColor =
       props.bufferStyle?.backgroundColor ??
       fillStyle.backgroundColor ??
       Palette.accent;
+
     const bufferOpacity = props.bufferStyle?.opacity ?? 0.35;
     drawArcShape(bufRatio, bufferColor, bufferOpacity);
   }

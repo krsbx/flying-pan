@@ -2,53 +2,10 @@ import type { ValidColor } from '@flying/types';
 import {
   Palette,
   ProgressValueType,
-  type CircularProgressProps,
   type ColorStop,
-  type ProgressBarProps,
   type ViewStyle,
 } from '@flying/widget';
 import { clamp } from '@utility/common';
-
-export function calculateProgressRatio(
-  props: ProgressBarProps | CircularProgressProps
-): number {
-  const min = props.min ?? 0;
-  const max = props.max ?? 1;
-  const span = max - min;
-  const value = props.value ?? 0;
-  const ratio =
-    span === 0
-      ? 0
-      : clamp({
-          value: (value - min) / span,
-          min: 0,
-          max: 1,
-        });
-
-  return ratio;
-}
-
-/**
- * Same normalization as `calculateProgressRatio`, but reads `props.buffer`
- * instead of `props.value`. Returns 0 if `buffer` is undefined.
- */
-export function bufferRatio(
-  props: ProgressBarProps | CircularProgressProps
-): number {
-  if (props.buffer === undefined) return 0;
-
-  const min = props.min ?? 0;
-  const max = props.max ?? 1;
-  const span = max - min;
-
-  if (span === 0) return 0;
-
-  return clamp({
-    value: (props.buffer - min) / span,
-    min: 0,
-    max: 1,
-  });
-}
 
 export function resolveFillColor(options: {
   ratio: number;
@@ -72,11 +29,6 @@ export function resolveFillColor(options: {
   return fillStyle?.backgroundColor ?? Palette.accent;
 }
 
-/**
- * Same as `resolveFillColor` but clamps `ratio` to [0, 1] first — useful when
- * callers compute the ratio from raw props without going through
- * `calculateProgressRatio` (e.g. a segment's midpoint in stepped mode).
- */
 export function resolveFillColorClamped(options: {
   ratio: number;
   fillStyle?: ViewStyle;
