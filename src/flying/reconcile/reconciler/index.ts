@@ -1,8 +1,9 @@
 import type { StateStore } from '@flying/state';
 import type { WidgetDescriptor } from '@flying/widget';
-import type { ReconciledNode } from '../types.ts';
+import type { Key, ReconciledNode } from '../types.ts';
 import type {
   GetStableId,
+  ReconcileChildrenOptions,
   ReconcileNodeOptions,
   UnmountNodeOptions,
 } from './types';
@@ -84,34 +85,90 @@ export class Reconciler implements GetStableId {
 
     const prevChildren = prev?.children ?? [];
     const nextChildren = next.children ?? [];
-    const maxLength = Math.max(prevChildren.length, nextChildren.length);
-    const children: ReconciledNode[] = [];
-
-    for (let i = 0; i < maxLength; i++) {
-      const prevChild = prevChildren[i] ?? null;
-      const nextChild = nextChildren[i];
-
-      if (nextChild) {
-        children.push(
-          this.reconcileNode({
-            prev: prevChild,
-            next: nextChild,
-            window,
-          })
-        );
-      } else if (prevChild) {
-        this.unmountNode({
-          node: prevChild,
-          window,
-        });
-      }
-    }
+    const children = this.reconcileChildren({
+      prevChildren,
+      nextChildren,
+      window,
+    });
 
     return {
       widget: next,
       stableId,
       children,
     };
+  }
+
+  protected reconcileChildren(
+    options: ReconcileChildrenOptions
+  ): ReconciledNode[] {
+    const { prevChildren, nextChildren, window } = options;
+
+    // 1. Partition prev children into keyed + unkeyed
+    const prevKeyed = new Map<Key, ReconciledNode>();
+    const prevUnkeyed: ReconciledNode[] = [];
+
+    for (const p of prevChildren) {
+      const key = p.widget.key;
+
+      if (key !== undefined) {
+        prevKeyed.set(key, p);
+      } else {
+        prevUnkeyed.push(p);
+      }
+    }
+
+    // 2. Track consumption for cleanup
+    const consumedKeys = new Set<Key>();
+    let unkeyedCursor = 0;
+
+    const children: ReconciledNode[] = [];
+
+    // 3. Iterate next children in declaration order
+    for (const nextChild of nextChildren) {
+      const key = nextChild.key;
+
+      if (key !== undefined) {
+        // Keyed child — match by key across siblings
+        const prevNode = prevKeyed.get(key) ?? null;
+        consumedKeys.add(key);
+
+        children.push(
+          this.reconcileNode({
+            prev: prevNode,
+            next: nextChild,
+            window,
+          })
+        );
+      } else {
+        // Unkeyed child — match by position against prevUnkeyed
+        const prevNode = prevUnkeyed[unkeyedCursor] ?? null;
+        unkeyedCursor++;
+
+        children.push(
+          this.reconcileNode({
+            prev: prevNode,
+            next: nextChild,
+            window,
+          })
+        );
+      }
+    }
+
+    // 4. Unmount unconsumed prev nodes
+    for (const [key, prevNode] of prevKeyed) {
+      if (!consumedKeys.has(key)) {
+        this.unmountNode({ node: prevNode, window });
+      }
+    }
+
+    for (let i = unkeyedCursor; i < prevUnkeyed.length; i++) {
+      const prevNode = prevUnkeyed[i];
+      if (prevNode) {
+        this.unmountNode({ node: prevNode, window });
+      }
+    }
+
+    return children;
   }
 
   protected unmountNode(options: UnmountNodeOptions): void {

@@ -13,6 +13,12 @@ export interface ReconcileNodeOptions {
   window: Window;
 }
 
+export interface ReconcileChildrenOptions {
+  prevChildren: ReconciledNode[];
+  nextChildren: WidgetDescriptor[];
+  window: Window;
+}
+
 export interface UnmountNodeOptions {
   node: ReconciledNode;
   window: Window;

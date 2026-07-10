@@ -1,5 +1,6 @@
 import type { FontManager, InputManager, Window } from '@flying/app';
 import type { LayoutNode } from '@flying/layout';
+import type { Key } from '@flying/reconcile';
 import type { StateStore } from '@flying/state';
 import type { Coordinate2D } from '@flying/types';
 import type { WidgetDescriptor } from '@flying/widget';
@@ -151,7 +152,7 @@ export interface InteractionProps {
   onFocus?: FocusEventHandler;
   onBlur?: FocusEventHandler;
 
-  key?: string | number;
+  key?: Key;
   onMount?: LifecycleEventHandler;
   onUnmount?: LifecycleEventHandler;
   onUpdate?: UpdateEventHandler;
