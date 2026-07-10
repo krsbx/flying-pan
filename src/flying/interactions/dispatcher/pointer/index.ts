@@ -22,6 +22,8 @@ export class PointerDispatcher extends BaseDispatcher {
   protected _hoveredStableId: number | null;
   protected _pressedStableId: number | null;
   protected _pressedButton: number | null;
+  protected _capturedStableId: number | null;
+  protected _capturedButton: number | null;
   protected lastClick: LastClick | null;
 
   public constructor(options: DispatcherConfig) {
@@ -30,6 +32,8 @@ export class PointerDispatcher extends BaseDispatcher {
     this._hoveredStableId = null;
     this._pressedStableId = null;
     this._pressedButton = null;
+    this._capturedStableId = null;
+    this._capturedButton = null;
     this.lastClick = null;
   }
 
@@ -67,9 +71,11 @@ export class PointerDispatcher extends BaseDispatcher {
       // Press cancellation: if the pointer left the widget it was pressed on
       // while still held, cancel the press (matches HTML :active — no click
       // fires on the eventual release, and the pressed style releases now).
+      // Skip for captured widgets — capture overrides drag-off cancellation.
       if (
         this._pressedStableId &&
-        this._pressedStableId === this._hoveredStableId
+        this._pressedStableId === this._hoveredStableId &&
+        this._pressedStableId !== this._capturedStableId
       ) {
         this._pressedStableId = null;
         this._pressedButton = null;
@@ -89,11 +95,17 @@ export class PointerDispatcher extends BaseDispatcher {
     }
 
     // --- Pointer move ---
+    // Route to captured widget if active, otherwise the hit target.
 
-    if (this.hasMoved(input) && hit) {
-      hit.widget.onPointerMove?.({
+    const capturedMoveNode = this._capturedStableId
+      ? (layoutIndex.get(this._capturedStableId) ?? null)
+      : null;
+    const moveTarget = capturedMoveNode ?? hit;
+
+    if (this.hasMoved(input) && moveTarget) {
+      moveTarget.widget.onPointerMove?.({
         window,
-        node: hit,
+        node: moveTarget,
         position,
         modifiers,
         stateStore,
@@ -105,6 +117,13 @@ export class PointerDispatcher extends BaseDispatcher {
     // --- Button events (down, up, click for each tracked button) ---
     for (const button of TRACKED_BUTTONS) {
       if (input.isButtonPressed(button)) {
+        const capturePointer = hitId
+          ? () => {
+              this._capturedStableId = hitId;
+              this._capturedButton = button;
+            }
+          : undefined;
+
         hit?.widget.onPointerDown?.({
           window,
           node: hit,
@@ -114,6 +133,7 @@ export class PointerDispatcher extends BaseDispatcher {
           stateStore,
           ctx,
           input,
+          capturePointer,
         });
 
         this._pressedStableId = hitId;
@@ -121,9 +141,18 @@ export class PointerDispatcher extends BaseDispatcher {
       }
 
       if (input.isButtonReleased(button)) {
-        hit?.widget?.onPointerUp?.({
+        // Route up to captured widget if active, otherwise the hit target.
+        const capturedId = this._capturedStableId;
+        const isCaptured =
+          capturedId !== null && button === this._capturedButton;
+        const capturedNode = isCaptured
+          ? (layoutIndex.get(capturedId!) ?? null)
+          : null;
+        const upTarget = capturedNode ?? hit;
+
+        upTarget?.widget?.onPointerUp?.({
           window,
-          node: hit,
+          node: upTarget,
           position,
           modifiers,
           button,
@@ -132,18 +161,23 @@ export class PointerDispatcher extends BaseDispatcher {
           input,
         });
 
-        // Click = pointer down and up on the same widget with the same button
+        // Click = pointer down and up on the same widget with the same button.
+        // With capture, down+up may land on different hit widgets — route
+        // click to the capture target.
+        const clickNode = isCaptured ? capturedNode : hit;
+        const clickId = isCaptured ? capturedId : hitId;
+
         if (
-          hit &&
-          hitId &&
-          hitId === this._pressedStableId &&
+          clickNode &&
+          clickId &&
+          clickId === this._pressedStableId &&
           button === this._pressedButton
         ) {
-          const count = this.getClickCount(hitId, button);
+          const count = this.getClickCount(clickId, button);
 
-          hit.widget.onClick?.({
+          clickNode.widget.onClick?.({
             window,
-            node: hit,
+            node: clickNode,
             position,
             button,
             modifiers,
@@ -152,6 +186,12 @@ export class PointerDispatcher extends BaseDispatcher {
             ctx,
             input,
           });
+        }
+
+        // Implicit capture release on button-up.
+        if (button === this._capturedButton) {
+          this._capturedStableId = null;
+          this._capturedButton = null;
         }
 
         if (button === this._pressedButton) {
@@ -166,6 +206,8 @@ export class PointerDispatcher extends BaseDispatcher {
     this._hoveredStableId = null;
     this._pressedStableId = null;
     this._pressedButton = null;
+    this._capturedStableId = null;
+    this._capturedButton = null;
     this.lastClick = null;
   }
 
@@ -229,5 +271,9 @@ export class PointerDispatcher extends BaseDispatcher {
 
   public get pressedButton(): number | null {
     return this._pressedButton;
+  }
+
+  public get capturedStableId(): number | null {
+    return this._capturedStableId;
   }
 }

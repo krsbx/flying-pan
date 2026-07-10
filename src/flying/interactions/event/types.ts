@@ -31,6 +31,9 @@ export interface PointerEvent extends InteractionEvent {
   position: Coordinate2D;
   button?: number;
   modifiers: number;
+  /** Capture pointer events to this widget until button release.
+   *  Only effective when called from onPointerDown. */
+  capturePointer?: () => void;
 }
 
 /**
