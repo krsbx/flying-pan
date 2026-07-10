@@ -1,3 +1,4 @@
+import { LRUCache } from '@utility/lru-cache';
 import { FVector2 } from '@vectors';
 import { AlignedQuad } from './aligned-quad';
 import { BaseFontAtlas } from './base-font-atlas';
@@ -11,7 +12,16 @@ import type {
 } from './types';
 
 export class FontAtlas extends BaseFontAtlas {
+  private readonly measureCache = new LRUCache<string, MeasureTextResult>({
+    capacity: 512,
+  });
+
   public override measureText(options: MeasureTextOptions): MeasureTextResult {
+    const key = `${options.text}\0${options.fontSize ?? ''}\0${options.letterSpacing ?? ''}\0${options.lineHeight ?? ''}`;
+    const cached = this.measureCache.get(key);
+
+    if (cached) return cached;
+
     const scale = options.fontSize ? options.fontSize / this.fontSize : 1;
     const bakedChars = this.bakedCharsArray;
 
@@ -38,10 +48,14 @@ export class FontAtlas extends BaseFontAtlas {
 
     const effectiveLineHeight = options.lineHeight ?? this.fontSize * scale;
 
-    return {
+    const result = {
       width: maxWidth * scale,
       height: lines.length * effectiveLineHeight,
     };
+
+    this.measureCache.set(key, result);
+
+    return result;
   }
 
   public override charIndexAtX(options: CharIndexAtXOptions): number {
