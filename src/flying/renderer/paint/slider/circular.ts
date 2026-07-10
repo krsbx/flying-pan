@@ -1,7 +1,7 @@
 import type { Window } from '@flying/app';
 import { valueToRatio } from '@flying/utility/common';
 import type { CircularSliderProps } from '@flying/widget';
-import { CircularProgressDirection, Metrics, Palette } from '@flying/widget';
+import { CircularProgressDirection, Palette } from '@flying/widget';
 import {
   DEFAULT_START_ANGLE,
   DEFAULT_SWEEP,
@@ -9,12 +9,11 @@ import {
   HANDLE_SIZE,
 } from '@flying/widget/slider/constant';
 import { makeSliderState } from '@flying/widget/slider/state';
+import { paintSliderHandle } from './handle';
 import { paintInlineValueLabel } from '../text';
 import type { SubMarkPaintOptions } from '../types';
 import {
   drawArcSegment,
-  paintBackground,
-  paintBorder,
   resolveFillColorClamped,
   resolveStyle,
 } from '../utility';
@@ -121,31 +120,11 @@ export function paintCircularSlider(
   const handleX = hx - HANDLE_SIZE / 2;
   const handleY = hy - HANDLE_SIZE / 2;
 
-  paintBorder(window, {
+  paintSliderHandle(window, {
+    renderer,
     x: handleX,
     y: handleY,
-    width: HANDLE_SIZE,
-    height: HANDLE_SIZE,
-    style: {
-      borderWidth: Metrics.borderWidth,
-      borderColor: Palette.border,
-      borderRadius: HANDLE_SIZE / 2,
-      ...handle,
-    },
-    renderer,
-  });
-
-  paintBackground(window, {
-    x: handleX,
-    y: handleY,
-    width: HANDLE_SIZE,
-    height: HANDLE_SIZE,
-    style: {
-      backgroundColor: Palette.surface,
-      borderRadius: HANDLE_SIZE / 2,
-      ...handle,
-    },
-    renderer,
+    handle,
   });
 
   paintInlineValueLabel(window, {

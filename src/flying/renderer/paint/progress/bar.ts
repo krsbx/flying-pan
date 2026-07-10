@@ -2,11 +2,10 @@ import type { Window } from '@flying/app';
 import { valueToRatio } from '@flying/utility/common';
 import type { ProgressBarProps } from '@flying/widget';
 import { ProgressBarOrientation, ProgressDirection } from '@flying/widget';
-import type { PaintOptions } from '../../types';
-import { paintInlineValueLabel } from '../../text';
-import { resolveFillColorClamped } from '../../utility';
-import { paintContinuousFill } from './continuous';
-import { paintSteppedFill } from './step';
+import { paintContinuousFill, paintSteppedFill } from '../fill';
+import { paintInlineValueLabel } from '../text';
+import type { PaintOptions } from '../types';
+import { resolveFillColorClamped } from '../utility';
 
 export function paintProgressBar(window: Window, options: PaintOptions): void {
   const { renderer, ctx, layout } = options;

@@ -1,9 +1,8 @@
+import type { ColorStop } from '@/flying/widget/progress/types';
 import type { Window } from '@flying/app';
 import type { LayoutNode } from '@flying/layout';
 import type { Renderer } from '@flying/renderer';
 import type { ValidColor } from '@flying/types';
-import { clamp } from '@utility/common';
-import type { ColorStop } from '@/flying/widget/progress/types';
 import {
   Palette,
   ProgressValueType,
@@ -14,6 +13,7 @@ import {
   type ViewStyle,
   type WidgetDescriptor,
 } from '@flying/widget';
+import { clamp } from '@utility/common';
 import type {
   PaintBackgroundOptions,
   PaintBorderOptions,
@@ -124,39 +124,46 @@ export function resolveWidgetCheckedState(options: {
 }): boolean {
   const { widget, layout, ctx } = options;
 
-  if (widget.type === WidgetType.Radio) {
-    const radioProps = widget.props as RadioProps;
+  switch (widget.type) {
+    case WidgetType.Radio: {
+      const radioProps = widget.props as RadioProps;
 
-    if (radioProps.selected !== undefined) {
-      return radioProps.selected;
-    } else if (radioProps.name !== undefined) {
-      const current = ctx.stateStore.stateForByName<string>({
-        name: radioProps.name,
-        initial: radioProps.groupDefaultValue ?? '',
-      });
+      if (radioProps.selected !== undefined) {
+        return radioProps.selected;
+      } else if (radioProps.name !== undefined) {
+        const current = ctx.stateStore.stateForByName<string>({
+          name: radioProps.name,
+          initial: radioProps.groupDefaultValue ?? '',
+        });
 
-      return current === radioProps.value;
+        return current === radioProps.value;
+      }
+      break;
     }
-  } else if (widget.type === WidgetType.Checkbox) {
-    const cbProps = widget.props as CheckboxProps;
 
-    return (
-      cbProps.value ??
-      ctx.stateStore.stateFor<boolean>({
-        stableId: layout.stableId,
-        initial: cbProps.defaultValue ?? false,
-      })
-    );
-  } else if (widget.type === WidgetType.Toggle) {
-    const toggleProps = widget.props as ToggleProps;
+    case WidgetType.Checkbox: {
+      const cbProps = widget.props as CheckboxProps;
 
-    return (
-      toggleProps.value ??
-      ctx.stateStore.stateFor<boolean>({
-        stableId: layout.stableId,
-        initial: toggleProps.defaultValue ?? false,
-      })
-    );
+      return (
+        cbProps.value ??
+        ctx.stateStore.stateFor<boolean>({
+          stableId: layout.stableId,
+          initial: cbProps.defaultValue ?? false,
+        })
+      );
+    }
+
+    case WidgetType.Toggle: {
+      const toggleProps = widget.props as ToggleProps;
+
+      return (
+        toggleProps.value ??
+        ctx.stateStore.stateFor<boolean>({
+          stableId: layout.stableId,
+          initial: toggleProps.defaultValue ?? false,
+        })
+      );
+    }
   }
 
   return false;

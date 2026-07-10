@@ -1,14 +1,14 @@
 import type { Window } from '@flying/app';
 import { valueToRatio } from '@flying/utility/common';
 import type { SliderBarProps } from '@flying/widget';
-import { Metrics, Palette, ProgressBarOrientation } from '@flying/widget';
+import { Palette, ProgressBarOrientation } from '@flying/widget';
 import { HANDLE_SIZE, TRACK_THICKNESS } from '@flying/widget/slider/constant';
 import { makeSliderState } from '@flying/widget/slider/state';
+import { paintSliderHandle } from './handle';
 import { paintInlineValueLabel } from '../text';
 import type { SubMarkPaintOptions } from '../types';
 import {
   paintBackground,
-  paintBorder,
   resolveFillColorClamped,
   resolveStyle,
 } from '../utility';
@@ -112,31 +112,11 @@ export function paintSlider(window: Window, options: SubMarkPaintOptions) {
     renderer,
   });
 
-  paintBorder(window, {
+  paintSliderHandle(window, {
+    renderer,
     x: handleX,
     y: handleY,
-    width: HANDLE_SIZE,
-    height: HANDLE_SIZE,
-    style: {
-      borderWidth: Metrics.borderWidth,
-      borderColor: Palette.border,
-      borderRadius: HANDLE_SIZE / 2,
-      ...handle,
-    },
-    renderer,
-  });
-
-  paintBackground(window, {
-    x: handleX,
-    y: handleY,
-    width: HANDLE_SIZE,
-    height: HANDLE_SIZE,
-    style: {
-      backgroundColor: Palette.surface,
-      borderRadius: HANDLE_SIZE / 2,
-      ...handle,
-    },
-    renderer,
+    handle,
   });
 
   paintInlineValueLabel(window, {

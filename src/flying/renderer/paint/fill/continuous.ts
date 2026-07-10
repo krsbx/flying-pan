@@ -2,7 +2,7 @@ import type { Window } from '@flying/app';
 import type { Renderer } from '@flying/renderer';
 import type { ValidColor } from '@flying/types';
 import { Palette, type ViewStyle } from '@flying/widget';
-import { paintBackground, paintBorder } from '../../utility';
+import { paintBackground, paintBorder } from '../utility';
 
 interface ContinuousFillOptions {
   renderer: Renderer;
