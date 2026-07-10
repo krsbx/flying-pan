@@ -1,7 +1,5 @@
-import { CStruct } from '@cstruct';
 import { FVector2 } from '@vectors';
 import { AlignedQuad } from './aligned-quad';
-import { BakedChar } from './baked-char';
 import { BaseFontAtlas } from './base-font-atlas';
 import { ATLAS_HEIGHT, ATLAS_WIDTH, FIRST_CHAR, NUM_CHARS } from './constant';
 import type {
@@ -15,11 +13,7 @@ import type {
 export class FontAtlas extends BaseFontAtlas {
   public override measureText(options: MeasureTextOptions): MeasureTextResult {
     const scale = options.fontSize ? options.fontSize / this.fontSize : 1;
-    const bakedChars = CStruct.readArrayLazy(
-      BakedChar,
-      this.bakedChars.$address,
-      NUM_CHARS
-    );
+    const bakedChars = this.bakedCharsArray;
 
     const lines = options.text.split('\n');
     const letterSpacing = options.letterSpacing ?? 0;
@@ -56,11 +50,7 @@ export class FontAtlas extends BaseFontAtlas {
     if (text.length === 0 || x <= 0) return 0;
 
     const scale = fontSize ? fontSize / this.fontSize : 1;
-    const bakedChars = CStruct.readArrayLazy(
-      BakedChar,
-      this.bakedChars.$address,
-      NUM_CHARS
-    );
+    const bakedChars = this.bakedCharsArray;
 
     let running = 0;
 

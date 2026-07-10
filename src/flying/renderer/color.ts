@@ -17,7 +17,24 @@ export const Color = {
 
 export type Color = keyof typeof Color;
 
+const colorCache = new Map<string, RGBA>();
+const COLOR_CACHE_CAP = 256;
+
 export function parseColor(color: string): RGBA {
+  const cached = colorCache.get(color);
+  if (cached) return cached;
+
+  const result = resolveColor(color);
+
+  if (colorCache.size >= COLOR_CACHE_CAP) {
+    colorCache.clear();
+  }
+
+  colorCache.set(color, result);
+  return result;
+}
+
+function resolveColor(color: string): RGBA {
   // #RGB
   if (/^#[0-9a-fA-F]{3}$/.test(color)) {
     const hex = color.slice(1);

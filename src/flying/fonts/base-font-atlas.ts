@@ -38,6 +38,7 @@ export abstract class BaseFontAtlas implements FontAtlasContract {
   public readonly fontSize: number;
   protected truetype: TrueType;
   protected bakedChars: CStruct;
+  protected bakedCharsArray: readonly BakedChar[];
   protected gl: GLFW;
   protected _textureId: number;
   protected ATLAS_SIZE: number;
@@ -51,6 +52,7 @@ export abstract class BaseFontAtlas implements FontAtlasContract {
     this.fontSize = options.fontSize;
     this.truetype = new TrueType(options.truetypeLibPath);
     this.bakedChars = new CStruct(NUM_CHARS * BAKED_CHAR_SIZE);
+    this.bakedCharsArray = [];
     this.gl = options.gl;
     this._textureId = 0;
     this.ATLAS_SIZE = ATLAS_WIDTH * ATLAS_HEIGHT;
@@ -171,7 +173,7 @@ export abstract class BaseFontAtlas implements FontAtlasContract {
   public abstract charIndexAtX(options: CharIndexAtXOptions): number;
 
   protected computeVerticalMetrics(): void {
-    const bakedChars = CStruct.readArrayLazy(
+    this.bakedCharsArray = CStruct.readArrayLazy(
       BakedChar,
       this.bakedChars.$address,
       NUM_CHARS
@@ -180,7 +182,7 @@ export abstract class BaseFontAtlas implements FontAtlasContract {
     let minTop = 0;
     let maxBottom = 0;
 
-    for (const b of bakedChars) {
+    for (const b of this.bakedCharsArray) {
       const atlasHeight = b.y1 - b.y0;
 
       if (atlasHeight <= 0) continue; // no glyph (space, etc.)
