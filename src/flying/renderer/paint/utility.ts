@@ -14,6 +14,7 @@ import {
   type WidgetDescriptor,
 } from '@flying/widget';
 import { clamp } from '@utility/common';
+import { resolvedStyleCache } from './constant';
 import type {
   PaintBackgroundOptions,
   PaintBorderOptions,
@@ -105,6 +106,25 @@ export function resolveStyle(options: ResolveStyleOptions): ViewStyle {
   )
     return style;
 
+  let mask = 0;
+  if (hovered) mask |= 1;
+  if (focused) mask |= 2;
+  if (pressed) mask |= 4;
+  if (checked) mask |= 8;
+  if (disabled) mask |= 16;
+
+  let perStyle = resolvedStyleCache.get(style);
+
+  if (perStyle) {
+    const cached = perStyle.get(mask);
+
+    if (cached) return cached;
+  } else {
+    perStyle = new Map();
+
+    resolvedStyleCache.set(style, perStyle);
+  }
+
   const { _hover, _focus, _active, _checked, _disabled, ...base } = style;
   let resolved: ViewStyle = base;
 
@@ -113,6 +133,8 @@ export function resolveStyle(options: ResolveStyleOptions): ViewStyle {
   if (pressed && _active) resolved = { ...resolved, ..._active };
   if (checked && _checked) resolved = { ...resolved, ..._checked };
   if (disabled && _disabled) resolved = { ...resolved, ..._disabled };
+
+  perStyle.set(mask, resolved);
 
   return resolved;
 }
