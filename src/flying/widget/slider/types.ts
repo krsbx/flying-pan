@@ -1,4 +1,4 @@
-import type { ProgressValueType } from '../constant';
+import type { ProgressValueType, RangeHandle } from '../constant';
 import type { ColorStop } from '../progress/types';
 import type { TextStyle, ViewStyle } from '../styles';
 
@@ -55,4 +55,23 @@ export interface CircularGeometry {
   direction: 1 | -1;
   min: number;
   max: number;
+}
+
+export interface RangeSliderProps extends Omit<
+  SliderProps,
+  'value' | 'defaultValue' | 'onChange'
+> {
+  /** Controlled [start, end] range. */
+  value?: [number, number];
+
+  /** Uncontrolled initial range. */
+  defaultValue?: [number, number];
+
+  onChange?: (value: [number, number]) => void;
+}
+
+export interface RangeSliderState {
+  start: number;
+  end: number;
+  activeHandle: RangeHandle;
 }

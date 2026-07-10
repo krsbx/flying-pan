@@ -147,3 +147,10 @@ export const GradientType = {
 } as const;
 
 export type GradientType = (typeof GradientType)[keyof typeof GradientType];
+
+export const RangeHandle = {
+  Start: 'start',
+  End: 'end',
+} as const;
+
+export type RangeHandle = (typeof RangeHandle)[keyof typeof RangeHandle];

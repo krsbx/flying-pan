@@ -11,7 +11,7 @@ import { paintImage } from './image';
 import { paintMeter } from './meter';
 import { paintCircularProgress, paintProgressBar } from './progress';
 import { paintRadio } from './radio';
-import { paintCircularSlider, paintSlider } from './slider';
+import { paintCircularSlider, paintRangeSlider, paintSlider } from './slider';
 import { paintText } from './text';
 import { paintTextInput } from './text/input';
 import { paintToggle } from './toggle';
@@ -152,6 +152,21 @@ export function paint(window: Window, options: PaintOptions) {
 
     case WidgetType.CircularSlider: {
       paintCircularSlider(window, {
+        ctx,
+        layout,
+        renderer,
+        style,
+        checked,
+        hovered,
+        focused,
+        pressed,
+        disabled,
+      });
+      break;
+    }
+
+    case WidgetType.RangeSlider: {
+      paintRangeSlider(window, {
         ctx,
         layout,
         renderer,

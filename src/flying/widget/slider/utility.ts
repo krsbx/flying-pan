@@ -1,3 +1,4 @@
+import type { Coordinate2D } from '@flying/types';
 import { CircularProgressDirection } from '../constant';
 import type { CircularSliderProps } from './circular';
 import { DEFAULT_START_ANGLE, DEFAULT_SWEEP, HANDLE_SIZE } from './constant';
@@ -72,4 +73,46 @@ export function pointerToAngleValue(
   const rawValue = min + ratio * (max - min);
 
   return step ? Math.round(rawValue / step) * step : rawValue;
+}
+
+export function isOnBarHandle(options: {
+  position: Coordinate2D;
+  node: { x: number; y: number; width: number; height: number };
+  ratio: number;
+  isVertical: boolean;
+}): boolean {
+  const { position, node, ratio, isVertical } = options;
+  const hx = isVertical
+    ? node.x + (node.width - HANDLE_SIZE) / 2
+    : node.x + ratio * (node.width - HANDLE_SIZE);
+  const hy = isVertical
+    ? node.y + (1 - ratio) * (node.height - HANDLE_SIZE)
+    : node.y + (node.height - HANDLE_SIZE) / 2;
+
+  return (
+    position.x >= hx &&
+    position.x <= hx + HANDLE_SIZE &&
+    position.y >= hy &&
+    position.y <= hy + HANDLE_SIZE
+  );
+}
+
+export function isOnCircularHandle(options: {
+  position: Coordinate2D;
+  geo: CircularGeometry;
+  value: number;
+  size: number;
+  thickness: number;
+}): boolean {
+  const { position, geo, value, size, thickness } = options;
+  const ratio = geo.max > geo.min ? (value - geo.min) / (geo.max - geo.min) : 0;
+  const handleAngle = geo.startAngle + geo.direction * geo.sweep * ratio;
+  const radius = size / 2;
+  const innerRadius = radius * (1 - thickness);
+  const midRadius = (radius + innerRadius) / 2;
+  const handleCx = geo.cx + Math.cos(handleAngle) * midRadius;
+  const handleCy = geo.cy + Math.sin(handleAngle) * midRadius;
+  const dist = Math.hypot(position.x - handleCx, position.y - handleCy);
+
+  return dist <= HANDLE_SIZE / 2;
 }
