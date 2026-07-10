@@ -1,5 +1,5 @@
 import type { InteractionProps } from '@flying/interactions';
-import { CircularSliderDirection, WidgetType } from '../constant';
+import { CircularProgressDirection, WidgetType } from '../constant';
 import type { WidgetDescriptor, WidgetProps } from '../styles';
 import { Metrics, Palette } from '../styles';
 import {
@@ -31,7 +31,7 @@ export interface CircularSliderProps
   sweep?: number;
 
   /** Rotation direction. Default clockwise. */
-  direction?: CircularSliderDirection;
+  direction?: CircularProgressDirection;
 }
 
 export function CircularSlider(props: CircularSliderProps): WidgetDescriptor {
@@ -83,7 +83,7 @@ export function CircularSlider(props: CircularSliderProps): WidgetDescriptor {
     thickness: thickness ?? DEFAULT_THICKNESS,
     startAngle: startAngle ?? DEFAULT_START_ANGLE,
     sweep: sweep ?? DEFAULT_SWEEP,
-    direction: direction ?? CircularSliderDirection.Clockwise,
+    direction: direction ?? CircularProgressDirection.Clockwise,
   };
 
   const clickHandler = createCircularSliderClickHandler(internalProps);

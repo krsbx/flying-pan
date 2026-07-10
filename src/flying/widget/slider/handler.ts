@@ -14,7 +14,7 @@ import {
   GLFW_MOD_SHIFT,
 } from '@glfw/enums';
 import { clamp } from '@utility/common';
-import { SliderOrientation } from '../constant';
+import { ProgressBarOrientation } from '../constant';
 import type { SliderBarProps } from './bar';
 import type { CircularSliderProps } from './circular';
 import { makeSliderState } from './state';
@@ -34,7 +34,7 @@ export function createSliderBarClickHandler(
     const { node, stateStore, position } = event;
     const min = props.min ?? 0;
     const max = props.max ?? 100;
-    const isVertical = props.orientation === SliderOrientation.Vertical;
+    const isVertical = props.orientation === ProgressBarOrientation.Vertical;
 
     const raw = pointerToValue({
       coord: isVertical ? position.y : position.x,

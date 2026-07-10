@@ -1,5 +1,5 @@
 import type { InteractionProps } from '@flying/interactions';
-import { SliderOrientation, WidgetType } from '../constant';
+import { ProgressBarOrientation, WidgetType } from '../constant';
 import type { WidgetDescriptor, WidgetProps } from '../styles';
 import { Metrics, Palette } from '../styles';
 import { HANDLE_SIZE, TRACK_THICKNESS } from './constant';
@@ -9,7 +9,7 @@ import type { SliderProps } from './types';
 
 export interface SliderBarProps
   extends SliderProps, WidgetProps, InteractionProps {
-  orientation?: SliderOrientation;
+  orientation?: ProgressBarOrientation;
 }
 
 export function SliderBar(props: SliderBarProps): WidgetDescriptor {
@@ -58,7 +58,7 @@ export function SliderBar(props: SliderBarProps): WidgetDescriptor {
   const clickHandler = createSliderBarClickHandler(internalProps);
   const keyHandler = createSliderKeyHandler(internalProps);
 
-  const isHorizontal = orientation === SliderOrientation.Horizontal;
+  const isHorizontal = orientation === ProgressBarOrientation.Horizontal;
 
   return {
     type: WidgetType.SliderBar,

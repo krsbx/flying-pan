@@ -1,7 +1,7 @@
 import type { Window } from '@flying/app';
 import { valueToRatio } from '@flying/utility/common';
 import type { SliderBarProps } from '@flying/widget';
-import { Metrics, Palette, SliderOrientation } from '@flying/widget';
+import { Metrics, Palette, ProgressBarOrientation } from '@flying/widget';
 import { HANDLE_SIZE, TRACK_THICKNESS } from '@flying/widget/slider/constant';
 import { makeSliderState } from '@flying/widget/slider/state';
 import { paintInlineValueLabel } from '../text';
@@ -36,7 +36,7 @@ export function paintSlider(window: Window, options: SubMarkPaintOptions) {
       initial: makeSliderState(props),
     });
   const ratio = valueToRatio({ value, min, max });
-  const isVertical = props.orientation === SliderOrientation.Vertical;
+  const isVertical = props.orientation === ProgressBarOrientation.Vertical;
 
   const trackX = isVertical ? x + (width - TRACK_THICKNESS) / 2 : x;
   const trackY = isVertical ? y : y + (height - TRACK_THICKNESS) / 2;

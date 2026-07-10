@@ -1,4 +1,4 @@
-import { CircularSliderDirection } from '../constant';
+import { CircularProgressDirection } from '../constant';
 import type { CircularSliderProps } from './circular';
 import { DEFAULT_START_ANGLE, DEFAULT_SWEEP, HANDLE_SIZE } from './constant';
 import type { CircularGeometry } from './types';
@@ -35,7 +35,7 @@ export function resolveGeometry(
     startAngle: props.startAngle ?? DEFAULT_START_ANGLE,
     sweep: props.sweep ?? DEFAULT_SWEEP,
     direction:
-      props.direction === CircularSliderDirection.CounterClockwise ? -1 : 1,
+      props.direction === CircularProgressDirection.CounterClockwise ? -1 : 1,
     min: props.min ?? 0,
     max: props.max ?? 100,
   };

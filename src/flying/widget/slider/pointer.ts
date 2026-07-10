@@ -1,7 +1,7 @@
 import type { PointerEvent, PointerEventHandler } from '@flying/interactions';
 import { GLFW_MOUSE_BUTTON_LEFT } from '@glfw/enums';
 import { clamp } from '@utility/common';
-import { SliderOrientation } from '../constant';
+import { ProgressBarOrientation } from '../constant';
 import type { SliderBarProps } from './bar';
 import type { CircularSliderProps } from './circular';
 import { makeSliderState } from './state';
@@ -15,7 +15,7 @@ export function createSliderBarPointerHandler(props: SliderBarProps): {
   onPointerDown: PointerEventHandler;
   onPointerMove: PointerEventHandler;
 } {
-  const isVertical = props.orientation === SliderOrientation.Vertical;
+  const isVertical = props.orientation === ProgressBarOrientation.Vertical;
   const min = props.min ?? 0;
   const max = props.max ?? 100;
 

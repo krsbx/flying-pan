@@ -1,7 +1,7 @@
 import type { Window } from '@flying/app';
 import { valueToRatio } from '@flying/utility/common';
 import type { CircularSliderProps } from '@flying/widget';
-import { CircularSliderDirection, Metrics, Palette } from '@flying/widget';
+import { CircularProgressDirection, Metrics, Palette } from '@flying/widget';
 import {
   DEFAULT_START_ANGLE,
   DEFAULT_SWEEP,
@@ -50,7 +50,7 @@ export function paintCircularSlider(
   const startAngle = props.startAngle ?? DEFAULT_START_ANGLE;
   const sweep = props.sweep ?? DEFAULT_SWEEP;
   const dirSign =
-    props.direction === CircularSliderDirection.CounterClockwise ? -1 : 1;
+    props.direction === CircularProgressDirection.CounterClockwise ? -1 : 1;
 
   const cx = x + width / 2;
   const cy = y + height / 2;
