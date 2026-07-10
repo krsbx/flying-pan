@@ -14,6 +14,10 @@ export interface PaintContext {
   textureManager: TextureManager | null;
   getStableId: GetStableIdFn;
   stateStore: StateStore;
+  /** Populated by layoutFlex each frame. Cleared before layout. */
+  layoutIndex: Map<number, LayoutNode>;
+  /** Focusable nodes in tree order (tab order). Populated by layoutFlex. */
+  focusableNodes: LayoutNode[];
 }
 
 export interface PaintOptions {

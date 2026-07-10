@@ -61,6 +61,8 @@ export class AppManager {
       getStableId: this.reconciler.getStableId,
       stateStore: this.stateStore,
       interactionManager: this.interaction,
+      layoutIndex: new Map(),
+      focusableNodes: [],
     };
   }
 }

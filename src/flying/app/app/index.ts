@@ -1,4 +1,3 @@
-import { buildLayoutIndex } from '@flying/interactions';
 import { layoutFlex } from '@flying/layout';
 import { paint, Renderer } from '@flying/renderer';
 import { GLFW } from '@glfw';
@@ -129,22 +128,26 @@ export class App {
             next: window.widget,
           });
 
+          const ctx = this.manager.paintContext;
+
+          ctx.layoutIndex.clear();
+          ctx.focusableNodes.length = 0;
+
           const layout = layoutFlex({
             node: window.widget,
             x: 0,
             y: 0,
             availableWidth: window.size.width,
             availableHeight: window.size.height,
-            ctx: this.manager.paintContext,
+            ctx,
           });
-
-          const layoutIndex = buildLayoutIndex(layout);
 
           this.manager.interaction.dispatch({
             stateStore: this.manager.stateStore,
             window,
             layout,
-            layoutIndex,
+            layoutIndex: ctx.layoutIndex,
+            focusableNodes: ctx.focusableNodes,
             treeChanged: this.manager.reconciler.changed,
           });
 

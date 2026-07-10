@@ -30,18 +30,29 @@ export const layoutFlex: LayoutFlexFn = function (options) {
 
   const gap = resolveSize(style.gap, contentWidth);
 
+  const stableId = ctx.getStableId(node);
   const children: LayoutNode[] = [];
 
+  // Create node early and register before laying out children (pre-order).
+  // This folds layoutIndex + focusable collection into the layout pass.
+  const layoutNode: LayoutNode = {
+    widget: node,
+    stableId,
+    x,
+    y,
+    width: contentWidth + padding.left + padding.right,
+    height: contentHeight + padding.top + padding.bottom,
+    children,
+  };
+
+  ctx.layoutIndex.set(stableId, layoutNode);
+
+  if (node.style?.focusable === true) {
+    ctx.focusableNodes.push(layoutNode);
+  }
+
   if (!node.children || node.children.length === 0) {
-    return {
-      widget: node,
-      stableId: ctx.getStableId(node),
-      x,
-      y,
-      width: contentWidth + padding.left + padding.right,
-      height: contentHeight + padding.top + padding.bottom,
-      children,
-    };
+    return layoutNode;
   }
 
   const { flow, absolute } = measureChildsComponent({
@@ -77,13 +88,5 @@ export const layoutFlex: LayoutFlexFn = function (options) {
     positionAbsolute({ m, ...lineOptions }, layoutFlex);
   }
 
-  return {
-    widget: node,
-    stableId: ctx.getStableId(node),
-    x,
-    y,
-    width: contentWidth + padding.left + padding.right,
-    height: contentHeight + padding.top + padding.bottom,
-    children,
-  };
+  return layoutNode;
 };

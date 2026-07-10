@@ -33,7 +33,7 @@ export class Reconciler implements GetStableId {
     }
 
     this._changed = true;
-    this.stableIdByWidget = new Map();
+    this.stableIdByWidget.clear();
 
     const result = this.reconcileNode({
       prev: this.prevTree,
@@ -54,7 +54,7 @@ export class Reconciler implements GetStableId {
     this.prevTree = null;
     this.nextId = 1;
     this._changed = false;
-    this.stableIdByWidget = new Map();
+    this.stableIdByWidget.clear();
   }
 
   public getStableId = (widget: WidgetDescriptor): number => {

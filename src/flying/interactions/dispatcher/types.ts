@@ -12,6 +12,7 @@ export interface DispatchOptions {
   window: Window;
   layout: LayoutNode;
   layoutIndex: Map<number, LayoutNode>;
+  focusableNodes: LayoutNode[];
   stateStore: StateStore;
   treeChanged: boolean;
 }

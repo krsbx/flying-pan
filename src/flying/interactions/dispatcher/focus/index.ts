@@ -33,12 +33,11 @@ export class FocusDispatcher extends BaseDispatcher {
   }
 
   public dispatch(options: DispatchOptions): void {
-    const { window, layout, layoutIndex, stateStore } = options;
+    const { window, layoutIndex, focusableNodes, stateStore } = options;
     const input = this.input;
 
-    // 1. Collect focusable nodes (tree order = tab order)
-    this.focusableNodes.length = 0;
-    this.collectFocusable(layout);
+    // 1. Read focusable nodes collected during layout (tree order = tab order)
+    this.focusableNodes = focusableNodes;
 
     // 2. Validate current focus — blur if unmounted or no longer focusable
     if (this._focusedStableId) {
@@ -295,16 +294,6 @@ export class FocusDispatcher extends BaseDispatcher {
           input: this.input,
         });
       }
-    }
-  }
-
-  protected collectFocusable(node: LayoutNode): void {
-    if (node.widget.style?.focusable === true) {
-      this.focusableNodes.push(node);
-    }
-
-    for (const child of node.children) {
-      this.collectFocusable(child);
     }
   }
 
