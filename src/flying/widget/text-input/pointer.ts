@@ -64,6 +64,8 @@ export function createTextInputPointerHandler(props: TextInputProps): {
         stableId: node.stableId,
         value: { ...state, caret, anchor: caret, scrollX },
       });
+
+      event.capturePointer?.();
     },
     onPointerMove: (event: PointerEvent) => {
       if (!event.input.isMouseDown(GLFW_MOUSE_BUTTON_LEFT)) return;
