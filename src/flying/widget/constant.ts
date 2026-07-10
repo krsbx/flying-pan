@@ -61,6 +61,7 @@ export const WidgetType = {
   ProgressBar: 'ProgressBar',
   CircularProgress: 'CircularProgress',
   SliderBar: 'SliderBar',
+  CircularSlider: 'CircularSlider',
 } as const;
 
 export type WidgetType = (typeof WidgetType)[keyof typeof WidgetType];
@@ -145,6 +146,14 @@ export const SliderOrientation = {
 
 export type SliderOrientation =
   (typeof SliderOrientation)[keyof typeof SliderOrientation];
+
+export const CircularSliderDirection = {
+  Clockwise: 'clockwise',
+  CounterClockwise: 'counterClockwise',
+} as const;
+
+export type CircularSliderDirection =
+  (typeof CircularSliderDirection)[keyof typeof CircularSliderDirection];
 
 export const GradientType = {
   Linear: 'linear',

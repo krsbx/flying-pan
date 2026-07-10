@@ -1,10 +1,15 @@
-import { GLFW_MOUSE_BUTTON_LEFT } from '@/library/glfw/enums';
 import type { PointerEvent, PointerEventHandler } from '@flying/interactions';
+import { GLFW_MOUSE_BUTTON_LEFT } from '@glfw/enums';
 import { clamp } from '@utility/common';
-import type { SliderBarProps } from '.';
 import { SliderOrientation } from '../constant';
+import type { SliderBarProps } from './bar';
+import type { CircularSliderProps } from './circular';
 import { makeSliderState } from './state';
-import { pointerToValue } from './utility';
+import {
+  pointerToAngleValue,
+  pointerToValue,
+  resolveGeometry,
+} from './utility';
 
 export function createSliderBarPointerHandler(props: SliderBarProps): {
   onPointerDown: PointerEventHandler;
@@ -38,6 +43,59 @@ export function createSliderBarPointerHandler(props: SliderBarProps): {
     }
 
     // Uncontrolled — persist + notify, skipping no-op writes.
+    const current = stateStore.stateFor<number>({
+      stableId: node.stableId,
+      initial: makeSliderState(props),
+    });
+
+    if (next === current) return;
+
+    stateStore.setState({ stableId: node.stableId, value: next });
+    props.onChange?.(next);
+  }
+
+  return {
+    onPointerDown: (event) => applyValue(event),
+    onPointerMove: (event) => {
+      if (!event.input.isMouseDown(GLFW_MOUSE_BUTTON_LEFT)) return;
+
+      applyValue(event);
+    },
+  };
+}
+
+export function createCircularSliderPointerHandler(
+  props: CircularSliderProps
+): {
+  onPointerDown: PointerEventHandler;
+  onPointerMove: PointerEventHandler;
+} {
+  function applyValue(event: PointerEvent): void {
+    if (props.disabled) return;
+
+    const { node, stateStore, position } = event;
+    const geo = resolveGeometry(props, node);
+
+    const raw = pointerToAngleValue({
+      pointerX: position.x,
+      pointerY: position.y,
+      cx: geo.cx,
+      cy: geo.cy,
+      startAngle: geo.startAngle,
+      sweep: geo.sweep,
+      direction: geo.direction,
+      min: geo.min,
+      max: geo.max,
+      step: props.step,
+    });
+    const next = clamp({ value: raw, min: geo.min, max: geo.max });
+
+    if (props.value !== undefined) {
+      if (next === props.value) return;
+      props.onChange?.(next);
+      return;
+    }
+
     const current = stateStore.stateFor<number>({
       stableId: node.stableId,
       initial: makeSliderState(props),

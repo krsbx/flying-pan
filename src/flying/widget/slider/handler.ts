@@ -14,10 +14,16 @@ import {
   GLFW_MOD_SHIFT,
 } from '@glfw/enums';
 import { clamp } from '@utility/common';
-import type { SliderBarProps } from '.';
 import { SliderOrientation } from '../constant';
+import type { SliderBarProps } from './bar';
+import type { CircularSliderProps } from './circular';
 import { makeSliderState } from './state';
-import { pointerToValue } from './utility';
+import type { SliderProps } from './types';
+import {
+  pointerToAngleValue,
+  pointerToValue,
+  resolveGeometry,
+} from './utility';
 
 export function createSliderBarClickHandler(
   props: SliderBarProps
@@ -58,9 +64,7 @@ export function createSliderBarClickHandler(
   };
 }
 
-export function createSliderBarKeyHandler(
-  props: SliderBarProps
-): KeyEventHandler {
+export function createSliderKeyHandler(props: SliderProps): KeyEventHandler {
   return (event: KeyEvent) => {
     if (props.disabled) return;
 
@@ -115,5 +119,45 @@ export function createSliderBarKeyHandler(
       stateStore.setState({ stableId: node.stableId, value: next });
       props.onChange?.(next);
     }
+  };
+}
+
+export function createCircularSliderClickHandler(
+  props: CircularSliderProps
+): ClickEventHandler {
+  return (event: ClickEvent) => {
+    if (props.disabled) return;
+
+    const { node, stateStore, position } = event;
+    const geo = resolveGeometry(props, node);
+
+    const raw = pointerToAngleValue({
+      pointerX: position.x,
+      pointerY: position.y,
+      cx: geo.cx,
+      cy: geo.cy,
+      startAngle: geo.startAngle,
+      sweep: geo.sweep,
+      direction: geo.direction,
+      min: geo.min,
+      max: geo.max,
+      step: props.step,
+    });
+    const next = clamp({ value: raw, min: geo.min, max: geo.max });
+
+    if (props.value !== undefined) {
+      props.onChange?.(next);
+      return;
+    }
+
+    const current = stateStore.stateFor<number>({
+      stableId: node.stableId,
+      initial: makeSliderState(props),
+    });
+
+    if (next === current) return;
+
+    stateStore.setState({ stableId: node.stableId, value: next });
+    props.onChange?.(next);
   };
 }

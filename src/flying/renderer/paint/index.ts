@@ -10,7 +10,7 @@ import { paintCheckbox } from './checkbox';
 import { paintImage } from './image';
 import { paintCircularProgress, paintProgressBar } from './progress';
 import { paintRadio } from './radio';
-import { paintSlider } from './slider';
+import { paintCircularSlider, paintSlider } from './slider';
 import { paintText } from './text';
 import { paintTextInput } from './text/input';
 import { paintToggle } from './toggle';
@@ -136,6 +136,21 @@ export function paint(window: Window, options: PaintOptions) {
 
     case WidgetType.SliderBar: {
       paintSlider(window, {
+        ctx,
+        layout,
+        renderer,
+        style,
+        checked,
+        hovered,
+        focused,
+        pressed,
+        disabled,
+      });
+      break;
+    }
+
+    case WidgetType.CircularSlider: {
+      paintCircularSlider(window, {
         ctx,
         layout,
         renderer,
