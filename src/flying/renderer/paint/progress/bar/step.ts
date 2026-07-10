@@ -4,7 +4,7 @@ import type { Renderer } from '@flying/renderer';
 import type { ViewStyle } from '@flying/widget';
 import { Palette } from '@flying/widget';
 import { paintBackground, paintBorder } from '../../utility';
-import { resolveFillColorClamped } from '../utility';
+import { resolveFillColorClamped } from '../../utility';
 
 export interface SteppedFillOptions {
   renderer: Renderer;

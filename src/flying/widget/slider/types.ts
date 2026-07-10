@@ -1,4 +1,5 @@
 import type { ProgressValueType } from '../constant';
+import type { ColorStop } from '../progress/types';
 import type { TextStyle, ViewStyle } from '../styles';
 
 export interface SliderProps {
@@ -13,6 +14,12 @@ export interface SliderProps {
   step?: number;
   onChange?: (value: number) => void;
   disabled?: boolean;
+
+  /**
+   * Value-driven fill color. The stop with the highest `at` where
+   * `ratio >= at` wins. Same semantics as `ProgressBarProps.colorStops`.
+   */
+  colorStops?: ColorStop[];
 
   /** Optional text rendered centered on the bar. */
   label?: string;

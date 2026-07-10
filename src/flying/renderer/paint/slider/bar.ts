@@ -4,10 +4,14 @@ import type { SliderBarProps } from '@flying/widget';
 import { Metrics, Palette, SliderOrientation } from '@flying/widget';
 import { HANDLE_SIZE, TRACK_THICKNESS } from '@flying/widget/slider/constant';
 import { makeSliderState } from '@flying/widget/slider/state';
-import { paintInlineLabel } from '../progress/label';
-import { formatValueLabel } from '../progress/utility';
+import { paintInlineValueLabel } from '../text';
 import type { SubMarkPaintOptions } from '../types';
-import { paintBackground, paintBorder, resolveStyle } from '../utility';
+import {
+  paintBackground,
+  paintBorder,
+  resolveFillColorClamped,
+  resolveStyle,
+} from '../utility';
 
 export function paintSlider(window: Window, options: SubMarkPaintOptions) {
   const {
@@ -89,15 +93,21 @@ export function paintSlider(window: Window, options: SubMarkPaintOptions) {
   const filledW = isVertical ? TRACK_THICKNESS : handleX - x + HANDLE_SIZE / 2;
   const filledH = isVertical ? y + height - filledY : TRACK_THICKNESS;
 
+  const filledColor = resolveFillColorClamped({
+    ratio,
+    fillStyle: filled,
+    colorStops: props.colorStops,
+  });
+
   paintBackground(window, {
     x: filledX,
     y: filledY,
     width: filledW,
     height: filledH,
     style: {
-      backgroundColor: Palette.accent,
       borderRadius: TRACK_THICKNESS / 2,
       ...filled,
+      backgroundColor: filledColor,
     },
     renderer,
   });
@@ -129,26 +139,19 @@ export function paintSlider(window: Window, options: SubMarkPaintOptions) {
     renderer,
   });
 
-  const labelText =
-    props.label ??
-    formatValueLabel({
-      value,
-      min,
-      max,
-      format: props.showValue,
-    });
-
-  if (labelText && props.font) {
-    paintInlineLabel(window, {
-      renderer,
-      ctx,
-      x,
-      y,
-      width,
-      height,
-      label: labelText,
-      font: props.font,
-      style: props.labelStyle ?? {},
-    });
-  }
+  paintInlineValueLabel(window, {
+    renderer,
+    ctx,
+    x,
+    y,
+    width,
+    height,
+    label: props.label,
+    font: props.font,
+    labelStyle: props.labelStyle,
+    value,
+    min,
+    max,
+    showValue: props.showValue,
+  });
 }

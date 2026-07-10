@@ -3,8 +3,8 @@ import { valueToRatio } from '@flying/utility/common';
 import type { ProgressBarProps } from '@flying/widget';
 import { ProgressBarOrientation, ProgressDirection } from '@flying/widget';
 import type { PaintOptions } from '../../types';
-import { paintInlineLabel } from '../label';
-import { formatValueLabel, resolveFillColorClamped } from '../utility';
+import { paintInlineValueLabel } from '../../text';
+import { resolveFillColorClamped } from '../../utility';
 import { paintContinuousFill } from './continuous';
 import { paintSteppedFill } from './step';
 
@@ -103,27 +103,19 @@ export function paintProgressBar(window: Window, options: PaintOptions): void {
     });
   }
 
-  // Explicit label wins over `showValue`.
-  const labelText =
-    props.label ??
-    formatValueLabel({
-      value: props.value,
-      min: props.min,
-      max: props.max,
-      format: props.showValue,
-    });
-
-  if (labelText && props.font) {
-    paintInlineLabel(window, {
-      renderer,
-      ctx,
-      x,
-      y,
-      width,
-      height,
-      label: labelText,
-      font: props.font,
-      style: props.labelStyle ?? {},
-    });
-  }
+  paintInlineValueLabel(window, {
+    renderer,
+    ctx,
+    x,
+    y,
+    width,
+    height,
+    label: props.label,
+    font: props.font,
+    labelStyle: props.labelStyle,
+    value: props.value,
+    min: props.min,
+    max: props.max,
+    showValue: props.showValue,
+  });
 }

@@ -1,4 +1,4 @@
-import { formatValueLabel } from '@flying/renderer/paint/progress/utility';
+import { formatValueLabel } from '@flying/renderer/paint/utility';
 import { ROOT_FONT_SIZE, type ProgressBarProps } from '@flying/widget';
 import type { ResolveWidgetSizeOptions } from '../types';
 

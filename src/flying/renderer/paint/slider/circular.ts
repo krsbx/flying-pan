@@ -9,10 +9,15 @@ import {
   HANDLE_SIZE,
 } from '@flying/widget/slider/constant';
 import { makeSliderState } from '@flying/widget/slider/state';
-import { paintInlineLabel } from '../progress/label';
-import { formatValueLabel } from '../progress/utility';
+import { paintInlineValueLabel } from '../text';
 import type { SubMarkPaintOptions } from '../types';
-import { paintBackground, paintBorder, resolveStyle } from '../utility';
+import {
+  drawArcSegment,
+  paintBackground,
+  paintBorder,
+  resolveFillColorClamped,
+  resolveStyle,
+} from '../utility';
 
 export function paintCircularSlider(
   window: Window,
@@ -81,51 +86,35 @@ export function paintCircularSlider(
     disabled,
   });
 
-  const drawArcSegment = (
-    segStart: number,
-    segEnd: number,
-    color: string,
-    opacity?: number
-  ) => {
-    if (segStart === segEnd) return;
-
-    if (thickness >= 1) {
-      renderer.drawArc(window, {
-        cx,
-        cy,
-        radius,
-        startAngle: segStart,
-        endAngle: segEnd,
-        color,
-        opacity,
-      });
-    } else {
-      renderer.drawRing(window, {
-        cx,
-        cy,
-        outerRadius: radius,
-        innerRadius,
-        startAngle: segStart,
-        endAngle: segEnd,
-        color,
-        opacity,
-      });
-    }
-  };
-
-  drawArcSegment(
+  drawArcSegment(window, {
+    renderer,
+    cx,
+    cy,
+    radius,
+    innerRadius,
     startAngle,
-    startAngle + dirSign * sweep,
-    track.backgroundColor ?? Palette.surfaceActive,
-    track.opacity
-  );
+    endAngle: startAngle + dirSign * sweep,
+    color: track.backgroundColor ?? Palette.surfaceActive,
+    opacity: track.opacity,
+  });
 
-  drawArcSegment(
+  const filledColor = resolveFillColorClamped({
+    ratio,
+    fillStyle: filled,
+    colorStops: props.colorStops,
+  });
+
+  drawArcSegment(window, {
+    renderer,
+    cx,
+    cy,
+    radius,
+    innerRadius,
     startAngle,
-    handleAngle,
-    filled.backgroundColor ?? Palette.accent,
-    filled.opacity
-  );
+    endAngle: handleAngle,
+    color: filledColor,
+    opacity: filled.opacity,
+  });
 
   const hx = cx + Math.cos(handleAngle) * midRadius;
   const hy = cy + Math.sin(handleAngle) * midRadius;
@@ -159,26 +148,19 @@ export function paintCircularSlider(
     renderer,
   });
 
-  const labelText =
-    props.label ??
-    formatValueLabel({
-      value,
-      min,
-      max,
-      format: props.showValue,
-    });
-
-  if (labelText && props.font) {
-    paintInlineLabel(window, {
-      renderer,
-      ctx,
-      x,
-      y,
-      width,
-      height,
-      label: labelText,
-      font: props.font,
-      style: props.labelStyle ?? {},
-    });
-  }
+  paintInlineValueLabel(window, {
+    renderer,
+    ctx,
+    x,
+    y,
+    width,
+    height,
+    label: props.label,
+    font: props.font,
+    labelStyle: props.labelStyle,
+    value,
+    min,
+    max,
+    showValue: props.showValue,
+  });
 }

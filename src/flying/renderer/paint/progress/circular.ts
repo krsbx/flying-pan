@@ -5,9 +5,9 @@ import {
   Palette,
   type CircularProgressProps,
 } from '@flying/widget';
+import { paintInlineValueLabel } from '../text';
 import type { PaintOptions } from '../types';
-import { paintInlineLabel } from './label';
-import { formatValueLabel, resolveFillColorClamped } from './utility';
+import { drawArcSegment, resolveFillColorClamped } from '../utility';
 
 export function paintCircularProgress(
   window: Window,
@@ -35,38 +35,6 @@ export function paintCircularProgress(
   const thickness = props.thickness ?? 0.1;
   const innerRadius = radius * (1 - thickness);
 
-  const drawArcShape = (
-    arcRatio: number,
-    arcColor: string,
-    arcOpacity?: number
-  ) => {
-    if (arcRatio <= 0) return;
-    const endAngle = startAngle + directionSign * Math.PI * 2 * arcRatio;
-
-    if (thickness >= 1) {
-      renderer.drawArc(window, {
-        cx,
-        cy,
-        radius,
-        startAngle,
-        endAngle,
-        color: arcColor,
-        opacity: arcOpacity,
-      });
-    } else {
-      renderer.drawRing(window, {
-        cx,
-        cy,
-        outerRadius: radius,
-        innerRadius,
-        startAngle,
-        endAngle,
-        color: arcColor,
-        opacity: arcOpacity,
-      });
-    }
-  };
-
   const bufRatio = valueToRatio({
     value: props.buffer ?? 0,
     max: props.max ?? 1,
@@ -80,38 +48,51 @@ export function paintCircularProgress(
       Palette.accent;
 
     const bufferOpacity = props.bufferStyle?.opacity ?? 0.35;
-    drawArcShape(bufRatio, bufferColor, bufferOpacity);
-  }
 
-  const mainColor = props.colorStops
-    ? resolveFillColorClamped({
-        ratio,
-        fillStyle,
-        colorStops: props.colorStops,
-      })
-    : (fillStyle.backgroundColor ?? Palette.accent);
-  drawArcShape(ratio, mainColor, fillStyle.opacity);
-
-  const labelText =
-    props.label ??
-    formatValueLabel({
-      value: props.value,
-      min: props.min,
-      max: props.max,
-      format: props.showValue,
-    });
-
-  if (labelText && props.font) {
-    paintInlineLabel(window, {
+    drawArcSegment(window, {
       renderer,
-      ctx,
-      x,
-      y,
-      width,
-      height,
-      label: labelText,
-      font: props.font,
-      style: props.labelStyle ?? {},
+      cx,
+      cy,
+      radius,
+      innerRadius,
+      startAngle,
+      endAngle: startAngle + directionSign * Math.PI * 2 * bufRatio,
+      color: bufferColor,
+      opacity: bufferOpacity,
     });
   }
+
+  const mainColor = resolveFillColorClamped({
+    ratio,
+    fillStyle,
+    colorStops: props.colorStops,
+  });
+
+  drawArcSegment(window, {
+    renderer,
+    cx,
+    cy,
+    radius,
+    innerRadius,
+    startAngle,
+    endAngle: startAngle + directionSign * Math.PI * 2 * ratio,
+    color: mainColor,
+    opacity: fillStyle.opacity,
+  });
+
+  paintInlineValueLabel(window, {
+    renderer,
+    ctx,
+    x,
+    y,
+    width,
+    height,
+    label: props.label,
+    font: props.font,
+    labelStyle: props.labelStyle,
+    value: props.value,
+    min: props.min,
+    max: props.max,
+    showValue: props.showValue,
+  });
 }
