@@ -14,17 +14,25 @@ export class Reconciler implements GetStableId {
   protected prevTree: ReconciledNode | null;
   protected nextId; // 0 reserved for "not reconciled"
   protected stableIdByWidget: Map<WidgetDescriptor, number>;
+  protected _changed: boolean;
 
   public constructor(stateStore: StateStore) {
     this.stateStore = stateStore;
     this.prevTree = null;
     this.nextId = 1;
     this.stableIdByWidget = new Map();
+    this._changed = false;
   }
 
   public reconcile(options: ReconcileOptions): ReconciledNode {
     const { window, next } = options;
 
+    if (next === this.prevTree?.widget) {
+      this._changed = false;
+      return this.prevTree;
+    }
+
+    this._changed = true;
     this.stableIdByWidget = new Map();
 
     const result = this.reconcileNode({
@@ -38,10 +46,14 @@ export class Reconciler implements GetStableId {
     return result;
   }
 
+  public get changed(): boolean {
+    return this._changed;
+  }
+
   public reset(): void {
     this.prevTree = null;
     this.nextId = 1;
-
+    this._changed = false;
     this.stableIdByWidget = new Map();
   }
 

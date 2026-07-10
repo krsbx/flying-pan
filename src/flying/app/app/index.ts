@@ -145,6 +145,7 @@ export class App {
             window,
             layout,
             layoutIndex,
+            treeChanged: this.manager.reconciler.changed,
           });
 
           paint(window, {

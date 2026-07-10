@@ -13,4 +13,5 @@ export interface DispatchOptions {
   layout: LayoutNode;
   layoutIndex: Map<number, LayoutNode>;
   stateStore: StateStore;
+  treeChanged: boolean;
 }
