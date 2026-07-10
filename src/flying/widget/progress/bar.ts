@@ -1,65 +1,20 @@
-import type { ValidColor } from '@flying/types';
 import {
   PointerEvents,
   ProgressBarOrientation,
   ProgressDirection,
   ProgressType,
-  ProgressValueType,
   WidgetType,
 } from '../constant';
-import {
-  Palette,
-  type TextStyle,
-  type ViewStyle,
-  type WidgetDescriptor,
-} from '../styles';
+import { Palette, type WidgetDescriptor } from '../styles';
+import type { ProgressProps } from './types';
 
-export interface ColorStop {
-  /** Position along the track in [0, 1] (post-clamp ratio). */
-  at: number;
-  color: ValidColor;
-}
-
-export interface ProgressBarProps {
-  value?: number;
-  /**
-   * Optional secondary "buffer" fill rendered behind the main fill
-   * (YouTube/Netflix seek bar pattern). Same units/scale as `value` —
-   * normalized via `min`/`max`. Drawn at lower opacity unless
-   * `bufferStyle.opacity` is set.
-   */
-  buffer?: number;
-  /** Style override for the buffer fill. Defaults to `fillStyle` at 0.35 opacity. */
-  bufferStyle?: ViewStyle;
-  min?: number;
-  max?: number;
+export interface ProgressBarProps extends ProgressProps {
   orientation?: ProgressBarOrientation;
   direction?: ProgressDirection;
-  style?: ViewStyle;
-  fillStyle?: ViewStyle;
-  type?: ProgressType;
   /** When > 1, render the bar as N discrete segments instead of a continuous fill. */
   steps?: number;
   /** Pixel gap between segments in stepped mode. Defaults to 2. */
   stepGap?: number;
-  /**
-   * Value-driven fill color. The stop with the highest `at` where
-   * `ratio >= at` wins (i.e. each stop colors everything below it).
-   * Stops should be sorted ascending by `at`; we sort defensively.
-   */
-  colorStops?: ColorStop[];
-  /** Optional text rendered centered on the bar. */
-  label?: string;
-  /** Required if `label` is being set */
-  font?: string;
-  labelStyle?: TextStyle;
-  /**
-   * Auto-compute the label from the value. Ignored if `label` is also set
-   * (explicit label wins).
-   * - `'percent'` → `"65%"` (ratio × 100, rounded)
-   * - `'fraction'` → `"5/10"` (raw value / max)
-   */
-  showValue?: ProgressValueType;
 }
 
 const DEFAULT_STEP_GAP = 2;

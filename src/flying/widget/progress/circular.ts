@@ -2,28 +2,12 @@ import {
   CircularProgressDirection,
   PointerEvents,
   ProgressType,
-  ProgressValueType,
   WidgetType,
 } from '../constant';
-import {
-  Palette,
-  type TextStyle,
-  type ViewStyle,
-  type WidgetDescriptor,
-} from '../styles';
-import type { ColorStop } from './bar';
+import { Palette, type WidgetDescriptor } from '../styles';
+import type { ProgressProps } from './types';
 
-export interface CircularProgressProps {
-  value?: number;
-  /**
-   * Optional secondary "buffer" arc rendered behind the main arc.
-   * Same units/scale as `value` — normalized via `min`/`max`.
-   */
-  buffer?: number;
-  /** Style override for the buffer arc. Defaults to `fillStyle` at 0.35 opacity. */
-  bufferStyle?: ViewStyle;
-  min?: number;
-  max?: number;
+export interface CircularProgressProps extends ProgressProps {
   /** Diameter in px. Default 48. */
   size?: number;
   /**
@@ -42,25 +26,6 @@ export interface CircularProgressProps {
   startAngle?: number;
   /** Rotation direction. Default `Clockwise`. */
   direction?: CircularProgressDirection;
-  style?: ViewStyle;
-  fillStyle?: ViewStyle;
-  type?: ProgressType;
-  /**
-   * Value-driven fill color — same semantics as `ProgressBarProps.colorStops`.
-   * The whole arc uses a single color (resolved from the final ratio), since
-   * gradient arcs would need a per-segment color interpolation pass.
-   */
-  colorStops?: ColorStop[];
-  /** Optional text rendered centered in the circle. */
-  label?: string;
-  /** Required if `label` is set. */
-  font?: string;
-  labelStyle?: TextStyle;
-  /**
-   * Auto-compute the label from the value. Ignored if `label` is also set
-   * (explicit label wins). Same semantics as `ProgressBarProps.showValue`.
-   */
-  showValue?: ProgressValueType;
 }
 
 const DEFAULT_SIZE = 48;

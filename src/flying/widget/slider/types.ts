@@ -1,4 +1,5 @@
-import type { ViewStyle } from '../styles';
+import type { ProgressValueType } from '../constant';
+import type { TextStyle, ViewStyle } from '../styles';
 
 export interface SliderProps {
   /** Controlled value. When set, the widget is controlled — parent must update. */
@@ -12,6 +13,18 @@ export interface SliderProps {
   step?: number;
   onChange?: (value: number) => void;
   disabled?: boolean;
+
+  /** Optional text rendered centered on the bar. */
+  label?: string;
+  /** Required if `label` is being set */
+  font?: string;
+  labelStyle?: TextStyle;
+
+  /**
+   * Auto-compute the label from the value. Ignored if `label` is also set
+   * (explicit label wins). Same semantics as `ProgressBarProps.showValue`.
+   */
+  showValue?: ProgressValueType;
 
   style?: ViewStyle;
   trackStyle?: ViewStyle;

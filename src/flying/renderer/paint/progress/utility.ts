@@ -1,10 +1,6 @@
+import type { ColorStop } from '@/flying/widget/progress/types';
 import type { ValidColor } from '@flying/types';
-import {
-  Palette,
-  ProgressValueType,
-  type ColorStop,
-  type ViewStyle,
-} from '@flying/widget';
+import { Palette, ProgressValueType, type ViewStyle } from '@flying/widget';
 import { clamp } from '@utility/common';
 
 export function resolveFillColor(options: {

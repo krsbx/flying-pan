@@ -6,6 +6,7 @@ import {
   resolveCircularProgressSize,
   resolveProgressBarSize,
 } from './progress';
+import { resolveCircularSliderSize, resolveSliderBarSize } from './slider';
 import { resolveTextInputSize } from './text-input';
 import type { ResolveChildSizeOptions } from './types';
 
@@ -48,6 +49,20 @@ export function resolveChildSize(options: ResolveChildSizeOptions): Resolution {
 
     case WidgetType.CircularProgress:
       resolveCircularProgressSize({
+        ...options,
+        size,
+      });
+      break;
+
+    case WidgetType.SliderBar:
+      resolveSliderBarSize({
+        ...options,
+        size,
+      });
+      break;
+
+    case WidgetType.CircularSlider:
+      resolveCircularSliderSize({
         ...options,
         size,
       });

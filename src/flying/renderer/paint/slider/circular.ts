@@ -9,6 +9,8 @@ import {
   HANDLE_SIZE,
 } from '@flying/widget/slider/constant';
 import { makeSliderState } from '@flying/widget/slider/state';
+import { paintInlineLabel } from '../progress/label';
+import { formatValueLabel } from '../progress/utility';
 import type { SubMarkPaintOptions } from '../types';
 import { paintBackground, paintBorder, resolveStyle } from '../utility';
 
@@ -156,4 +158,27 @@ export function paintCircularSlider(
     },
     renderer,
   });
+
+  const labelText =
+    props.label ??
+    formatValueLabel({
+      value,
+      min,
+      max,
+      format: props.showValue,
+    });
+
+  if (labelText && props.font) {
+    paintInlineLabel(window, {
+      renderer,
+      ctx,
+      x,
+      y,
+      width,
+      height,
+      label: labelText,
+      font: props.font,
+      style: props.labelStyle ?? {},
+    });
+  }
 }
