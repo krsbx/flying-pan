@@ -16,6 +16,8 @@ export class FontAtlas extends BaseFontAtlas {
     capacity: 512,
   });
 
+  private readonly _quadPool: TextQuad[] = [];
+
   public override measureText(options: MeasureTextOptions): MeasureTextResult {
     const key = `${options.text}\0${options.fontSize ?? ''}\0${options.letterSpacing ?? ''}\0${options.lineHeight ?? ''}`;
     const cached = this.measureCache.get(key);
@@ -88,7 +90,7 @@ export class FontAtlas extends BaseFontAtlas {
   }
 
   public override getQuads(options: GetQuadsOptions): TextQuad[] {
-    const quads: TextQuad[] = [];
+    const quads = this._quadPool;
     const alignedQuad = AlignedQuad.create();
     const letterSpacing = options.letterSpacing ?? 0;
     const effectiveFontSize = options.fontSize ?? this.fontSize;
@@ -96,6 +98,7 @@ export class FontAtlas extends BaseFontAtlas {
     const effectiveLineHeight = options.lineHeight ?? this.fontSize * scale;
 
     const lines = options.text.split('\n');
+    let idx = 0;
 
     for (let lineIdx = 0; lineIdx < lines.length; lineIdx++) {
       const line = lines[lineIdx]!;
@@ -125,16 +128,31 @@ export class FontAtlas extends BaseFontAtlas {
           opengl_fillrule: 1,
         });
 
-        quads.push({
-          x0: preX + (alignedQuad.x0 - preX) * scale,
-          y0: baselineY + (alignedQuad.y0 - baselineY) * scale,
-          s0: alignedQuad.s0,
-          t0: alignedQuad.t0,
-          x1: preX + (alignedQuad.x1 - preX) * scale,
-          y1: baselineY + (alignedQuad.y1 - baselineY) * scale,
-          s1: alignedQuad.s1,
-          t1: alignedQuad.t1,
-        });
+        let quad = quads[idx];
+
+        if (!quad) {
+          quad = {
+            x0: 0,
+            y0: 0,
+            x1: 0,
+            y1: 0,
+            s0: 0,
+            t0: 0,
+            s1: 0,
+            t1: 0,
+          };
+          quads[idx] = quad;
+        }
+
+        quad.x0 = preX + (alignedQuad.x0 - preX) * scale;
+        quad.y0 = baselineY + (alignedQuad.y0 - baselineY) * scale;
+        quad.s0 = alignedQuad.s0;
+        quad.t0 = alignedQuad.t0;
+        quad.x1 = preX + (alignedQuad.x1 - preX) * scale;
+        quad.y1 = baselineY + (alignedQuad.y1 - baselineY) * scale;
+        quad.s1 = alignedQuad.s1;
+        quad.t1 = alignedQuad.t1;
+        idx++;
 
         pos.x = preX + (pos.x - preX) * scale;
 
@@ -143,6 +161,8 @@ export class FontAtlas extends BaseFontAtlas {
         }
       }
     }
+
+    quads.length = idx;
 
     return quads;
   }

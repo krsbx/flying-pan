@@ -4,7 +4,7 @@ import { GL_QUADS, GL_TEXTURE_2D } from '../constant';
 import type { DrawTextOptions } from '../renderer/types';
 
 export function drawText(gl: GLFW, options: DrawTextOptions): void {
-  const rgba = parseColor(options.color);
+  const rgba = { ...parseColor(options.color) };
 
   if (options.opacity !== undefined) {
     rgba.alpha *= options.opacity;

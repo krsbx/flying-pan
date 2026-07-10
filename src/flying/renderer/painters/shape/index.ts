@@ -71,7 +71,7 @@ export function drawShadow(gl: GLFW, options: DrawShadowOptions): void {
 export function drawRing(gl: GLFW, options: DrawRingOptions): void {
   const { cx, cy, outerRadius, innerRadius } = options;
 
-  const rgba = parseColor(options.color);
+  const rgba = { ...parseColor(options.color) };
 
   if (options.opacity !== undefined) {
     rgba.alpha *= options.opacity;
