@@ -1,5 +1,5 @@
+import { MA_SUCCESS } from '@/library/miniaudio/enums';
 import { MiniAudio } from '@miniaudio';
-import { MA_SUCCESS } from '@miniaudio/enums';
 import { ma_engine } from '@miniaudio/structs';
 import { Audio, type AudioOptions } from '../audio';
 
@@ -13,15 +13,27 @@ export interface AudioManagerOptions {
 export class AudioManager {
   public maxInstances: number | null;
 
-  protected miniaudio: MiniAudio;
-  protected engine: ma_engine;
+  protected miniaudio!: MiniAudio;
+  protected engine!: ma_engine;
   protected instances: Map<string, Audio>;
+  protected initialized: boolean;
+  protected libPath: string;
   protected _volume!: number;
   protected _destroyed: boolean;
 
   public constructor(options: AudioManagerOptions) {
     this.maxInstances = options.maxInstances || null;
-    this.miniaudio = new MiniAudio(options.miniaudioLibPath);
+    this.libPath = options.miniaudioLibPath;
+    this.initialized = false;
+    this.instances = new Map();
+    this._destroyed = false;
+    this._volume = options.volume ?? 1;
+  }
+
+  protected init() {
+    if (this.initialized) return;
+
+    this.miniaudio = new MiniAudio(this.libPath);
     this.engine = ma_engine.create();
 
     const init = this.miniaudio.ma_engine_init({
@@ -33,12 +45,13 @@ export class AudioManager {
       throw new Error('[AudioManager] MiniAudio failed to initialize!');
     }
 
-    this.instances = new Map();
-    this._destroyed = false;
-    this.volume = options.volume ?? 1;
+    this.initialized = true;
+    this.volume = this._volume;
   }
 
   public create(options: Omit<AudioOptions, 'engine' | 'miniaudio'>): Audio {
+    this.init();
+
     const existing = this.instances.get(options.path);
 
     if (existing) return existing;
@@ -114,15 +127,19 @@ export class AudioManager {
   }
 
   public set volume(value: number) {
+    this._volume = value;
+
+    if (!this.initialized) return;
+
     this.miniaudio.ma_engine_set_volume({
       pEngine: this.engine.$address,
       volume: value,
     });
-
-    this._volume = value;
   }
 
   public get sampleRate(): number {
+    this.init();
+
     return this.miniaudio.ma_engine_get_sample_rate({
       pEngine: this.engine.$address,
     }) as number;
@@ -137,8 +154,10 @@ export class AudioManager {
 
     this.dispose();
 
-    this.miniaudio.ma_engine_uninit({ pEngine: this.engine.$address });
-    this.miniaudio.close();
+    if (this.initialized) {
+      this.miniaudio.ma_engine_uninit({ pEngine: this.engine.$address });
+      this.miniaudio.close();
+    }
 
     this._destroyed = true;
   }

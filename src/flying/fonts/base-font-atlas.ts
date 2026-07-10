@@ -149,12 +149,13 @@ export abstract class BaseFontAtlas implements FontAtlasContract {
 
     // Convert gray bitmap to RGBA
     const rgba = new CStruct(this.ATLAS_SIZE * 4);
+    const src = pixels.$memory;
+    const dst = rgba.$memory;
+
+    dst.fill(255);
 
     for (let i = 0; i < this.ATLAS_SIZE; i++) {
-      rgba.setValue(i * 4 + 0, 255, 'i8'); // R
-      rgba.setValue(i * 4 + 1, 255, 'i8'); // G
-      rgba.setValue(i * 4 + 2, 255, 'i8'); // B
-      rgba.setValue(i * 4 + 3, pixels.getValue(i, 'i8'), 'i8'); // A
+      dst[i * 4 + 3] = src[i] ?? 0;
     }
 
     return {

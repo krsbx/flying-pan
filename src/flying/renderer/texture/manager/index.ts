@@ -21,23 +21,35 @@ export interface TextureManagerOptions {
 
 export class TextureManager {
   protected gl: GLFW;
-  protected image: Image;
+  protected image!: Image;
   protected textures: Map<string, Texture>;
   protected infos: Map<string, ImageInfo>;
   protected _destroyed: boolean;
+  protected initialized: boolean;
+  protected libPath: string;
 
   public constructor(options: TextureManagerOptions) {
     this.gl = options.gl;
-    this.image = new Image(options.imageLibPath);
+    this.libPath = options.imageLibPath;
+    this.initialized = false;
     this.textures = new Map();
     this.infos = new Map();
     this._destroyed = false;
+  }
+
+  protected init(): void {
+    if (this.initialized) return;
+
+    this.image = new Image(this.libPath);
+    this.initialized = true;
   }
 
   public info(path: string): ImageInfo | null {
     const existing = this.infos.get(path);
 
     if (existing) return existing;
+
+    this.init();
 
     const sizeVec = new Vector2();
     const channelStruct = new CStruct(CStruct.BYTE_SIZE.i32);
@@ -189,7 +201,10 @@ export class TextureManager {
     if (this._destroyed) return;
 
     this.dispose();
-    this.image.close();
+
+    if (this.initialized) {
+      this.image.close();
+    }
 
     this._destroyed = true;
   }
