@@ -62,6 +62,7 @@ export const WidgetType = {
   CircularProgress: 'CircularProgress',
   SliderBar: 'SliderBar',
   CircularSlider: 'CircularSlider',
+  Meter: 'Meter',
 } as const;
 
 export type WidgetType = (typeof WidgetType)[keyof typeof WidgetType];

@@ -33,6 +33,10 @@ export const Palette = {
 
   // Selection — light blue so text stays legible over the highlight
   selection: '#bfdbfe', // blue-200
+
+  success: '#22c55e', // green — "optimum" zone
+  warning: '#eab308', // yellow — "caution" zone
+  error: '#ef4444', // red — "bad" zone
 } as const;
 
 export type PaletteColor = keyof typeof Palette;

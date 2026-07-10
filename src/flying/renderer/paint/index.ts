@@ -8,6 +8,7 @@ import {
 } from '@flying/widget';
 import { paintCheckbox } from './checkbox';
 import { paintImage } from './image';
+import { paintMeter } from './meter';
 import { paintCircularProgress, paintProgressBar } from './progress';
 import { paintRadio } from './radio';
 import { paintCircularSlider, paintSlider } from './slider';
@@ -175,6 +176,15 @@ export function paint(window: Window, options: PaintOptions) {
 
     case WidgetType.CircularProgress: {
       paintCircularProgress(window, {
+        ctx,
+        layout,
+        renderer,
+      });
+      break;
+    }
+
+    case WidgetType.Meter: {
+      paintMeter(window, {
         ctx,
         layout,
         renderer,

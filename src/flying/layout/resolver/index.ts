@@ -2,6 +2,7 @@ import type { Resolution } from '@flying/types';
 import { resolveSize, WidgetType } from '@flying/widget';
 import { resolveImageSize } from './image';
 import { resolveLabelSize } from './label';
+import { resolveMeterSize } from './meter';
 import {
   resolveCircularProgressSize,
   resolveProgressBarSize,
@@ -63,6 +64,13 @@ export function resolveChildSize(options: ResolveChildSizeOptions): Resolution {
 
     case WidgetType.CircularSlider:
       resolveCircularSliderSize({
+        ...options,
+        size,
+      });
+      break;
+
+    case WidgetType.Meter:
+      resolveMeterSize({
         ...options,
         size,
       });
