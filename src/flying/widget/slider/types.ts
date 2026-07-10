@@ -33,10 +33,18 @@ export interface SliderProps {
    */
   showValue?: ProgressValueType;
 
+  /** Tick marks at specified values, with optional labels. Bar sliders only. */
+  marks?: SliderMark[];
+
   style?: ViewStyle;
   trackStyle?: ViewStyle;
   filledStyle?: ViewStyle;
   handleStyle?: ViewStyle;
+}
+
+export interface SliderMark {
+  value: number;
+  label?: string;
 }
 
 export interface CircularGeometry {

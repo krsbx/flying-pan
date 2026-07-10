@@ -62,6 +62,7 @@ export const WidgetType = {
   CircularProgress: 'CircularProgress',
   SliderBar: 'SliderBar',
   CircularSlider: 'CircularSlider',
+  RangeSlider: 'RangeSlider',
   Meter: 'Meter',
 } as const;
 

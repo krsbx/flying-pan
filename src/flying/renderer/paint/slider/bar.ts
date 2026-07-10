@@ -4,7 +4,6 @@ import type { SliderBarProps } from '@flying/widget';
 import { Palette, ProgressBarOrientation } from '@flying/widget';
 import { HANDLE_SIZE, TRACK_THICKNESS } from '@flying/widget/slider/constant';
 import { makeSliderState } from '@flying/widget/slider/state';
-import { paintSliderHandle } from './handle';
 import { paintInlineValueLabel } from '../text';
 import type { SubMarkPaintOptions } from '../types';
 import {
@@ -12,6 +11,8 @@ import {
   resolveFillColorClamped,
   resolveStyle,
 } from '../utility';
+import { paintSliderHandle } from './handle';
+import { paintSliderMarks } from './marks';
 
 export function paintSlider(window: Window, options: SubMarkPaintOptions) {
   const {
@@ -110,6 +111,23 @@ export function paintSlider(window: Window, options: SubMarkPaintOptions) {
       backgroundColor: filledColor,
     },
     renderer,
+  });
+
+  paintSliderMarks({
+    window,
+    renderer,
+    ctx,
+    marks: props.marks ?? [],
+    min,
+    max,
+    x,
+    y,
+    width,
+    height,
+    trackX,
+    trackY,
+    isVertical,
+    font: props.font,
   });
 
   paintSliderHandle(window, {
