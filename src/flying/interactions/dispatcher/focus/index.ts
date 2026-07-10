@@ -9,13 +9,6 @@ import {
 } from '@glfw/enums';
 import { BaseDispatcher } from '../base';
 import type { DispatcherConfig, DispatchOptions } from '../types';
-import type {
-  HandleClickOptions,
-  HandleTabOptions,
-  MoveFocusOptions,
-  RouteCharsOptions,
-  RouteKeysOptions,
-} from './types';
 
 export class FocusDispatcher extends BaseDispatcher {
   protected readonly activableWidgets: Set<WidgetType>;
@@ -40,16 +33,16 @@ export class FocusDispatcher extends BaseDispatcher {
   }
 
   public dispatch(options: DispatchOptions): void {
-    const { window, layout, stateStore } = options;
+    const { window, layout, layoutIndex, stateStore } = options;
     const input = this.input;
 
     // 1. Collect focusable nodes (tree order = tab order)
-    this.focusableNodes = [];
+    this.focusableNodes.length = 0;
     this.collectFocusable(layout);
 
     // 2. Validate current focus — blur if unmounted or no longer focusable
     if (this._focusedStableId) {
-      const node = this.findNodeByStableId(layout, this._focusedStableId);
+      const node = layoutIndex.get(this._focusedStableId) ?? null;
       const stillFocusable = node?.widget.style?.focusable === true;
 
       if (!node || !stillFocusable) {
@@ -66,25 +59,25 @@ export class FocusDispatcher extends BaseDispatcher {
     }
 
     // 2.5. Apply pending blur/focus
-    this.applyPendingBlurFocus({ window, layout, stateStore });
+    this.applyPendingBlurFocus(options);
 
     // 3. Tab cycling
     if (input.isKeyPressed(GLFW_KEY_TAB)) {
-      this.handleTab({ window, layout, input, stateStore });
+      this.handleTab(options);
     }
 
     // 4. Click-to-focus (nearest focusable ancestor of the hit target)
     if (input.isButtonPressed(GLFW_MOUSE_BUTTON_LEFT)) {
-      this.handleClick({ window, layout, input, stateStore });
+      this.handleClick(options);
     }
 
     // 5. Route key events to the (possibly newly) focused widget
     if (this._focusedStableId) {
-      const node = this.findNodeByStableId(layout, this._focusedStableId);
+      const node = layoutIndex.get(this._focusedStableId) ?? null;
 
       if (node) {
-        this.routeKeys({ window, node, input, stateStore });
-        this.routeChars({ window, node, input, stateStore });
+        this.routeKeys(node, options);
+        this.routeChars(node, options);
       }
     }
   }
@@ -97,13 +90,13 @@ export class FocusDispatcher extends BaseDispatcher {
   }
 
   protected applyPendingBlurFocus(options: DispatchOptions) {
-    const { window, layout, stateStore } = options;
+    const { window, layout, layoutIndex, stateStore } = options;
 
     if (this._pendingBlur) {
       this._pendingBlur = false;
 
       if (this._focusedStableId) {
-        const oldNode = this.findNodeByStableId(layout, this._focusedStableId);
+        const oldNode = layoutIndex.get(this._focusedStableId) ?? null;
 
         this._focusedStableId = null;
 
@@ -126,18 +119,17 @@ export class FocusDispatcher extends BaseDispatcher {
       const node = this.findNodeForWidget(layout, widget);
 
       if (node && node.widget.style?.focusable === true) {
-        this.moveFocus({ window, layout, target: node, stateStore });
+        this.moveFocus(node, options);
       }
     }
   }
 
-  protected handleTab(options: HandleTabOptions): void {
-    const { window, layout, input, stateStore } = options;
-
+  protected handleTab(options: DispatchOptions): void {
     const list = this.focusableNodes;
 
     if (list.length === 0) return;
 
+    const input = this.input;
     const shift = input.isShiftDown;
     const currentIdx = this._focusedStableId
       ? list.findIndex((n) => n.stableId === this._focusedStableId)
@@ -157,11 +149,12 @@ export class FocusDispatcher extends BaseDispatcher {
 
     if (!target) return;
 
-    this.moveFocus({ window, layout, target, stateStore });
+    this.moveFocus(target, options);
   }
 
-  protected handleClick(options: HandleClickOptions): void {
-    const { window, layout, input, stateStore } = options;
+  protected handleClick(options: DispatchOptions): void {
+    const { window, layout, layoutIndex, stateStore } = options;
+    const input = this.input;
 
     const position = input.mousePosition;
     const hit = hitTest({ node: layout, x: position.x, y: position.y });
@@ -169,10 +162,10 @@ export class FocusDispatcher extends BaseDispatcher {
     const target = hit ? this.nearestFocusableAncestor(layout, hit) : null;
 
     if (target) {
-      this.moveFocus({ window, layout, target, stateStore });
+      this.moveFocus(target, options);
     } else if (this._focusedStableId) {
       // Clicked outside any focusable widget → blur current (HTML semantics)
-      const oldNode = this.findNodeByStableId(layout, this._focusedStableId);
+      const oldNode = layoutIndex.get(this._focusedStableId) ?? null;
 
       this._focusedStableId = null;
 
@@ -187,33 +180,31 @@ export class FocusDispatcher extends BaseDispatcher {
     }
   }
 
-  protected moveFocus(options: MoveFocusOptions): void {
-    const { window, layout, target, stateStore } = options;
+  protected moveFocus(node: LayoutNode, options: DispatchOptions): void {
+    const { window, layoutIndex, stateStore } = options;
 
-    if (this._focusedStableId === target.stableId) return;
+    if (this._focusedStableId === node.stableId) return;
 
     const oldStableId = this._focusedStableId;
     const oldNode =
-      oldStableId !== null
-        ? this.findNodeByStableId(layout, oldStableId)
-        : null;
+      oldStableId !== null ? (layoutIndex.get(oldStableId) ?? null) : null;
 
-    this._focusedStableId = target.stableId;
+    this._focusedStableId = node.stableId;
 
     if (oldNode) {
       oldNode.widget.onBlur?.({
         window,
         node: oldNode,
-        relatedTarget: target,
+        relatedTarget: node,
         stateStore,
         ctx: this.ctx,
         input: this.input,
       });
     }
 
-    target.widget.onFocus?.({
+    node.widget.onFocus?.({
       window,
-      node: target,
+      node,
       relatedTarget: oldNode ?? null,
       stateStore,
       ctx: this.ctx,
@@ -221,8 +212,9 @@ export class FocusDispatcher extends BaseDispatcher {
     });
   }
 
-  protected routeChars(options: RouteCharsOptions): void {
-    const { window, node, input, stateStore } = options;
+  protected routeChars(node: LayoutNode, options: DispatchOptions): void {
+    const { window, stateStore } = options;
+    const input = this.input;
 
     for (const codepoint of input.current.chars) {
       node.widget.onChar?.({
@@ -236,8 +228,9 @@ export class FocusDispatcher extends BaseDispatcher {
     }
   }
 
-  protected routeKeys(options: RouteKeysOptions): void {
-    const { window, node, input, stateStore } = options;
+  protected routeKeys(node: LayoutNode, options: DispatchOptions): void {
+    const { window, stateStore } = options;
+    const input = this.input;
 
     const current = input.current.keys;
     const previous = input.previous.keys;

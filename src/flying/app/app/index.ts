@@ -1,3 +1,4 @@
+import { buildLayoutIndex } from '@flying/interactions';
 import { layoutFlex } from '@flying/layout';
 import { paint, Renderer } from '@flying/renderer';
 import { GLFW } from '@glfw';
@@ -137,10 +138,13 @@ export class App {
             ctx: this.manager.paintContext,
           });
 
+          const layoutIndex = buildLayoutIndex(layout);
+
           this.manager.interaction.dispatch({
             stateStore: this.manager.stateStore,
             window,
             layout,
+            layoutIndex,
           });
 
           paint(window, {

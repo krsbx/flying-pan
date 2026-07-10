@@ -15,13 +15,13 @@ export class ScrollDispatcher extends BaseDispatcher {
   }
 
   public dispatch(options: DispatchOptions): void {
-    const { layout } = options;
+    const { layout, layoutIndex } = options;
     const input = this.input;
 
     // 1. Drop orphan offsets (scrollable widgets that unmounted)
     if (this.offsets.size > 0) {
       for (const stableId of this.offsets.keys()) {
-        if (!this.findNodeByStableId(layout, stableId)) {
+        if (!layoutIndex.has(stableId)) {
           this.offsets.delete(stableId);
         }
       }

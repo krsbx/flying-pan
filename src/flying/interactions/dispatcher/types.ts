@@ -11,5 +11,6 @@ export interface DispatcherConfig {
 export interface DispatchOptions {
   window: Window;
   layout: LayoutNode;
+  layoutIndex: Map<number, LayoutNode>;
   stateStore: StateStore;
 }

@@ -34,7 +34,7 @@ export class PointerDispatcher extends BaseDispatcher {
   }
 
   public dispatch(options: DispatchOptions): void {
-    const { window, layout, stateStore } = options;
+    const { window, layout, layoutIndex, stateStore } = options;
     const { input, ctx } = this;
 
     const position = input.mousePosition;
@@ -50,7 +50,7 @@ export class PointerDispatcher extends BaseDispatcher {
     // --- Hover enter / leave (compared by widget identity, not LayoutNode) ---
 
     const prevNode = this._hoveredStableId
-      ? this.findNodeByStableId(layout, this._hoveredStableId)
+      ? (layoutIndex.get(this._hoveredStableId) ?? null)
       : null;
 
     if (hitId !== this._hoveredStableId) {

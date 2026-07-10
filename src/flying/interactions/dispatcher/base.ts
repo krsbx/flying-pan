@@ -50,19 +50,4 @@ export abstract class BaseDispatcher {
 
     return null;
   }
-
-  protected findNodeByStableId(
-    node: LayoutNode,
-    stableId: number
-  ): LayoutNode | null {
-    if (node.stableId === stableId) return node;
-
-    for (const child of node.children) {
-      const found = this.findNodeByStableId(child, stableId);
-
-      if (found) return found;
-    }
-
-    return null;
-  }
 }
