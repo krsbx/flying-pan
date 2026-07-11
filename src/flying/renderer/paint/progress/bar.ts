@@ -1,16 +1,26 @@
 import type { Window } from '@flying/app';
 import { valueToRatio } from '@flying/utility/common';
 import type { ProgressBarProps } from '@flying/widget';
-import { ProgressBarOrientation, ProgressDirection } from '@flying/widget';
+import {
+  ProgressBarOrientation,
+  ProgressDirection,
+  ProgressType,
+} from '@flying/widget';
 import { paintContinuousFill, paintSteppedFill } from '../fill';
 import { paintInlineValueLabel } from '../text';
 import type { PaintOptions } from '../types';
 import { resolveFillColorClamped } from '../utility';
+import { paintIndeterminateProgressBar } from './indeterminate';
 
 export function paintProgressBar(window: Window, options: PaintOptions): void {
   const { renderer, ctx, layout } = options;
   const { widget, x, y, width, height } = layout;
   const props = widget.props as ProgressBarProps;
+
+  if (props.type === ProgressType.Indeterminate) {
+    paintIndeterminateProgressBar(window, options);
+    return;
+  }
 
   const isHorizontal = props.orientation === ProgressBarOrientation.Horizontal;
   const isForward = props.direction === ProgressDirection.Forward;

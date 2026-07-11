@@ -3,11 +3,13 @@ import { valueToRatio } from '@flying/utility/common';
 import {
   CircularProgressDirection,
   Palette,
+  ProgressType,
   type CircularProgressProps,
 } from '@flying/widget';
 import { paintInlineValueLabel } from '../text';
 import type { PaintOptions } from '../types';
 import { drawArcSegment, resolveFillColorClamped } from '../utility';
+import { paintIndeterminateCircularProgress } from './indeterminate';
 
 export function paintCircularProgress(
   window: Window,
@@ -16,6 +18,11 @@ export function paintCircularProgress(
   const { renderer, ctx, layout } = options;
   const { widget, x, y, width, height } = layout;
   const props = widget.props as CircularProgressProps;
+
+  if (props.type === ProgressType.Indeterminate) {
+    paintIndeterminateCircularProgress(window, options);
+    return;
+  }
 
   const ratio = valueToRatio({
     value: props.value ?? 0,

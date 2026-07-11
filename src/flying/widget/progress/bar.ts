@@ -28,9 +28,6 @@ export function ProgressBar(props: ProgressBarProps): WidgetDescriptor {
     value !== undefined
       ? ProgressType.Determinate
       : props.type || ProgressType.Indeterminate;
-  // NOTE: indeterminate type is flagged here but not yet rendered in paint.
-  // Needs Track 5 (Animation) — a moving pulse/loop can't be expressed
-  // without a per-frame clock + easing. Determinate path works today.
   const isHorizontal = orientation === ProgressBarOrientation.Horizontal;
 
   return {
