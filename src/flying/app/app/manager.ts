@@ -1,3 +1,4 @@
+import { AnimationManager } from '@/flying/animation';
 import { InteractionManager } from '@flying/interactions';
 import { Reconciler } from '@flying/reconcile';
 import type { PaintContext } from '@flying/renderer';
@@ -21,6 +22,7 @@ export interface AppManagerOptions {
 export class AppManager {
   public readonly window: WindowManager;
   public readonly monitor: MonitorManager;
+  public readonly animation: AnimationManager;
   public readonly input: InputManager;
   public readonly font: FontManager;
   public readonly interaction: InteractionManager;
@@ -33,6 +35,7 @@ export class AppManager {
   public constructor(options: AppManagerOptions) {
     this.window = new WindowManager(options.gl);
     this.monitor = new MonitorManager(options.gl);
+    this.animation = new AnimationManager();
     this.input = new InputManager();
     this.font = new FontManager({
       fonts: options.fonts,
@@ -58,9 +61,10 @@ export class AppManager {
     this.paintContext = {
       fontManager: this.font,
       textureManager: this.texture,
+      interactionManager: this.interaction,
+      animationManager: this.animation,
       getStableId: this.reconciler.getStableId,
       stateStore: this.stateStore,
-      interactionManager: this.interaction,
       layoutIndex: new Map(),
       focusableNodes: [],
     };

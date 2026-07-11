@@ -127,6 +127,7 @@ export class App {
             window,
             next: window.widget,
           });
+          this.manager.animation.tick();
 
           const ctx = this.manager.paintContext;
 

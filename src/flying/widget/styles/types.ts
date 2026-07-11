@@ -1,3 +1,4 @@
+import type { Transition } from '@flying/animation';
 import type { InteractionProps } from '@flying/interactions';
 import type { Coordinate2D, Size, ValidColor } from '@flying/types';
 import type {
@@ -135,6 +136,9 @@ export interface ViewStyle {
   overflow?: Overflow;
 
   boxShadow?: BoxShadow | BoxShadow[];
+
+  /** Smoothly interpolate this style's animatable properties when they change. */
+  transition?: Transition;
 }
 
 export interface TextStyle extends ViewStyle {

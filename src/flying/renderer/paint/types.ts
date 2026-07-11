@@ -1,3 +1,4 @@
+import type { AnimationManager } from '@flying/animation';
 import type { FontManager } from '@flying/app';
 import type { InteractionManager } from '@flying/interactions';
 import type { LayoutNode } from '@flying/layout';
@@ -11,6 +12,7 @@ import type { TextureManager } from '../texture/manager';
 export interface PaintContext {
   fontManager: FontManager;
   interactionManager: InteractionManager;
+  animationManager: AnimationManager;
   textureManager: TextureManager | null;
   getStableId: GetStableIdFn;
   stateStore: StateStore;
