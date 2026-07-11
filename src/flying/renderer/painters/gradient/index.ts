@@ -1,3 +1,4 @@
+import { lerpRgba } from '@flying/animation/interpolate';
 import type { Coordinate2D, RGBA } from '@flying/types';
 import type { LinearGradient, Rect } from '@flying/widget';
 import { parseColor } from '../../color';
@@ -80,12 +81,7 @@ export function getGradientColor(
     if (t >= a.pos && t <= b.pos) {
       const tRel = (t - a.pos) / Math.max(1e-6, b.pos - a.pos);
 
-      const rgba = {
-        red: a.rgba.red + (b.rgba.red - a.rgba.red) * tRel,
-        green: a.rgba.green + (b.rgba.green - a.rgba.green) * tRel,
-        blue: a.rgba.blue + (b.rgba.blue - a.rgba.blue) * tRel,
-        alpha: a.rgba.alpha + (b.rgba.alpha - a.rgba.alpha) * tRel,
-      };
+      const rgba = lerpRgba(a.rgba, b.rgba, tRel);
 
       return { ...rgba, alpha: rgba.alpha * opacity };
     }
