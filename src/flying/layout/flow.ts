@@ -65,18 +65,21 @@ export function positionFlowChildren(
         childY += resolveSize(m.widget.style.top, crossAxisSize);
     }
 
-    children.push(
-      layoutFlex({
-        node: m.widget,
-        x: x + childX,
-        y: y + childY,
-        availableWidth: m.width,
-        availableHeight: m.height,
-        ctx,
-      })
-    );
+    const childLayout = layoutFlex({
+      node: m.widget,
+      x: x + childX,
+      y: y + childY,
+      availableWidth: m.width,
+      availableHeight: m.height,
+      ctx,
+    });
 
-    const childMainSize = isRow ? m.width : m.height;
+    children.push(childLayout);
+
+    // Use the ACTUAL laid-out size (after content-fitting), not the
+    // pre-layout measurement — containers without explicit dimensions
+    // get their size from their children during layout.
+    const childMainSize = isRow ? childLayout.width : childLayout.height;
     const marginEnd = isRow ? m.margin.right : m.margin.bottom;
 
     mainPos += childMainSize + marginEnd + gap;

@@ -24,6 +24,10 @@ export function measureChildsComponent(
   const { parentWidth, parentHeight } = options;
   const flow: ChildMeasurements[] = [];
   const absolute: ChildMeasurements[] = [];
+  let maxH = 0;
+  let sumH = 0;
+  let maxW = 0;
+  let sumW = 0;
 
   for (const child of options.children) {
     const margin = resolveSpacing(
@@ -81,11 +85,20 @@ export function measureChildsComponent(
     if (isAbsolute) {
       absolute.push(measurement);
     } else {
+      const h = height + margin.top + margin.bottom;
+      const w = width + margin.left + margin.right;
+
+      maxH = Math.max(maxH, h);
+      sumH += h;
+
+      maxW = Math.max(maxW, w);
+      sumW += w;
+
       flow.push(measurement);
     }
   }
 
-  return { flow, absolute };
+  return { flow, absolute, maxH, sumH, maxW, sumW };
 }
 
 export function wrapMeasurements(options: WrapMeasurementsOptions) {

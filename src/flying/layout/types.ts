@@ -44,6 +44,10 @@ export interface MeasureChildsComponentOptions {
 export interface MeasureChildsComponentResult {
   flow: ChildMeasurements[];
   absolute: ChildMeasurements[];
+  maxH: number;
+  sumH: number;
+  maxW: number;
+  sumW: number;
 }
 
 export interface WrapLine {
