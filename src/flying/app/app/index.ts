@@ -109,6 +109,10 @@ export class App {
     return this.manager.window.active;
   }
 
+  protected yield(): Promise<void> {
+    return new Promise(setImmediate);
+  }
+
   public async run(): Promise<void> {
     if (!this.manager.font.isEmpty) {
       await this.manager.font.init();
@@ -171,6 +175,9 @@ export class App {
 
       this.gl.glfwPollEvents();
       this.manager.window.cleanUp();
+
+      // Prevent blocking the event loop
+      await this.yield();
 
       if (this.manager.window.isEmpty) {
         break;
