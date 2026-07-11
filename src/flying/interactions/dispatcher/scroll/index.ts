@@ -6,34 +6,54 @@ import { clamp } from '@utility/common';
 import { BaseDispatcher } from '../base';
 import type { DispatcherConfig, DispatchOptions } from '../types';
 
+const VELOCITY_ALPHA = 0.35;
+const FRICTION = 0.97;
+const VELOCITY_THRESHOLD = 0.3;
+const FRAME_MS = 1000 / 60;
+
 export class ScrollDispatcher extends BaseDispatcher {
   protected offsets: Map<number, Coordinate2D>;
+  protected velocities: Map<number, Coordinate2D>;
+  protected lastTime: number;
 
   public constructor(options: DispatcherConfig) {
     super(options);
     this.offsets = new Map();
+    this.velocities = new Map();
+    this.lastTime = 0;
   }
 
   public dispatch(options: DispatchOptions): void {
-    const { layout, layoutIndex, treeChanged } = options;
+    const { layout, layoutIndex, treeChanged, time } = options;
     const input = this.input;
 
-    // 1. Drop orphan offsets (scrollable widgets that unmounted).
-    //    Only needed when the tree structure may have changed.
+    // 1. Compute framerate-normalized delta time
+    const dt = this.lastTime > 0 ? time - this.lastTime : FRAME_MS;
+    this.lastTime = time;
+    const dtNorm = clamp({ value: dt / FRAME_MS, min: 0, max: 4 });
+
+    // 2. Drop orphan offsets + velocities (scrollable widgets that unmounted)
     if (treeChanged && this.offsets.size > 0) {
       for (const stableId of this.offsets.keys()) {
         if (!layoutIndex.has(stableId)) {
           this.offsets.delete(stableId);
+          this.velocities.delete(stableId);
         }
       }
     }
 
     const delta = input.scrollDelta;
+    const hasInput = delta.x !== 0 || delta.y !== 0;
 
-    // 2. Nothing to do without scroll input this frame — offsets persist
-    if (delta.x === 0 && delta.y === 0) return;
+    if (hasInput) {
+      this.handleActiveScroll(layout, delta);
+    } else {
+      this.coast(layoutIndex, dtNorm);
+    }
+  }
 
-    // 3. Route scroll to the nearest scrollable ancestor of the hit target
+  protected handleActiveScroll(layout: LayoutNode, delta: Coordinate2D): void {
+    const input = this.input;
     const position = input.mousePosition;
     const hit = hitTest({ node: layout, x: position.x, y: position.y });
 
@@ -43,7 +63,6 @@ export class ScrollDispatcher extends BaseDispatcher {
 
     if (!target) return;
 
-    // 4. Clamp against content size (extent of direct children)
     const current = this.offset(target);
     const { contentWidth, contentHeight } = this.measureContent(target);
 
@@ -64,6 +83,69 @@ export class ScrollDispatcher extends BaseDispatcher {
     });
 
     this.offsets.set(target.stableId, { x: nextX, y: nextY });
+
+    // Track velocity via EMA (y negated to offset-space)
+    const vel = this.velocities.get(target.stableId) ?? { x: 0, y: 0 };
+    const alpha = VELOCITY_ALPHA;
+
+    vel.x = vel.x * (1 - alpha) + delta.x * alpha;
+    vel.y = vel.y * (1 - alpha) + -delta.y * alpha;
+
+    // Zero velocity on clamped axis — hit the edge while scrolling
+    if (nextX === current.x) vel.x = 0;
+    if (nextY === current.y) vel.y = 0;
+
+    this.velocities.set(target.stableId, vel);
+  }
+
+  protected coast(layoutIndex: Map<number, LayoutNode>, dtNorm: number): void {
+    if (this.velocities.size === 0) return;
+
+    const friction = Math.pow(FRICTION, dtNorm);
+
+    for (const [stableId, vel] of this.velocities) {
+      const target = layoutIndex.get(stableId);
+
+      if (!target) {
+        this.velocities.delete(stableId);
+        continue;
+      }
+
+      const current = this.offsets.get(stableId) ?? { x: 0, y: 0 };
+      const { contentWidth, contentHeight } = this.measureContent(target);
+
+      const maxScrollX = Math.max(0, contentWidth - target.width);
+      const maxScrollY = Math.max(0, contentHeight - target.height);
+
+      const nextX = clamp({
+        value: current.x + vel.x * dtNorm,
+        min: 0,
+        max: maxScrollX,
+      });
+      const nextY = clamp({
+        value: current.y + vel.y * dtNorm,
+        min: 0,
+        max: maxScrollY,
+      });
+
+      this.offsets.set(stableId, { x: nextX, y: nextY });
+
+      // Zero velocity on clamped axis
+      if (nextX <= 0 || nextX >= maxScrollX) vel.x = 0;
+      if (nextY <= 0 || nextY >= maxScrollY) vel.y = 0;
+
+      // Decay
+      vel.x *= friction;
+      vel.y *= friction;
+
+      // Stop when both axes below threshold
+      if (
+        Math.abs(vel.x) < VELOCITY_THRESHOLD &&
+        Math.abs(vel.y) < VELOCITY_THRESHOLD
+      ) {
+        this.velocities.delete(stableId);
+      }
+    }
   }
 
   public offset(node: LayoutNode): Coordinate2D {
@@ -72,6 +154,7 @@ export class ScrollDispatcher extends BaseDispatcher {
 
   public reset(): void {
     this.offsets.clear();
+    this.velocities.clear();
   }
 
   protected measureContent(node: LayoutNode): {

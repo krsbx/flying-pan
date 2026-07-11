@@ -150,6 +150,7 @@ export class App {
             layoutIndex: ctx.layoutIndex,
             focusableNodes: ctx.focusableNodes,
             treeChanged: this.manager.reconciler.changed,
+            time: this.manager.animation.time,
           });
 
           paint(window, {

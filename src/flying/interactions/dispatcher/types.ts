@@ -15,4 +15,6 @@ export interface DispatchOptions {
   focusableNodes: LayoutNode[];
   stateStore: StateStore;
   treeChanged: boolean;
+  /** Animation clock (performance.now()), from AnimationManager. */
+  time: number;
 }
