@@ -36,7 +36,7 @@ export function paint(window: Window, options: PaintOptions) {
   const checked = resolveWidgetCheckedState({ widget, layout, ctx });
   const disabled = Boolean(widget.props.disabled);
 
-  const style = resolveStyle({
+  const resolved = resolveStyle({
     style: baseStyle,
     hovered,
     focused,
@@ -44,6 +44,14 @@ export function paint(window: Window, options: PaintOptions) {
     checked,
     disabled,
   });
+
+  const style = baseStyle.transition
+    ? ctx.animationManager.applyOverlay(
+        layout.stableId,
+        resolved,
+        baseStyle.transition
+      )
+    : resolved;
 
   const paintOptions = {
     x,
