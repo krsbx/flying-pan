@@ -6,9 +6,17 @@ import { paintBackground, paintBorder, resolveStyle } from '../utility';
 const DOT_INSET = 0.5;
 
 export function paintRadio(window: Window, options: SubMarkPaintOptions) {
-  const { renderer, layout, checked, hovered, focused, pressed, disabled } =
-    options;
-  const { widget, x, y, width, height } = layout;
+  const {
+    renderer,
+    ctx,
+    layout,
+    checked,
+    hovered,
+    focused,
+    pressed,
+    disabled,
+  } = options;
+  const { widget, x, y, width, height, stableId } = layout;
   const props = widget.props as RadioProps;
 
   if (!checked) return;
@@ -17,7 +25,7 @@ export function paintRadio(window: Window, options: SubMarkPaintOptions) {
   const dotX = x + (width - dotSize) / 2;
   const dotY = y + (height - dotSize) / 2;
 
-  const dot = resolveStyle({
+  const dotResolved = resolveStyle({
     style: props.dotStyle ?? {},
     hovered,
     focused,
@@ -25,6 +33,14 @@ export function paintRadio(window: Window, options: SubMarkPaintOptions) {
     checked,
     disabled,
   });
+  const dot = props.dotStyle?.transition
+    ? ctx.animationManager.applyOverlay(
+        stableId,
+        dotResolved,
+        props.dotStyle.transition,
+        'dot'
+      )
+    : dotResolved;
 
   paintBorder(window, {
     x: dotX,

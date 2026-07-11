@@ -7,10 +7,10 @@ import type { ActiveTransition, Transition, TransitionConfig } from '../types';
 const ALL_ANIMATABLE = Object.values(AnimatableProperty);
 
 export class AnimationManager {
-  /** stableId → property → ActiveTransition */
-  protected active: Map<number, Map<string, ActiveTransition>>;
-  /** stableId → property → last displayed value (for change detection + first-snap) */
-  protected lastValue: Map<number, Map<string, string | number>>;
+  /** key → property → ActiveTransition. Key = `${stableId}` or `${stableId}:${subKey}` */
+  protected active: Map<string, Map<string, ActiveTransition>>;
+  /** key → property → last displayed value (for change detection + first-snap) */
+  protected lastValue: Map<string, Map<string, string | number>>;
   protected _time: number;
 
   public constructor() {
@@ -31,8 +31,10 @@ export class AnimationManager {
   public applyOverlay(
     stableId: number,
     resolved: ViewStyle,
-    transition: Transition
+    transition: Transition,
+    subKey?: string
   ): ViewStyle {
+    const key = subKey !== undefined ? `${stableId}:${subKey}` : `${stableId}`;
     const configs = Array.isArray(transition) ? transition : [transition];
     const now = this._time;
 
@@ -49,17 +51,17 @@ export class AnimationManager {
           | undefined;
         if (target === undefined) continue;
 
-        let lvMap = this.lastValue.get(stableId);
-        let aMap = this.active.get(stableId);
+        let lvMap = this.lastValue.get(key);
+        let aMap = this.active.get(key);
 
         if (!lvMap) {
           lvMap = new Map();
-          this.lastValue.set(stableId, lvMap);
+          this.lastValue.set(key, lvMap);
         }
 
         if (!aMap) {
           aMap = new Map();
-          this.active.set(stableId, aMap);
+          this.active.set(key, aMap);
         }
 
         const prev = lvMap.get(prop);
@@ -119,8 +121,20 @@ export class AnimationManager {
   }
 
   public destroy(stableId: number): void {
-    this.active.delete(stableId);
-    this.lastValue.delete(stableId);
+    const prefix = `${stableId}`;
+    const prefixColon = `${stableId}:`;
+
+    for (const key of this.active.keys()) {
+      if (key === prefix || key.startsWith(prefixColon)) {
+        this.active.delete(key);
+      }
+    }
+
+    for (const key of this.lastValue.keys()) {
+      if (key === prefix || key.startsWith(prefixColon)) {
+        this.lastValue.delete(key);
+      }
+    }
   }
 
   protected resolveProps(

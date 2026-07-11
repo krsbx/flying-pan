@@ -51,7 +51,7 @@ export function paintSlider(window: Window, options: SubMarkPaintOptions) {
     ? y + (1 - ratio) * (height - HANDLE_SIZE)
     : y + (height - HANDLE_SIZE) / 2;
 
-  const track = resolveStyle({
+  const trackResolved = resolveStyle({
     style: props.trackStyle ?? {},
     hovered,
     focused,
@@ -59,7 +59,16 @@ export function paintSlider(window: Window, options: SubMarkPaintOptions) {
     checked,
     disabled,
   });
-  const filled = resolveStyle({
+  const track = props.trackStyle?.transition
+    ? ctx.animationManager.applyOverlay(
+        stableId,
+        trackResolved,
+        props.trackStyle.transition,
+        'track'
+      )
+    : trackResolved;
+
+  const filledResolved = resolveStyle({
     style: props.filledStyle ?? {},
     hovered,
     focused,
@@ -67,7 +76,16 @@ export function paintSlider(window: Window, options: SubMarkPaintOptions) {
     checked,
     disabled,
   });
-  const handle = resolveStyle({
+  const filled = props.filledStyle?.transition
+    ? ctx.animationManager.applyOverlay(
+        stableId,
+        filledResolved,
+        props.filledStyle.transition,
+        'filled'
+      )
+    : filledResolved;
+
+  const handleResolved = resolveStyle({
     style: props.handleStyle ?? {},
     hovered,
     focused,
@@ -75,6 +93,14 @@ export function paintSlider(window: Window, options: SubMarkPaintOptions) {
     checked,
     disabled,
   });
+  const handle = props.handleStyle?.transition
+    ? ctx.animationManager.applyOverlay(
+        stableId,
+        handleResolved,
+        props.handleStyle.transition,
+        'handle'
+      )
+    : handleResolved;
 
   paintBackground(window, {
     x: trackX,

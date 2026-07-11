@@ -7,9 +7,17 @@ import { paintBackground, paintBorder, resolveStyle } from '../utility';
 const KNOB_INSET = 1;
 
 export function paintToggle(window: Window, options: SubMarkPaintOptions) {
-  const { renderer, layout, checked, hovered, focused, pressed, disabled } =
-    options;
-  const { widget, x, y, width, height } = layout;
+  const {
+    renderer,
+    ctx,
+    layout,
+    checked,
+    hovered,
+    focused,
+    pressed,
+    disabled,
+  } = options;
+  const { widget, x, y, width, height, stableId } = layout;
   const props = widget.props as ToggleProps;
 
   const half = width / 2;
@@ -18,7 +26,7 @@ export function paintToggle(window: Window, options: SubMarkPaintOptions) {
   const markX = checked ? x + half : x + KNOB_INSET;
   const markY = y + KNOB_INSET;
 
-  const knob = resolveStyle({
+  const knobResolved = resolveStyle({
     style: props.knobStyle ?? {},
     hovered,
     focused,
@@ -26,6 +34,14 @@ export function paintToggle(window: Window, options: SubMarkPaintOptions) {
     checked,
     disabled,
   });
+  const knob = props.knobStyle?.transition
+    ? ctx.animationManager.applyOverlay(
+        stableId,
+        knobResolved,
+        props.knobStyle.transition,
+        'knob'
+      )
+    : knobResolved;
 
   paintBorder(window, {
     x: markX,

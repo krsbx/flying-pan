@@ -6,9 +6,17 @@ import { paintBackground, paintBorder, resolveStyle } from '../utility';
 const TICK_INSET = 0.5;
 
 export function paintCheckbox(window: Window, options: SubMarkPaintOptions) {
-  const { renderer, layout, checked, hovered, focused, pressed, disabled } =
-    options;
-  const { widget, x, y, width, height } = layout;
+  const {
+    renderer,
+    ctx,
+    layout,
+    checked,
+    hovered,
+    focused,
+    pressed,
+    disabled,
+  } = options;
+  const { widget, x, y, width, height, stableId } = layout;
   const props = widget.props as CheckboxProps;
 
   if (!checked) return;
@@ -18,7 +26,7 @@ export function paintCheckbox(window: Window, options: SubMarkPaintOptions) {
   const markX = x + (width - markWidth) / 2;
   const markY = y + (height - markHeight) / 2;
 
-  const tick = resolveStyle({
+  const tickResolved = resolveStyle({
     style: props.tickStyle ?? {},
     hovered,
     focused,
@@ -26,6 +34,14 @@ export function paintCheckbox(window: Window, options: SubMarkPaintOptions) {
     checked,
     disabled,
   });
+  const tick = props.tickStyle?.transition
+    ? ctx.animationManager.applyOverlay(
+        stableId,
+        tickResolved,
+        props.tickStyle.transition,
+        'tick'
+      )
+    : tickResolved;
 
   paintBorder(window, {
     x: markX,

@@ -9,7 +9,6 @@ import {
   HANDLE_SIZE,
 } from '@flying/widget/slider/constant';
 import { makeSliderState } from '@flying/widget/slider/state';
-import { paintSliderHandle } from './handle';
 import { paintInlineValueLabel } from '../text';
 import type { SubMarkPaintOptions } from '../types';
 import {
@@ -17,6 +16,7 @@ import {
   resolveFillColorClamped,
   resolveStyle,
 } from '../utility';
+import { paintSliderHandle } from './handle';
 
 export function paintCircularSlider(
   window: Window,
@@ -60,7 +60,7 @@ export function paintCircularSlider(
   // Angle at the handle position.
   const handleAngle = startAngle + dirSign * sweep * ratio;
 
-  const track = resolveStyle({
+  const trackResolved = resolveStyle({
     style: props.trackStyle ?? {},
     hovered,
     focused,
@@ -68,7 +68,15 @@ export function paintCircularSlider(
     checked,
     disabled,
   });
-  const filled = resolveStyle({
+  const track = trackResolved?.transition
+    ? ctx.animationManager.applyOverlay(
+        stableId,
+        trackResolved,
+        trackResolved.transition,
+        'track'
+      )
+    : trackResolved;
+  const filledResolved = resolveStyle({
     style: props.filledStyle ?? {},
     hovered,
     focused,
@@ -76,7 +84,15 @@ export function paintCircularSlider(
     checked,
     disabled,
   });
-  const handle = resolveStyle({
+  const filled = filledResolved?.transition
+    ? ctx.animationManager.applyOverlay(
+        stableId,
+        filledResolved,
+        filledResolved.transition,
+        'filled'
+      )
+    : filledResolved;
+  const handleResolved = resolveStyle({
     style: props.handleStyle ?? {},
     hovered,
     focused,
@@ -84,6 +100,14 @@ export function paintCircularSlider(
     checked,
     disabled,
   });
+  const handle = handleResolved?.transition
+    ? ctx.animationManager.applyOverlay(
+        stableId,
+        handleResolved,
+        handleResolved.transition,
+        'handle'
+      )
+    : handleResolved;
 
   drawArcSegment(window, {
     renderer,
