@@ -1,4 +1,4 @@
-import { parseColor } from '@/flying/renderer/color';
+import { parseColor } from '@flying/renderer/color';
 import type { RGBA } from '@flying/types';
 
 /** Linear interpolation between two RGBA colors. Shared with gradient painter. */

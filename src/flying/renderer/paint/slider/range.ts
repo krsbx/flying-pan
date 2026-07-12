@@ -1,10 +1,10 @@
-import type { RangeSliderState } from '@/flying/widget/slider/types';
 import type { Window } from '@flying/app';
 import { valueToRatio } from '@flying/utility/common';
 import type { RangeSliderBarProps } from '@flying/widget';
 import { Palette, ProgressBarOrientation } from '@flying/widget';
 import { HANDLE_SIZE, TRACK_THICKNESS } from '@flying/widget/slider/constant';
 import { makeRangeSliderState } from '@flying/widget/slider/state';
+import type { RangeSliderState } from '@flying/widget/slider/types';
 import { paintInlineLabel } from '../text';
 import type { SubMarkPaintOptions } from '../types';
 import {

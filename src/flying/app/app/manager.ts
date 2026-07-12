@@ -1,4 +1,4 @@
-import { AnimationManager } from '@/flying/animation';
+import { AnimationManager } from '@flying/animation';
 import { InteractionManager } from '@flying/interactions';
 import { Reconciler } from '@flying/reconcile';
 import type { PaintContext } from '@flying/renderer';

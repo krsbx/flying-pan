@@ -1,11 +1,11 @@
-import { valueToRatio } from '@/flying/utility/common';
+import type { Window } from '@flying/app';
+import { valueToRatio } from '@flying/utility/common';
 import {
   Palette,
   ProgressBarOrientation,
   ProgressDirection,
   type MeterProps,
-} from '@/flying/widget';
-import type { Window } from '@flying/app';
+} from '@flying/widget';
 import { paintContinuousFill } from '../fill';
 import { paintInlineValueLabel } from '../text';
 import type { PaintOptions } from '../types';

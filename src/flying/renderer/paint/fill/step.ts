@@ -1,8 +1,8 @@
-import type { ColorStop } from '@/flying/widget/progress/types';
 import type { Window } from '@flying/app';
 import type { Renderer } from '@flying/renderer';
 import type { ViewStyle } from '@flying/widget';
 import { Palette } from '@flying/widget';
+import type { ColorStop } from '@flying/widget/progress/types';
 import {
   paintBackground,
   paintBorder,

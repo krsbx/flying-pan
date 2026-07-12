@@ -1,4 +1,4 @@
-import type { ValidColor } from '@/flying/types';
+import type { ValidColor } from '@flying/types';
 import type { ProgressType, ProgressValueType } from '../constant';
 import type { TextStyle, ViewStyle } from '../styles';
 

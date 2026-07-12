@@ -1,4 +1,4 @@
-import type { ViewStyle } from '@/flying/widget';
+import type { ViewStyle } from '@flying/widget';
 import { AnimatableProperty, EasingName } from '../constant';
 import { easings } from '../easing';
 import { interpolate } from '../interpolate';

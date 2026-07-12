@@ -1,4 +1,3 @@
-import type { ColorStop } from '@/flying/widget/progress/types';
 import type { Window } from '@flying/app';
 import type { LayoutNode } from '@flying/layout';
 import type { Renderer } from '@flying/renderer';
@@ -13,6 +12,7 @@ import {
   type ViewStyle,
   type WidgetDescriptor,
 } from '@flying/widget';
+import type { ColorStop } from '@flying/widget/progress/types';
 import { clamp } from '@utility/common';
 import { resolvedStyleCache } from './constant';
 import type {

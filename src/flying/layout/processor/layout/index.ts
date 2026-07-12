@@ -1,4 +1,4 @@
-import { WidgetType } from '@/flying/widget';
+import { WidgetType } from '@flying/widget';
 import { listLayoutFlex } from './list';
 import type { WidgetLevelLayoutFlexOptions } from './types';
 
