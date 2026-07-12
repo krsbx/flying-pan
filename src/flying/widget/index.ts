@@ -4,6 +4,7 @@ export * from './constant';
 export * from './flex';
 export * from './image';
 export * from './label';
+export * from './list';
 export * from './meter';
 export * from './progress';
 export * from './radio';

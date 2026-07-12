@@ -8,6 +8,7 @@ import {
 } from '@flying/widget';
 import { positionAbsolute } from './absolute';
 import { measureChildsComponent } from './measurement';
+import { widgetLevelLayoutFlex } from './processor';
 import type { LayoutFlexFn, LayoutNode } from './types';
 import { layoutSingleLine, layoutWrap } from './wrap';
 
@@ -53,6 +54,14 @@ export const layoutFlex: LayoutFlexFn = function (options) {
   if (node.style?.focusable === true) {
     ctx.focusableNodes.push(layoutNode);
   }
+
+  widgetLevelLayoutFlex({
+    ...options,
+    contentHeight,
+    contentWidth,
+    layoutNode,
+    stableId,
+  });
 
   if (!node.children || node.children.length === 0) {
     return layoutNode;

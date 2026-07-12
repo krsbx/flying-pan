@@ -64,6 +64,7 @@ export const WidgetType = {
   CircularSlider: 'CircularSlider',
   RangeSlider: 'RangeSlider',
   Meter: 'Meter',
+  List: 'List',
 } as const;
 
 export type WidgetType = (typeof WidgetType)[keyof typeof WidgetType];

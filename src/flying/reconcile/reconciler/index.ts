@@ -58,6 +58,8 @@ export class Reconciler implements GetStableId {
   }
 
   public getStableId = (widget: WidgetDescriptor): number => {
+    if (widget._virtualStableId != null) return widget._virtualStableId;
+
     return this.stableIdByWidget.get(widget) ?? 0;
   };
 

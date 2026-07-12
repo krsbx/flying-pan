@@ -167,6 +167,9 @@ export interface WidgetDescriptor extends InteractionProps {
   props: WidgetProps;
   style?: ViewStyle;
   children?: WidgetDescriptor[];
+  /** Synthetic stableId assigned by the layout pass for virtual children
+   *  (e.g. List items). Bypasses the reconciler's stableIdByWidget map. */
+  _virtualStableId?: number;
 }
 
 export interface LayoutConstraintsOptions {
