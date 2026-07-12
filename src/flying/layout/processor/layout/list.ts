@@ -1,4 +1,5 @@
 import {
+  ProgressBarOrientation,
   WidgetType,
   type ListProps,
   type WidgetDescriptor,
@@ -18,16 +19,21 @@ function withVirtualStableId(
 }
 
 export function listLayoutFlex(options: WidgetLevelLayoutFlexOptions): void {
-  const { layoutNode, node, contentHeight, stableId, ctx } = options;
+  const { layoutNode, node, contentHeight, contentWidth, stableId, ctx } =
+    options;
 
   const props = node.props as ListProps;
-  const { itemCount, rowHeight, renderItem, overscan = 3 } = props;
+  const { itemCount, itemSize, renderItem, overscan = 3, orientation } = props;
 
-  const scrollY = ctx.interactionManager.scroll.offset(layoutNode).y;
-  const firstVisible = Math.max(0, Math.floor(scrollY / rowHeight) - overscan);
+  const isHorizontal = orientation === ProgressBarOrientation.Horizontal;
+  const scrollOffset = ctx.interactionManager.scroll.offset(layoutNode);
+  const viewport = isHorizontal ? contentWidth : contentHeight;
+
+  const scrollPos = isHorizontal ? scrollOffset.x : scrollOffset.y;
+  const firstVisible = Math.max(0, Math.floor(scrollPos / itemSize) - overscan);
   const lastVisible = Math.min(
     itemCount,
-    Math.ceil((scrollY + contentHeight) / rowHeight) + overscan
+    Math.ceil((scrollPos + viewport) / itemSize) + overscan
   );
 
   const virtualChildren: WidgetDescriptor[] = [];
@@ -38,7 +44,9 @@ export function listLayoutFlex(options: WidgetLevelLayoutFlexOptions): void {
         {
           type: WidgetType.View,
           props: {},
-          style: { width: '100%', height: firstVisible * rowHeight },
+          style: isHorizontal
+            ? { height: '100%', width: firstVisible * itemSize }
+            : { width: '100%', height: firstVisible * itemSize },
         },
         stableId,
         0
@@ -56,10 +64,15 @@ export function listLayoutFlex(options: WidgetLevelLayoutFlexOptions): void {
         {
           type: WidgetType.View,
           props: {},
-          style: {
-            width: '100%',
-            height: (itemCount - lastVisible) * rowHeight,
-          },
+          style: isHorizontal
+            ? {
+                height: '100%',
+                width: (itemCount - lastVisible) * itemSize,
+              }
+            : {
+                width: '100%',
+                height: (itemCount - lastVisible) * itemSize,
+              },
         },
         stableId,
         itemCount + 1
