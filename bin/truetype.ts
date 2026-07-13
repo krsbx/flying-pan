@@ -8,7 +8,7 @@ const parser = new ClangNodeParser(
 const parsed = await parser.parse();
 
 const generator = new FFICodeGenerator({
-  libName: 'TrueType',
+  libName: 'StbTrueType',
   outputDir: path.join(import.meta.dir, '../src/library/truetype'),
   macroFile: path.join(import.meta.dir, '../assets/stb_truetype.macros'),
   macroPrefix: 'STBTT_',

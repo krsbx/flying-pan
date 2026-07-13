@@ -1,9 +1,9 @@
 import { stringToCString } from '@utility/common';
 import type { CString, Pointer } from 'bun:ffi';
-import type { TrueType } from './index';
+import type { StbTrueType } from './index';
 
 export function stbtt_BakeFontBitmap(
-  this: TrueType,
+  this: StbTrueType,
   options: {
     data: Pointer | NodeJS.TypedArray | null;
     offset: number;
@@ -30,7 +30,7 @@ export function stbtt_BakeFontBitmap(
 }
 
 export function stbtt_GetBakedQuad(
-  this: TrueType,
+  this: StbTrueType,
   options: {
     chardata: Pointer | NodeJS.TypedArray | null;
     pw: number;
@@ -55,7 +55,7 @@ export function stbtt_GetBakedQuad(
 }
 
 export function stbtt_GetScaledFontVMetrics(
-  this: TrueType,
+  this: StbTrueType,
   options: {
     fontdata: Pointer | NodeJS.TypedArray | null;
     index: number;
@@ -76,7 +76,7 @@ export function stbtt_GetScaledFontVMetrics(
 }
 
 export function stbtt_PackBegin(
-  this: TrueType,
+  this: StbTrueType,
   options: {
     spc: Pointer | NodeJS.TypedArray | null;
     pixels: Pointer | NodeJS.TypedArray | null;
@@ -99,7 +99,7 @@ export function stbtt_PackBegin(
 }
 
 export function stbtt_PackEnd(
-  this: TrueType,
+  this: StbTrueType,
   options: {
     spc: Pointer | NodeJS.TypedArray | null;
   }
@@ -108,7 +108,7 @@ export function stbtt_PackEnd(
 }
 
 export function stbtt_PackFontRange(
-  this: TrueType,
+  this: StbTrueType,
   options: {
     spc: Pointer | NodeJS.TypedArray | null;
     fontdata: Pointer | NodeJS.TypedArray | null;
@@ -131,7 +131,7 @@ export function stbtt_PackFontRange(
 }
 
 export function stbtt_PackFontRanges(
-  this: TrueType,
+  this: StbTrueType,
   options: {
     spc: Pointer | NodeJS.TypedArray | null;
     fontdata: Pointer | NodeJS.TypedArray | null;
@@ -150,7 +150,7 @@ export function stbtt_PackFontRanges(
 }
 
 export function stbtt_PackSetOversampling(
-  this: TrueType,
+  this: StbTrueType,
   options: {
     spc: Pointer | NodeJS.TypedArray | null;
     h_oversample: number;
@@ -165,7 +165,7 @@ export function stbtt_PackSetOversampling(
 }
 
 export function stbtt_PackSetSkipMissingCodepoints(
-  this: TrueType,
+  this: StbTrueType,
   options: {
     spc: Pointer | NodeJS.TypedArray | null;
     skip: number;
@@ -175,7 +175,7 @@ export function stbtt_PackSetSkipMissingCodepoints(
 }
 
 export function stbtt_GetPackedQuad(
-  this: TrueType,
+  this: StbTrueType,
   options: {
     chardata: Pointer | NodeJS.TypedArray | null;
     pw: number;
@@ -200,7 +200,7 @@ export function stbtt_GetPackedQuad(
 }
 
 export function stbtt_PackFontRangesGatherRects(
-  this: TrueType,
+  this: StbTrueType,
   options: {
     spc: Pointer | NodeJS.TypedArray | null;
     info: Pointer | NodeJS.TypedArray | null;
@@ -219,7 +219,7 @@ export function stbtt_PackFontRangesGatherRects(
 }
 
 export function stbtt_PackFontRangesPackRects(
-  this: TrueType,
+  this: StbTrueType,
   options: {
     spc: Pointer | NodeJS.TypedArray | null;
     rects: Pointer | NodeJS.TypedArray | null;
@@ -234,7 +234,7 @@ export function stbtt_PackFontRangesPackRects(
 }
 
 export function stbtt_PackFontRangesRenderIntoRects(
-  this: TrueType,
+  this: StbTrueType,
   options: {
     spc: Pointer | NodeJS.TypedArray | null;
     info: Pointer | NodeJS.TypedArray | null;
@@ -253,7 +253,7 @@ export function stbtt_PackFontRangesRenderIntoRects(
 }
 
 export function stbtt_GetNumberOfFonts(
-  this: TrueType,
+  this: StbTrueType,
   options: {
     data: Pointer | NodeJS.TypedArray | null;
   }
@@ -262,7 +262,7 @@ export function stbtt_GetNumberOfFonts(
 }
 
 export function stbtt_GetFontOffsetForIndex(
-  this: TrueType,
+  this: StbTrueType,
   options: {
     data: Pointer | NodeJS.TypedArray | null;
     index: number;
@@ -275,7 +275,7 @@ export function stbtt_GetFontOffsetForIndex(
 }
 
 export function stbtt_InitFont(
-  this: TrueType,
+  this: StbTrueType,
   options: {
     info: Pointer | NodeJS.TypedArray | null;
     data: Pointer | NodeJS.TypedArray | null;
@@ -290,7 +290,7 @@ export function stbtt_InitFont(
 }
 
 export function stbtt_FindGlyphIndex(
-  this: TrueType,
+  this: StbTrueType,
   options: {
     info: Pointer | NodeJS.TypedArray | null;
     unicode_codepoint: number;
@@ -303,7 +303,7 @@ export function stbtt_FindGlyphIndex(
 }
 
 export function stbtt_ScaleForPixelHeight(
-  this: TrueType,
+  this: StbTrueType,
   options: {
     info: Pointer | NodeJS.TypedArray | null;
     pixels: number;
@@ -316,7 +316,7 @@ export function stbtt_ScaleForPixelHeight(
 }
 
 export function stbtt_ScaleForMappingEmToPixels(
-  this: TrueType,
+  this: StbTrueType,
   options: {
     info: Pointer | NodeJS.TypedArray | null;
     pixels: number;
@@ -329,7 +329,7 @@ export function stbtt_ScaleForMappingEmToPixels(
 }
 
 export function stbtt_GetFontVMetrics(
-  this: TrueType,
+  this: StbTrueType,
   options: {
     info: Pointer | NodeJS.TypedArray | null;
     ascent: Pointer | NodeJS.TypedArray | null;
@@ -346,7 +346,7 @@ export function stbtt_GetFontVMetrics(
 }
 
 export function stbtt_GetFontVMetricsOS2(
-  this: TrueType,
+  this: StbTrueType,
   options: {
     info: Pointer | NodeJS.TypedArray | null;
     typoAscent: Pointer | NodeJS.TypedArray | null;
@@ -363,7 +363,7 @@ export function stbtt_GetFontVMetricsOS2(
 }
 
 export function stbtt_GetFontBoundingBox(
-  this: TrueType,
+  this: StbTrueType,
   options: {
     info: Pointer | NodeJS.TypedArray | null;
     x0: Pointer | NodeJS.TypedArray | null;
@@ -382,7 +382,7 @@ export function stbtt_GetFontBoundingBox(
 }
 
 export function stbtt_GetCodepointHMetrics(
-  this: TrueType,
+  this: StbTrueType,
   options: {
     info: Pointer | NodeJS.TypedArray | null;
     codepoint: number;
@@ -399,7 +399,7 @@ export function stbtt_GetCodepointHMetrics(
 }
 
 export function stbtt_GetCodepointKernAdvance(
-  this: TrueType,
+  this: StbTrueType,
   options: {
     info: Pointer | NodeJS.TypedArray | null;
     ch1: number;
@@ -414,7 +414,7 @@ export function stbtt_GetCodepointKernAdvance(
 }
 
 export function stbtt_GetCodepointBox(
-  this: TrueType,
+  this: StbTrueType,
   options: {
     info: Pointer | NodeJS.TypedArray | null;
     codepoint: number;
@@ -435,7 +435,7 @@ export function stbtt_GetCodepointBox(
 }
 
 export function stbtt_GetGlyphHMetrics(
-  this: TrueType,
+  this: StbTrueType,
   options: {
     info: Pointer | NodeJS.TypedArray | null;
     glyph_index: number;
@@ -452,7 +452,7 @@ export function stbtt_GetGlyphHMetrics(
 }
 
 export function stbtt_GetGlyphKernAdvance(
-  this: TrueType,
+  this: StbTrueType,
   options: {
     info: Pointer | NodeJS.TypedArray | null;
     glyph1: number;
@@ -467,7 +467,7 @@ export function stbtt_GetGlyphKernAdvance(
 }
 
 export function stbtt_GetGlyphBox(
-  this: TrueType,
+  this: StbTrueType,
   options: {
     info: Pointer | NodeJS.TypedArray | null;
     glyph_index: number;
@@ -488,7 +488,7 @@ export function stbtt_GetGlyphBox(
 }
 
 export function stbtt_GetKerningTableLength(
-  this: TrueType,
+  this: StbTrueType,
   options: {
     info: Pointer | NodeJS.TypedArray | null;
   }
@@ -497,7 +497,7 @@ export function stbtt_GetKerningTableLength(
 }
 
 export function stbtt_GetKerningTable(
-  this: TrueType,
+  this: StbTrueType,
   options: {
     info: Pointer | NodeJS.TypedArray | null;
     table: Pointer | NodeJS.TypedArray | null;
@@ -512,7 +512,7 @@ export function stbtt_GetKerningTable(
 }
 
 export function stbtt_IsGlyphEmpty(
-  this: TrueType,
+  this: StbTrueType,
   options: {
     info: Pointer | NodeJS.TypedArray | null;
     glyph_index: number;
@@ -525,7 +525,7 @@ export function stbtt_IsGlyphEmpty(
 }
 
 export function stbtt_GetCodepointShape(
-  this: TrueType,
+  this: StbTrueType,
   options: {
     info: Pointer | NodeJS.TypedArray | null;
     unicode_codepoint: number;
@@ -540,7 +540,7 @@ export function stbtt_GetCodepointShape(
 }
 
 export function stbtt_GetGlyphShape(
-  this: TrueType,
+  this: StbTrueType,
   options: {
     info: Pointer | NodeJS.TypedArray | null;
     glyph_index: number;
@@ -555,7 +555,7 @@ export function stbtt_GetGlyphShape(
 }
 
 export function stbtt_FreeShape(
-  this: TrueType,
+  this: StbTrueType,
   options: {
     info: Pointer | NodeJS.TypedArray | null;
     vertices: Pointer | NodeJS.TypedArray | null;
@@ -565,7 +565,7 @@ export function stbtt_FreeShape(
 }
 
 export function stbtt_FindSVGDoc(
-  this: TrueType,
+  this: StbTrueType,
   options: {
     info: Pointer | NodeJS.TypedArray | null;
     gl: number;
@@ -578,7 +578,7 @@ export function stbtt_FindSVGDoc(
 }
 
 export function stbtt_GetCodepointSVG(
-  this: TrueType,
+  this: StbTrueType,
   options: {
     info: Pointer | NodeJS.TypedArray | null;
     unicode_codepoint: number;
@@ -593,7 +593,7 @@ export function stbtt_GetCodepointSVG(
 }
 
 export function stbtt_GetGlyphSVG(
-  this: TrueType,
+  this: StbTrueType,
   options: {
     info: Pointer | NodeJS.TypedArray | null;
     gl: number;
@@ -608,7 +608,7 @@ export function stbtt_GetGlyphSVG(
 }
 
 export function stbtt_FreeBitmap(
-  this: TrueType,
+  this: StbTrueType,
   options: {
     bitmap: Pointer | NodeJS.TypedArray | null;
     userdata: Pointer | NodeJS.TypedArray | null;
@@ -618,7 +618,7 @@ export function stbtt_FreeBitmap(
 }
 
 export function stbtt_GetCodepointBitmap(
-  this: TrueType,
+  this: StbTrueType,
   options: {
     info: Pointer | NodeJS.TypedArray | null;
     scale_x: number;
@@ -643,7 +643,7 @@ export function stbtt_GetCodepointBitmap(
 }
 
 export function stbtt_GetCodepointBitmapSubpixel(
-  this: TrueType,
+  this: StbTrueType,
   options: {
     info: Pointer | NodeJS.TypedArray | null;
     scale_x: number;
@@ -672,7 +672,7 @@ export function stbtt_GetCodepointBitmapSubpixel(
 }
 
 export function stbtt_MakeCodepointBitmap(
-  this: TrueType,
+  this: StbTrueType,
   options: {
     info: Pointer | NodeJS.TypedArray | null;
     output: Pointer | NodeJS.TypedArray | null;
@@ -697,7 +697,7 @@ export function stbtt_MakeCodepointBitmap(
 }
 
 export function stbtt_MakeCodepointBitmapSubpixel(
-  this: TrueType,
+  this: StbTrueType,
   options: {
     info: Pointer | NodeJS.TypedArray | null;
     output: Pointer | NodeJS.TypedArray | null;
@@ -726,7 +726,7 @@ export function stbtt_MakeCodepointBitmapSubpixel(
 }
 
 export function stbtt_MakeCodepointBitmapSubpixelPrefilter(
-  this: TrueType,
+  this: StbTrueType,
   options: {
     info: Pointer | NodeJS.TypedArray | null;
     output: Pointer | NodeJS.TypedArray | null;
@@ -763,7 +763,7 @@ export function stbtt_MakeCodepointBitmapSubpixelPrefilter(
 }
 
 export function stbtt_GetCodepointBitmapBox(
-  this: TrueType,
+  this: StbTrueType,
   options: {
     font: Pointer | NodeJS.TypedArray | null;
     codepoint: number;
@@ -788,7 +788,7 @@ export function stbtt_GetCodepointBitmapBox(
 }
 
 export function stbtt_GetCodepointBitmapBoxSubpixel(
-  this: TrueType,
+  this: StbTrueType,
   options: {
     font: Pointer | NodeJS.TypedArray | null;
     codepoint: number;
@@ -817,7 +817,7 @@ export function stbtt_GetCodepointBitmapBoxSubpixel(
 }
 
 export function stbtt_GetGlyphBitmap(
-  this: TrueType,
+  this: StbTrueType,
   options: {
     info: Pointer | NodeJS.TypedArray | null;
     scale_x: number;
@@ -842,7 +842,7 @@ export function stbtt_GetGlyphBitmap(
 }
 
 export function stbtt_GetGlyphBitmapSubpixel(
-  this: TrueType,
+  this: StbTrueType,
   options: {
     info: Pointer | NodeJS.TypedArray | null;
     scale_x: number;
@@ -871,7 +871,7 @@ export function stbtt_GetGlyphBitmapSubpixel(
 }
 
 export function stbtt_MakeGlyphBitmap(
-  this: TrueType,
+  this: StbTrueType,
   options: {
     info: Pointer | NodeJS.TypedArray | null;
     output: Pointer | NodeJS.TypedArray | null;
@@ -896,7 +896,7 @@ export function stbtt_MakeGlyphBitmap(
 }
 
 export function stbtt_MakeGlyphBitmapSubpixel(
-  this: TrueType,
+  this: StbTrueType,
   options: {
     info: Pointer | NodeJS.TypedArray | null;
     output: Pointer | NodeJS.TypedArray | null;
@@ -925,7 +925,7 @@ export function stbtt_MakeGlyphBitmapSubpixel(
 }
 
 export function stbtt_MakeGlyphBitmapSubpixelPrefilter(
-  this: TrueType,
+  this: StbTrueType,
   options: {
     info: Pointer | NodeJS.TypedArray | null;
     output: Pointer | NodeJS.TypedArray | null;
@@ -962,7 +962,7 @@ export function stbtt_MakeGlyphBitmapSubpixelPrefilter(
 }
 
 export function stbtt_GetGlyphBitmapBox(
-  this: TrueType,
+  this: StbTrueType,
   options: {
     font: Pointer | NodeJS.TypedArray | null;
     glyph: number;
@@ -987,7 +987,7 @@ export function stbtt_GetGlyphBitmapBox(
 }
 
 export function stbtt_GetGlyphBitmapBoxSubpixel(
-  this: TrueType,
+  this: StbTrueType,
   options: {
     font: Pointer | NodeJS.TypedArray | null;
     glyph: number;
@@ -1016,7 +1016,7 @@ export function stbtt_GetGlyphBitmapBoxSubpixel(
 }
 
 export function stbtt_Rasterize(
-  this: TrueType,
+  this: StbTrueType,
   options: {
     result: Pointer | NodeJS.TypedArray | null;
     flatness_in_pixels: number;
@@ -1049,7 +1049,7 @@ export function stbtt_Rasterize(
 }
 
 export function stbtt_FreeSDF(
-  this: TrueType,
+  this: StbTrueType,
   options: {
     bitmap: Pointer | NodeJS.TypedArray | null;
     userdata: Pointer | NodeJS.TypedArray | null;
@@ -1059,7 +1059,7 @@ export function stbtt_FreeSDF(
 }
 
 export function stbtt_GetGlyphSDF(
-  this: TrueType,
+  this: StbTrueType,
   options: {
     info: Pointer | NodeJS.TypedArray | null;
     scale: number;
@@ -1088,7 +1088,7 @@ export function stbtt_GetGlyphSDF(
 }
 
 export function stbtt_GetCodepointSDF(
-  this: TrueType,
+  this: StbTrueType,
   options: {
     info: Pointer | NodeJS.TypedArray | null;
     scale: number;
@@ -1117,7 +1117,7 @@ export function stbtt_GetCodepointSDF(
 }
 
 export function stbtt_FindMatchingFont(
-  this: TrueType,
+  this: StbTrueType,
   options: {
     fontdata: Pointer | NodeJS.TypedArray | null;
     name: string;
@@ -1132,7 +1132,7 @@ export function stbtt_FindMatchingFont(
 }
 
 export function stbtt_CompareUTF8toUTF16_bigendian(
-  this: TrueType,
+  this: StbTrueType,
   options: {
     s1: string;
     len1: number;
@@ -1149,7 +1149,7 @@ export function stbtt_CompareUTF8toUTF16_bigendian(
 }
 
 export function stbtt_GetFontNameString(
-  this: TrueType,
+  this: StbTrueType,
   options: {
     font: Pointer | NodeJS.TypedArray | null;
     length: Pointer | NodeJS.TypedArray | null;

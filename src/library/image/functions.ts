@@ -1,9 +1,9 @@
 import { stringToCString } from '@utility/common';
 import type { CString, Pointer } from 'bun:ffi';
-import type { Image } from './index';
+import type { StbImage } from './index';
 
 export function stbi_load_from_memory(
-  this: Image,
+  this: StbImage,
   options: {
     buffer: Pointer | NodeJS.TypedArray | null;
     len: number;
@@ -24,7 +24,7 @@ export function stbi_load_from_memory(
 }
 
 export function stbi_load_from_callbacks(
-  this: Image,
+  this: StbImage,
   options: {
     clbk: Pointer | NodeJS.TypedArray | null;
     user: Pointer | NodeJS.TypedArray | null;
@@ -45,7 +45,7 @@ export function stbi_load_from_callbacks(
 }
 
 export function stbi_load(
-  this: Image,
+  this: StbImage,
   options: {
     filename: string;
     x: Pointer | NodeJS.TypedArray | null;
@@ -64,7 +64,7 @@ export function stbi_load(
 }
 
 export function stbi_load_from_file(
-  this: Image,
+  this: StbImage,
   options: {
     f: Pointer | NodeJS.TypedArray | null;
     x: Pointer | NodeJS.TypedArray | null;
@@ -83,7 +83,7 @@ export function stbi_load_from_file(
 }
 
 export function stbi_load_gif_from_memory(
-  this: Image,
+  this: StbImage,
   options: {
     buffer: Pointer | NodeJS.TypedArray | null;
     len: number;
@@ -108,7 +108,7 @@ export function stbi_load_gif_from_memory(
 }
 
 export function stbi_load_16_from_memory(
-  this: Image,
+  this: StbImage,
   options: {
     buffer: Pointer | NodeJS.TypedArray | null;
     len: number;
@@ -129,7 +129,7 @@ export function stbi_load_16_from_memory(
 }
 
 export function stbi_load_16_from_callbacks(
-  this: Image,
+  this: StbImage,
   options: {
     clbk: Pointer | NodeJS.TypedArray | null;
     user: Pointer | NodeJS.TypedArray | null;
@@ -150,7 +150,7 @@ export function stbi_load_16_from_callbacks(
 }
 
 export function stbi_load_16(
-  this: Image,
+  this: StbImage,
   options: {
     filename: string;
     x: Pointer | NodeJS.TypedArray | null;
@@ -169,7 +169,7 @@ export function stbi_load_16(
 }
 
 export function stbi_load_from_file_16(
-  this: Image,
+  this: StbImage,
   options: {
     f: Pointer | NodeJS.TypedArray | null;
     x: Pointer | NodeJS.TypedArray | null;
@@ -188,7 +188,7 @@ export function stbi_load_from_file_16(
 }
 
 export function stbi_loadf_from_memory(
-  this: Image,
+  this: StbImage,
   options: {
     buffer: Pointer | NodeJS.TypedArray | null;
     len: number;
@@ -209,7 +209,7 @@ export function stbi_loadf_from_memory(
 }
 
 export function stbi_loadf_from_callbacks(
-  this: Image,
+  this: StbImage,
   options: {
     clbk: Pointer | NodeJS.TypedArray | null;
     user: Pointer | NodeJS.TypedArray | null;
@@ -230,7 +230,7 @@ export function stbi_loadf_from_callbacks(
 }
 
 export function stbi_loadf(
-  this: Image,
+  this: StbImage,
   options: {
     filename: string;
     x: Pointer | NodeJS.TypedArray | null;
@@ -249,7 +249,7 @@ export function stbi_loadf(
 }
 
 export function stbi_loadf_from_file(
-  this: Image,
+  this: StbImage,
   options: {
     f: Pointer | NodeJS.TypedArray | null;
     x: Pointer | NodeJS.TypedArray | null;
@@ -268,7 +268,7 @@ export function stbi_loadf_from_file(
 }
 
 export function stbi_hdr_to_ldr_gamma(
-  this: Image,
+  this: StbImage,
   options: {
     gamma: number;
   }
@@ -277,7 +277,7 @@ export function stbi_hdr_to_ldr_gamma(
 }
 
 export function stbi_hdr_to_ldr_scale(
-  this: Image,
+  this: StbImage,
   options: {
     scale: number;
   }
@@ -286,7 +286,7 @@ export function stbi_hdr_to_ldr_scale(
 }
 
 export function stbi_ldr_to_hdr_gamma(
-  this: Image,
+  this: StbImage,
   options: {
     gamma: number;
   }
@@ -295,7 +295,7 @@ export function stbi_ldr_to_hdr_gamma(
 }
 
 export function stbi_ldr_to_hdr_scale(
-  this: Image,
+  this: StbImage,
   options: {
     scale: number;
   }
@@ -304,7 +304,7 @@ export function stbi_ldr_to_hdr_scale(
 }
 
 export function stbi_is_hdr_from_callbacks(
-  this: Image,
+  this: StbImage,
   options: {
     clbk: Pointer | NodeJS.TypedArray | null;
     user: Pointer | NodeJS.TypedArray | null;
@@ -317,7 +317,7 @@ export function stbi_is_hdr_from_callbacks(
 }
 
 export function stbi_is_hdr_from_memory(
-  this: Image,
+  this: StbImage,
   options: {
     buffer: Pointer | NodeJS.TypedArray | null;
     len: number;
@@ -330,7 +330,7 @@ export function stbi_is_hdr_from_memory(
 }
 
 export function stbi_is_hdr(
-  this: Image,
+  this: StbImage,
   options: {
     filename: string;
   }
@@ -341,7 +341,7 @@ export function stbi_is_hdr(
 }
 
 export function stbi_is_hdr_from_file(
-  this: Image,
+  this: StbImage,
   options: {
     f: Pointer | NodeJS.TypedArray | null;
   }
@@ -349,12 +349,12 @@ export function stbi_is_hdr_from_file(
   return this.symbols.stbi_is_hdr_from_file(options.f) as number;
 }
 
-export function stbi_failure_reason(this: Image): CString {
+export function stbi_failure_reason(this: StbImage): CString {
   return this.symbols.stbi_failure_reason() as CString;
 }
 
 export function stbi_image_free(
-  this: Image,
+  this: StbImage,
   options: {
     retval_from_stbi_load: Pointer | NodeJS.TypedArray | null;
   }
@@ -363,7 +363,7 @@ export function stbi_image_free(
 }
 
 export function stbi_info_from_memory(
-  this: Image,
+  this: StbImage,
   options: {
     buffer: Pointer | NodeJS.TypedArray | null;
     len: number;
@@ -382,7 +382,7 @@ export function stbi_info_from_memory(
 }
 
 export function stbi_info_from_callbacks(
-  this: Image,
+  this: StbImage,
   options: {
     clbk: Pointer | NodeJS.TypedArray | null;
     user: Pointer | NodeJS.TypedArray | null;
@@ -401,7 +401,7 @@ export function stbi_info_from_callbacks(
 }
 
 export function stbi_is_16_bit_from_memory(
-  this: Image,
+  this: StbImage,
   options: {
     buffer: Pointer | NodeJS.TypedArray | null;
     len: number;
@@ -414,7 +414,7 @@ export function stbi_is_16_bit_from_memory(
 }
 
 export function stbi_is_16_bit_from_callbacks(
-  this: Image,
+  this: StbImage,
   options: {
     clbk: Pointer | NodeJS.TypedArray | null;
     user: Pointer | NodeJS.TypedArray | null;
@@ -427,7 +427,7 @@ export function stbi_is_16_bit_from_callbacks(
 }
 
 export function stbi_info(
-  this: Image,
+  this: StbImage,
   options: {
     filename: string;
     x: Pointer | NodeJS.TypedArray | null;
@@ -444,7 +444,7 @@ export function stbi_info(
 }
 
 export function stbi_info_from_file(
-  this: Image,
+  this: StbImage,
   options: {
     f: Pointer | NodeJS.TypedArray | null;
     x: Pointer | NodeJS.TypedArray | null;
@@ -461,7 +461,7 @@ export function stbi_info_from_file(
 }
 
 export function stbi_is_16_bit(
-  this: Image,
+  this: StbImage,
   options: {
     filename: string;
   }
@@ -472,7 +472,7 @@ export function stbi_is_16_bit(
 }
 
 export function stbi_is_16_bit_from_file(
-  this: Image,
+  this: StbImage,
   options: {
     f: Pointer | NodeJS.TypedArray | null;
   }
@@ -481,7 +481,7 @@ export function stbi_is_16_bit_from_file(
 }
 
 export function stbi_set_unpremultiply_on_load(
-  this: Image,
+  this: StbImage,
   options: {
     flag_true_if_should_unpremultiply: number;
   }
@@ -492,7 +492,7 @@ export function stbi_set_unpremultiply_on_load(
 }
 
 export function stbi_convert_iphone_png_to_rgb(
-  this: Image,
+  this: StbImage,
   options: {
     flag_true_if_should_convert: number;
   }
@@ -503,7 +503,7 @@ export function stbi_convert_iphone_png_to_rgb(
 }
 
 export function stbi_set_flip_vertically_on_load(
-  this: Image,
+  this: StbImage,
   options: {
     flag_true_if_should_flip: number;
   }
@@ -514,7 +514,7 @@ export function stbi_set_flip_vertically_on_load(
 }
 
 export function stbi_set_unpremultiply_on_load_thread(
-  this: Image,
+  this: StbImage,
   options: {
     flag_true_if_should_unpremultiply: number;
   }
@@ -525,7 +525,7 @@ export function stbi_set_unpremultiply_on_load_thread(
 }
 
 export function stbi_convert_iphone_png_to_rgb_thread(
-  this: Image,
+  this: StbImage,
   options: {
     flag_true_if_should_convert: number;
   }
@@ -536,7 +536,7 @@ export function stbi_convert_iphone_png_to_rgb_thread(
 }
 
 export function stbi_set_flip_vertically_on_load_thread(
-  this: Image,
+  this: StbImage,
   options: {
     flag_true_if_should_flip: number;
   }
@@ -547,7 +547,7 @@ export function stbi_set_flip_vertically_on_load_thread(
 }
 
 export function stbi_zlib_decode_malloc_guesssize(
-  this: Image,
+  this: StbImage,
   options: {
     buffer: string;
     len: number;
@@ -564,7 +564,7 @@ export function stbi_zlib_decode_malloc_guesssize(
 }
 
 export function stbi_zlib_decode_malloc_guesssize_headerflag(
-  this: Image,
+  this: StbImage,
   options: {
     buffer: string;
     len: number;
@@ -583,7 +583,7 @@ export function stbi_zlib_decode_malloc_guesssize_headerflag(
 }
 
 export function stbi_zlib_decode_malloc(
-  this: Image,
+  this: StbImage,
   options: {
     buffer: string;
     len: number;
@@ -598,7 +598,7 @@ export function stbi_zlib_decode_malloc(
 }
 
 export function stbi_zlib_decode_buffer(
-  this: Image,
+  this: StbImage,
   options: {
     obuffer: Pointer | NodeJS.TypedArray | null;
     olen: number;
@@ -615,7 +615,7 @@ export function stbi_zlib_decode_buffer(
 }
 
 export function stbi_zlib_decode_noheader_malloc(
-  this: Image,
+  this: StbImage,
   options: {
     buffer: string;
     len: number;
@@ -630,7 +630,7 @@ export function stbi_zlib_decode_noheader_malloc(
 }
 
 export function stbi_zlib_decode_noheader_buffer(
-  this: Image,
+  this: StbImage,
   options: {
     obuffer: Pointer | NodeJS.TypedArray | null;
     olen: number;

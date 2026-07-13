@@ -1,6 +1,6 @@
 import { CStruct } from '@cstruct';
 import type { GLFW } from '@glfw';
-import { Image } from '@image';
+import { StbImage } from '@image';
 import { Vector2 } from '@vectors';
 import type { Pointer } from 'bun:ffi';
 import {
@@ -21,7 +21,7 @@ export interface TextureManagerOptions {
 
 export class TextureManager {
   protected gl: GLFW;
-  protected image!: Image;
+  protected image!: StbImage;
   protected textures: Map<string, Texture>;
   protected infos: Map<string, ImageInfo>;
   protected _destroyed: boolean;
@@ -40,7 +40,7 @@ export class TextureManager {
   protected init(): void {
     if (this.initialized) return;
 
-    this.image = new Image(this.libPath);
+    this.image = new StbImage(this.libPath);
     this.initialized = true;
   }
 

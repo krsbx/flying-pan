@@ -1,20 +1,20 @@
 import { dlopen, type ConvertFns, type Library } from 'bun:ffi';
 import {
-  ImageDefinition,
-  type ImageDefinition as ImageDefinitionType,
+  StbImageDefinition,
+  type StbImageDefinition as StbImageDefinitionType,
 } from './constant';
 import * as Translations from './functions';
 
-type FFISymbols = typeof ImageDefinitionType;
+type FFISymbols = typeof StbImageDefinitionType;
 
 type TranslationsType = typeof Translations;
 
-class BaseImage implements Library<FFISymbols> {
+class BaseStbImage implements Library<FFISymbols> {
   public readonly close: () => void;
   public readonly symbols: ConvertFns<FFISymbols>;
 
   public constructor(filePath: string) {
-    const lib = dlopen(filePath, ImageDefinition);
+    const lib = dlopen(filePath, StbImageDefinition);
 
     this.symbols = lib.symbols;
     this.close = () => lib.close();
@@ -31,8 +31,8 @@ class BaseImage implements Library<FFISymbols> {
   }
 }
 
-export interface Image extends BaseImage, TranslationsType {}
+export interface StbImage extends BaseStbImage, TranslationsType {}
 
-export const Image = BaseImage as new (
-  ...args: ConstructorParameters<typeof BaseImage>
-) => Image;
+export const StbImage = BaseStbImage as new (
+  ...args: ConstructorParameters<typeof BaseStbImage>
+) => StbImage;

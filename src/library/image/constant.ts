@@ -1,6 +1,6 @@
 import { FFIType, type FFIFunction } from 'bun:ffi';
 
-export const ImageDefinition = {
+export const StbImageDefinition = {
   // stbi_load_from_memory
   stbi_load_from_memory: {
     args: [

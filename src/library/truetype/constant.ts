@@ -1,6 +1,6 @@
 import { FFIType, type FFIFunction } from 'bun:ffi';
 
-export const TrueTypeDefinition = {
+export const StbTrueTypeDefinition = {
   // stbtt_BakeFontBitmap
   stbtt_BakeFontBitmap: {
     args: [

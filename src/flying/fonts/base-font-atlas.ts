@@ -8,7 +8,7 @@ import {
   GL_UNSIGNED_BYTE,
 } from '@flying/renderer/constant';
 import type { GLFW } from '@glfw';
-import { TrueType } from '@truetype';
+import { StbTrueType } from '@truetype';
 import { BakedChar } from './baked-char';
 import {
   ATLAS_HEIGHT,
@@ -36,7 +36,7 @@ export interface FontAtlasOptions {
 export abstract class BaseFontAtlas implements FontAtlasContract {
   public readonly fontPath: string;
   public readonly fontSize: number;
-  protected truetype: TrueType;
+  protected truetype: StbTrueType;
   protected bakedChars: CStruct;
   protected bakedCharsArray: readonly BakedChar[];
   protected gl: GLFW;
@@ -50,7 +50,7 @@ export abstract class BaseFontAtlas implements FontAtlasContract {
   public constructor(options: FontAtlasOptions) {
     this.fontPath = options.fontPath;
     this.fontSize = options.fontSize;
-    this.truetype = new TrueType(options.truetypeLibPath);
+    this.truetype = new StbTrueType(options.truetypeLibPath);
     this.bakedChars = new CStruct(NUM_CHARS * BAKED_CHAR_SIZE);
     this.bakedCharsArray = [];
     this.gl = options.gl;

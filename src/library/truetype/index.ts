@@ -1,20 +1,20 @@
 import { dlopen, type ConvertFns, type Library } from 'bun:ffi';
 import {
-  TrueTypeDefinition,
-  type TrueTypeDefinition as TrueTypeDefinitionType,
+  StbTrueTypeDefinition,
+  type StbTrueTypeDefinition as StbTrueTypeDefinitionType,
 } from './constant';
 import * as Translations from './functions';
 
-type FFISymbols = typeof TrueTypeDefinitionType;
+type FFISymbols = typeof StbTrueTypeDefinitionType;
 
 type TranslationsType = typeof Translations;
 
-class BaseTrueType implements Library<FFISymbols> {
+class BaseStbTrueType implements Library<FFISymbols> {
   public readonly close: () => void;
   public readonly symbols: ConvertFns<FFISymbols>;
 
   public constructor(filePath: string) {
-    const lib = dlopen(filePath, TrueTypeDefinition);
+    const lib = dlopen(filePath, StbTrueTypeDefinition);
 
     this.symbols = lib.symbols;
     this.close = () => lib.close();
@@ -31,8 +31,8 @@ class BaseTrueType implements Library<FFISymbols> {
   }
 }
 
-export interface TrueType extends BaseTrueType, TranslationsType {}
+export interface StbTrueType extends BaseStbTrueType, TranslationsType {}
 
-export const TrueType = BaseTrueType as new (
-  ...args: ConstructorParameters<typeof BaseTrueType>
-) => TrueType;
+export const StbTrueType = BaseStbTrueType as new (
+  ...args: ConstructorParameters<typeof BaseStbTrueType>
+) => StbTrueType;
