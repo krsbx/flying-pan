@@ -26,7 +26,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 | [docs/agents/FFI-CODEGEN.md](./docs/agents/FFI-CODEGEN.md) | Clang AST parser, code generator, struct utilities, build scripts |
 | [docs/agents/CONVENTIONS.md](./docs/agents/CONVENTIONS.md) | Path aliases, Bun conventions, single-object-param, fail-loud, factory pattern |
 
-Additional history/planning docs live in [`docs/`](./docs/) (e.g. `PHASE3.md`, `PHASE4.md`, `VIRTUALIZATION.md`).
+Additional history/planning docs live in [`docs/`](./docs/) (e.g. `PHASE3.md`, `PHASE4.md`).
 
 ## Commands
 

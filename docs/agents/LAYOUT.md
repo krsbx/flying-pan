@@ -126,7 +126,7 @@ processor/
 
 **Synthetic stableIds**: Virtual children are generated after reconcile, invisible to the reconciler. Each gets `_virtualStableId = -(listStableId * 100_001 + slot + 1)`. Negative range avoids collision with reconciler IDs. Same item index → same stableId across frames.
 
-See [docs/VIRTUALIZATION.md](../VIRTUALIZATION.md) for full details.
+See [docs/PHASE4.md](../PHASE4.md) Track 7 for full details.
 
 ## Content-fit layout
 
