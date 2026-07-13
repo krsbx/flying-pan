@@ -1,1 +1,2 @@
-console.log('Hello via Bun!');
+export * from './flying';
+export * from './library';

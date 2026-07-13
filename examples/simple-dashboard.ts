@@ -1,4 +1,4 @@
-import type { App, Window } from '@flying/app';
+import type { App, Window } from '@flying';
 import {
   Button,
   Checkbox,
