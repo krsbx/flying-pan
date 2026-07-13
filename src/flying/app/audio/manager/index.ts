@@ -8,6 +8,8 @@ export interface AudioManagerOptions {
   volume?: number | null;
   /** Maximum number of audio instances to be played at the same time, @default `null` for no limit */
   maxInstances?: number | null;
+  /** Immediately initialize the audio manager, could slow down the startup, @default `false` */
+  init?: boolean;
 }
 
 export class AudioManager {
@@ -28,6 +30,8 @@ export class AudioManager {
     this.instances = new Map();
     this._destroyed = false;
     this._volume = options.volume ?? 1;
+
+    if (options.init) this.init();
   }
 
   protected init() {
