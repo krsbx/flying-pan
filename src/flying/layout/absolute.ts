@@ -5,8 +5,17 @@ export function positionAbsolute(
   options: PositionAbsoluteOptions,
   layoutFlex: LayoutFlexFn
 ) {
-  const { m, padding, contentWidth, contentHeight, x, y, children, ctx } =
-    options;
+  const {
+    m,
+    padding,
+    contentWidth,
+    contentHeight,
+    x,
+    y,
+    children,
+    ctx,
+    scrollAccumulated,
+  } = options;
   const childStyle = m.widget.style;
 
   // Resolve horizontal position
@@ -44,6 +53,7 @@ export function positionAbsolute(
       availableWidth: absWidth,
       availableHeight: absHeight,
       ctx,
+      scrollAccumulated,
     })
   );
 }

@@ -20,6 +20,7 @@ export function positionFlowChildren(
     gap,
     ctx,
     children,
+    scrollAccumulated,
   } = options;
 
   let mainPos = startMainPos;
@@ -72,6 +73,7 @@ export function positionFlowChildren(
       availableWidth: m.width,
       availableHeight: m.height,
       ctx,
+      scrollAccumulated,
     });
 
     children.push(childLayout);

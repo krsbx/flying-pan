@@ -153,15 +153,7 @@ export function calculateMainContentSize(
   const justifyItems = options.style.justifyContent ?? FlexJustify.Start;
   const alignItems = options.style.alignItems ?? FlexAlign.Stretch;
 
-  let totalMainSize = options.totalGaps;
-
-  for (const m of options.measurements) {
-    totalMainSize += options.isRow
-      ? m.width + m.margin.left + m.margin.right
-      : m.height + m.margin.top + m.margin.bottom;
-  }
-
-  const freeSpace = options.mainAxisSize - totalMainSize;
+  const freeSpace = options.mainAxisSize - options.totalMainSize;
   let spaceBetweenGap = 0;
   let spaceEvenlyGap = 0;
 

@@ -1,6 +1,7 @@
 import {
   FlexDirection,
   FlexWrap,
+  Overflow,
   resolveSize,
   resolveSpacing,
   SpacingType,
@@ -14,6 +15,7 @@ import { layoutSingleLine, layoutWrap } from './wrap';
 
 export const layoutFlex: LayoutFlexFn = function (options) {
   const { node, x, y, availableWidth, availableHeight, ctx } = options;
+  const scrollAccumulated = options.scrollAccumulated ?? { x: 0, y: 0 };
   const style = node.style ?? ({} as ViewStyle);
 
   const padding = resolveSpacing(
@@ -47,12 +49,26 @@ export const layoutFlex: LayoutFlexFn = function (options) {
     width: contentWidth + padding.left + padding.right,
     height: contentHeight + padding.top + padding.bottom,
     children,
-    // Placeholder — overwritten by `assignScreenPositions` after layout.
-    screenX: x,
-    screenY: y,
+    screenX: x + scrollAccumulated.x,
+    screenY: y + scrollAccumulated.y,
   };
 
   ctx.layoutIndex.set(stableId, layoutNode);
+
+  // Compute child scroll accumulation: if this node is scrollable, subtract
+  // its scroll offset so children's screenX/screenY reflect the scrolled view.
+  const overflow = node.style?.overflow;
+  const isScrollable =
+    overflow === Overflow.Scroll || overflow === Overflow.Auto;
+
+  const childAccumulated = { ...scrollAccumulated };
+
+  if (isScrollable) {
+    const offset = ctx.interactionManager.scroll.offset(layoutNode);
+
+    childAccumulated.x -= offset.x;
+    childAccumulated.y -= offset.y;
+  }
 
   if (node.style?.focusable === true) {
     ctx.focusableNodes.push(layoutNode);
@@ -105,6 +121,7 @@ export const layoutFlex: LayoutFlexFn = function (options) {
     y,
     children,
     ctx,
+    scrollAccumulated: childAccumulated,
   };
 
   if (flow.length > 0) {

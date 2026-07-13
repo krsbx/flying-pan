@@ -10,13 +10,14 @@ export function layoutSingleLine(
   const { flow, style, padding, isRow, gap, contentWidth, contentHeight } =
     options;
 
-  const { crossAxisSize, mainAxisSize, totalGaps } = updateChildMeasurements({
-    measurements: flow,
-    contentHeight,
-    contentWidth,
-    isRow,
-    gap,
-  });
+  const { crossAxisSize, mainAxisSize, totalGaps, totalMainSize } =
+    updateChildMeasurements({
+      measurements: flow,
+      contentHeight,
+      contentWidth,
+      isRow,
+      gap,
+    });
 
   const {
     alignItems,
@@ -29,6 +30,7 @@ export function layoutSingleLine(
     mainAxisSize,
     measurements: flow,
     totalGaps,
+    totalMainSize,
     padding,
     style,
     isRow,
@@ -68,7 +70,7 @@ export function layoutWrap(
   let crossPos = isRow ? padding.top : padding.left;
 
   for (const line of lines) {
-    updateChildMeasurements({
+    const { totalMainSize } = updateChildMeasurements({
       measurements: line.measurements,
       contentHeight,
       contentWidth,
@@ -90,6 +92,7 @@ export function layoutWrap(
       mainAxisSize,
       measurements: line.measurements,
       totalGaps,
+      totalMainSize,
       padding,
       style,
       isRow,

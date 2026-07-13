@@ -5,9 +5,10 @@ import type { HitTestOptions } from './types';
 /**
  * Hit-tests a screen-space point against the layout tree.
  *
- * Reads `node.screenX`/`screenY` (written by `assignScreenPositions`
- * after layout) so the check matches what the user sees drawn —
- * layout positions already adjusted for ancestor scroll offsets.
+ * Reads `node.screenX`/`screenY` (written during `layoutFlex` via
+ * threaded `scrollAccumulated`) so the check matches what the user
+ * sees drawn — layout positions already adjusted for ancestor scroll
+ * offsets.
  */
 export function hitTest(options: HitTestOptions): LayoutNode | null {
   const { node, x, y } = options;

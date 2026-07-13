@@ -15,8 +15,8 @@ export interface LayoutNode extends Coordinate2D, Size {
   widget: WidgetDescriptor;
   children: LayoutNode[];
   /** Screen-space position — x/y adjusted for ancestor scroll offsets.
-   *  Assigned by `assignScreenPositions` after layout. Use for pointer
-   *  hit-testing, clipping, and any screen-space math. */
+   *  Set during `layoutFlex` via threaded `scrollAccumulated`. Use for
+   *  pointer hit-testing, clipping, and any screen-space math. */
   screenX: number;
   screenY: number;
 }
@@ -26,6 +26,7 @@ export interface LayoutFlexOptions extends Coordinate2D {
   availableWidth: number;
   availableHeight: number;
   ctx: LayoutContext;
+  scrollAccumulated?: Coordinate2D;
 }
 
 export interface LayoutFlexFn {
@@ -79,6 +80,7 @@ export interface UpdateChildMeasurementsResult {
   crossAxisSize: number;
   mainAxisSize: number;
   totalGaps: number;
+  totalMainSize: number;
 }
 
 export interface CalculateMainContentSizeOptions extends UpdateChildMeasurementsResult {
@@ -115,6 +117,7 @@ export interface LayoutLineOptions {
   y: number;
   children: LayoutNode[];
   ctx: LayoutContext;
+  scrollAccumulated: Coordinate2D;
 }
 
 export interface PositionFlowChildrenOptions {
@@ -132,6 +135,7 @@ export interface PositionFlowChildrenOptions {
   gap: number;
   children: LayoutNode[];
   ctx: LayoutContext;
+  scrollAccumulated: Coordinate2D;
 }
 
 export interface PositionAbsoluteOptions {
@@ -143,4 +147,5 @@ export interface PositionAbsoluteOptions {
   y: number;
   children: LayoutNode[];
   ctx: LayoutContext;
+  scrollAccumulated: Coordinate2D;
 }

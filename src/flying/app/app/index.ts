@@ -1,4 +1,4 @@
-import { assignScreenPositions, layoutFlex } from '@flying/layout';
+import { layoutFlex } from '@flying/layout';
 import { paint, Renderer } from '@flying/renderer';
 import { GLFW } from '@glfw';
 import {
@@ -146,8 +146,6 @@ export class App {
             availableHeight: window.size.height,
             ctx,
           });
-
-          assignScreenPositions(layout, this.manager.interaction.scroll.offset);
 
           this.manager.interaction.dispatch({
             stateStore: this.manager.stateStore,

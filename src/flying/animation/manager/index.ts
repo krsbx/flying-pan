@@ -124,15 +124,10 @@ export class AnimationManager {
     const prefix = `${stableId}`;
     const prefixColon = `${stableId}:`;
 
-    for (const key of this.active.keys()) {
-      if (key === prefix || key.startsWith(prefixColon)) {
-        this.active.delete(key);
-      }
-    }
-
     for (const key of this.lastValue.keys()) {
       if (key === prefix || key.startsWith(prefixColon)) {
         this.lastValue.delete(key);
+        this.active.delete(key);
       }
     }
   }

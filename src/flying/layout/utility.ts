@@ -52,86 +52,91 @@ export function updateChildMeasurements(
     });
   }
 
-  // Clamp main-axis sizes to min/max
-  for (const m of options.measurements) {
-    const style = m.widget.style;
-
-    if (options.isRow) {
-      m.width = clamp({
-        value: m.width,
-        min:
-          style?.minWidth != null
-            ? resolveSize(style.minWidth, options.contentWidth)
-            : null,
-        max:
-          style?.maxWidth != null
-            ? resolveSize(style.maxWidth, options.contentWidth)
-            : null,
-      });
-    } else {
-      m.height = clamp({
-        value: m.height,
-        min:
-          style?.minHeight != null
-            ? resolveSize(style.minHeight, options.contentHeight)
-            : null,
-        max:
-          style?.maxHeight != null
-            ? resolveSize(style.maxHeight, options.contentHeight)
-            : null,
-      });
-    }
-  }
-
   const crossAxisSize = options.isRow
     ? options.contentHeight
     : options.contentWidth;
 
+  let totalMainSize = totalGaps;
+
+  // Fused: main-axis clamp + cross-axis calc/clamp + totalMainSize accumulation
   for (const m of options.measurements) {
+    const style = m.widget.style;
+
+    const mainMargin = options.isRow
+      ? m.margin.left + m.margin.right
+      : m.margin.top + m.margin.bottom;
     const crossMargin = options.isRow
       ? m.margin.top + m.margin.bottom
       : m.margin.left + m.margin.right;
-    const size = crossAxisSize - crossMargin;
-    const style = m.widget.style;
+
+    const minWidth =
+      style?.minWidth != null
+        ? resolveSize(style.minWidth, options.contentWidth)
+        : null;
+    const maxWidth =
+      style?.maxWidth != null
+        ? resolveSize(style.maxWidth, options.contentWidth)
+        : null;
+
+    const minHeight =
+      style?.minHeight != null
+        ? resolveSize(style.minHeight, options.contentHeight)
+        : null;
+    const maxHeight =
+      style?.maxHeight != null
+        ? resolveSize(style.maxHeight, options.contentHeight)
+        : null;
+
+    // Main-axis clamp
+    if (options.isRow) {
+      m.width = clamp({
+        value: m.width,
+        min: minWidth,
+        max: maxWidth,
+      });
+    } else {
+      m.height = clamp({
+        value: m.height,
+        min: minHeight,
+        max: maxHeight,
+      });
+    }
+
+    // Cross-axis fill + clamp
+    const crossSize = crossAxisSize - crossMargin;
 
     if (options.isRow) {
       if (!m.height) {
-        m.height = size;
+        m.height = crossSize;
       }
 
       m.height = clamp({
         value: m.height,
-        min:
-          style?.minHeight != null
-            ? resolveSize(style.minHeight, options.contentHeight)
-            : null,
-        max:
-          style?.maxHeight != null
-            ? resolveSize(style.maxHeight, options.contentHeight)
-            : null,
+        min: minHeight,
+        max: maxHeight,
       });
     } else {
       if (!m.width) {
-        m.width = size;
+        m.width = crossSize;
       }
 
       m.width = clamp({
         value: m.width,
-        min:
-          style?.minWidth != null
-            ? resolveSize(style.minWidth, options.contentWidth)
-            : null,
-        max:
-          style?.maxWidth != null
-            ? resolveSize(style.maxWidth, options.contentWidth)
-            : null,
+        min: minWidth,
+        max: maxWidth,
       });
     }
+
+    // Accumulate final main-axis size (post-clamp)
+    totalMainSize += options.isRow
+      ? m.width + mainMargin
+      : m.height + mainMargin;
   }
 
   return {
     crossAxisSize,
     mainAxisSize,
     totalGaps,
+    totalMainSize,
   };
 }
