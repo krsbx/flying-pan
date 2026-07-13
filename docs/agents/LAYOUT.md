@@ -16,33 +16,21 @@ interface LayoutNode extends Coordinate2D, Size {
 }
 ```
 
-`x`/`y` are **content-space** — positions relative to the parent, not adjusted for scroll. `screenX`/`screenY` are **screen-space** — the same positions adjusted for accumulated scroll offsets of all scrollable ancestors. These are set by `assignScreenPositions()` (see below), which runs as a post-pass after `layoutFlex`.
+`x`/`y` are **content-space** — positions relative to the parent, not adjusted for scroll. `screenX`/`screenY` are **screen-space** — the same positions adjusted for accumulated scroll offsets of all scrollable ancestors. These are set during `layoutFlex` construction by threading a `scrollAccumulated` value through the recursive calls (see below).
 
 **Who reads which:**
 - Content-space (`x`/`y`): `measureContent` in the scroll dispatcher, `listLayoutFlex` scroll math — these operate in content space because scroll offsets are defined relative to content.
 - Screen-space (`screenX`/`screenY`): `hitTest` (pointer coordinates are screen-space), `pushClip` in the renderer (`glScissor` is screen-space), slider/text-input pointer handlers (pointer math against screen-space events).
 
-## Screen-space post-pass (`src/flying/layout/screen-position.ts`)
+## Screen-space threading
 
-`assignScreenPositions(node, scrollOffset, accumulated?)` walks the layout tree once after `layoutFlex` returns:
+Screen-space positions are computed inline during `layoutFlex`, not via a separate post-pass tree walk. A `scrollAccumulated: Coordinate2D` is threaded through every recursive call:
 
-```ts
-node.screenX = node.x + accumulated.x;
-node.screenY = node.y + accumulated.y;
+1. At LayoutNode construction: `screenX = x + scrollAccumulated.x`, `screenY = y + scrollAccumulated.y`.
+2. If the node is scrollable (`overflow: Scroll | Auto`), the scroll offset is read via `ctx.interactionManager.scroll.offset(layoutNode)` and `childAccumulated = { x: scrollAccumulated.x - offset.x, y: scrollAccumulated.y - offset.y }`. Otherwise `childAccumulated = scrollAccumulated`.
+3. `childAccumulated` is passed down through `flow.ts`, `absolute.ts`, and `wrap.ts` into the recursive `layoutFlex` calls.
 
-// For scrollable ancestors, subtract their offset from children's accumulation
-if (isScrollable(node)) {
-  const offset = scrollOffset(node);
-  childAccumulated = {
-    x: accumulated.x - offset.x,
-    y: accumulated.y - offset.y,
-  };
-}
-```
-
-**Why a post-pass, not threaded through `layoutFlex`:** threading scroll accumulation would require adding a field to every recursive call site in `flow.ts`, `absolute.ts`, `wrap.ts`, and every option type. The post-pass touches none of them — one function, one call site in the App frame loop.
-
-**One-frame latency:** layout runs before dispatch in the frame loop, so `assignScreenPositions` reads the previous frame's committed scroll offsets (from `ScrollDispatcher.offsets`). This is the same latency the virtual list processor already has.
+**One-frame latency:** layout runs before dispatch in the frame loop, so `scroll.offset()` reads the previous frame's committed scroll offsets (from `ScrollDispatcher.offsets`). This is the same latency the virtual list processor already has.
 
 ## layoutFlex (`src/flying/layout/layout.ts`)
 
@@ -136,7 +124,7 @@ Flex containers without explicit `width`/`height` size to their content (max chi
 
 ## Performance characteristics
 
-- **Tree walks per frame**: 3 irreducible (reconcile diffs, layout computes geometry, paint draws) + 1 lightweight post-pass (`assignScreenPositions` — writes 2 fields per node, no allocation). Previously 5; `buildLayoutIndex` and `collectFocusable` were folded into `layoutFlex`.
+- **Tree walks per frame**: 3 irreducible (reconcile diffs, layout computes geometry + screenX/screenY + layoutIndex + focusableNodes, paint draws). Previously 4; `assignScreenPositions` was folded into `layoutFlex` via threaded `scrollAccumulated`.
 - **parseColor cache**: 256-entry Map, cleared on overflow
 - **measureText cache**: 512-entry LRU keyed by `text|fontSize|letterSpacing|lineHeight`
 - **getQuads pooling**: `TextQuad[]` pool, zero allocation after first frame for static labels

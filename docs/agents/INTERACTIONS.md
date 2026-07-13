@@ -5,10 +5,10 @@ Input → dispatch → pseudo-state flags. The interaction system routes GLFW in
 ## Frame integration
 
 ```
-layout → assignScreenPositions → dispatch(layout, layoutIndex, focusableNodes) → paint → input.update()
+layout → dispatch(layout, layoutIndex, focusableNodes) → paint → input.update()
 ```
 
-Dispatch runs **after** layout + `assignScreenPositions` (so LayoutNodes carry `screenX`/`screenY`) and **before** paint (so pseudo-states are current). `input.update()` swaps the double-buffered input state at end of frame.
+Dispatch runs **after** layout (so LayoutNodes carry `screenX`/`screenY`, threaded via `scrollAccumulated` during `layoutFlex`) and **before** paint (so pseudo-states are current). `input.update()` swaps the double-buffered input state at end of frame.
 
 `hitTest` uses `screenX`/`screenY` for bounds checks — pointer coordinates are screen-space, so positions must be screen-space too. No scroll-offset threading needed; the layout tree already has the accumulated scroll baked in.
 
