@@ -5,13 +5,17 @@ import { Overflow } from '@flying/widget';
 import { clamp } from '@utility/common';
 import { BaseDispatcher } from '../base';
 import type { DispatcherConfig, DispatchOptions } from '../types';
+import type { IScrollDispatcher } from './types';
 
 const VELOCITY_ALPHA = 0.35;
 const FRICTION = 0.97;
 const VELOCITY_THRESHOLD = 0.3;
 const FRAME_MS = 1000 / 60;
 
-export class ScrollDispatcher extends BaseDispatcher {
+export class ScrollDispatcher
+  extends BaseDispatcher
+  implements IScrollDispatcher
+{
   protected offsets: Map<number, Coordinate2D>;
   protected velocities: Map<number, Coordinate2D>;
   protected lastTime: number;
@@ -55,7 +59,12 @@ export class ScrollDispatcher extends BaseDispatcher {
   protected handleActiveScroll(layout: LayoutNode, delta: Coordinate2D): void {
     const input = this.input;
     const position = input.mousePosition;
-    const hit = hitTest({ node: layout, x: position.x, y: position.y });
+    const hit = hitTest({
+      node: layout,
+      x: position.x,
+      y: position.y,
+      scrollOffset: this.offset,
+    });
 
     if (!hit) return;
 
@@ -148,9 +157,9 @@ export class ScrollDispatcher extends BaseDispatcher {
     }
   }
 
-  public offset(node: LayoutNode): Coordinate2D {
+  public offset = (node: LayoutNode): Coordinate2D => {
     return this.offsets.get(node.stableId) ?? { x: 0, y: 0 };
-  }
+  };
 
   public reset(): void {
     this.offsets.clear();

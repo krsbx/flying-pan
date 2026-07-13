@@ -41,11 +41,15 @@ export class Renderer {
   public readonly gl: GLFW;
   public readonly windowManager: WindowManager;
   protected clipStack: Rect[];
+  protected translateStack: Coordinate2D[];
+  protected accumulatedTranslate: Coordinate2D;
 
   public constructor(options: RendererOptions) {
     this.gl = options.gl;
     this.windowManager = options.windowManager;
     this.clipStack = [];
+    this.translateStack = [];
+    this.accumulatedTranslate = { x: 0, y: 0 };
   }
 
   // Wrap the function to ensure the context is set correctly
@@ -125,8 +129,17 @@ export class Renderer {
 
   public pushClip(window: Window, rect: Rect): void {
     this.wrap(window, () => {
+      const screenRect: Rect = {
+        x: rect.x + this.accumulatedTranslate.x,
+        y: rect.y + this.accumulatedTranslate.y,
+        width: rect.width,
+        height: rect.height,
+      };
+
       const current = this.clipStack[this.clipStack.length - 1];
-      const intersected = current ? intersectRects(current, rect) : rect;
+      const intersected = current
+        ? intersectRects(current, screenRect)
+        : screenRect;
 
       this.clipStack.push(intersected);
       this.applyScissor(window, intersected);
@@ -165,12 +178,23 @@ export class Renderer {
     this.wrap(window, () => {
       this.gl.glPushMatrix();
       this.gl.glTranslatef({ x: offset.x, y: offset.y, z: 0 });
+
+      this.translateStack.push(offset);
+      this.accumulatedTranslate.x += offset.x;
+      this.accumulatedTranslate.y += offset.y;
     });
   }
 
   public popTranslate(window: Window): void {
     this.wrap(window, () => {
       this.gl.glPopMatrix();
+
+      const offset = this.translateStack.pop();
+
+      if (offset) {
+        this.accumulatedTranslate.x -= offset.x;
+        this.accumulatedTranslate.y -= offset.y;
+      }
     });
   }
 
