@@ -55,7 +55,15 @@ export function listLayoutFlex(options: WidgetLevelLayoutFlexOptions): void {
   }
 
   for (let i = firstVisible; i < lastVisible; i++) {
-    virtualChildren.push(withVirtualStableId(renderItem(i), stableId, i + 1));
+    const item = renderItem(i);
+
+    if (isHorizontal) {
+      item.style = { ...item.style, width: itemSize };
+    } else {
+      item.style = { ...item.style, height: itemSize };
+    }
+
+    virtualChildren.push(withVirtualStableId(item, stableId, i + 1));
   }
 
   if (lastVisible < itemCount) {
