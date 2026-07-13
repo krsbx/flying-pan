@@ -63,7 +63,6 @@ export class ScrollDispatcher
       node: layout,
       x: position.x,
       y: position.y,
-      scrollOffset: this.offset,
     });
 
     if (!hit) return;

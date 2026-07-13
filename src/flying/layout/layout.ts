@@ -47,6 +47,9 @@ export const layoutFlex: LayoutFlexFn = function (options) {
     width: contentWidth + padding.left + padding.right,
     height: contentHeight + padding.top + padding.bottom,
     children,
+    // Placeholder — overwritten by `assignScreenPositions` after layout.
+    screenX: x,
+    screenY: y,
   };
 
   ctx.layoutIndex.set(stableId, layoutNode);

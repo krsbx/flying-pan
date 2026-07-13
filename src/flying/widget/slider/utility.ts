@@ -28,11 +28,16 @@ export function pointerToValue(options: {
 
 export function resolveGeometry(
   props: CircularSliderProps,
-  node: { x: number; y: number; width: number; height: number }
+  node: {
+    screenX: number;
+    screenY: number;
+    width: number;
+    height: number;
+  }
 ): CircularGeometry {
   return {
-    cx: node.x + node.width / 2,
-    cy: node.y + node.height / 2,
+    cx: node.screenX + node.width / 2,
+    cy: node.screenY + node.height / 2,
     startAngle: props.startAngle ?? DEFAULT_START_ANGLE,
     sweep: props.sweep ?? DEFAULT_SWEEP,
     direction:
@@ -77,17 +82,22 @@ export function pointerToAngleValue(
 
 export function isOnBarHandle(options: {
   position: Coordinate2D;
-  node: { x: number; y: number; width: number; height: number };
+  node: {
+    screenX: number;
+    screenY: number;
+    width: number;
+    height: number;
+  };
   ratio: number;
   isVertical: boolean;
 }): boolean {
   const { position, node, ratio, isVertical } = options;
   const hx = isVertical
-    ? node.x + (node.width - HANDLE_SIZE) / 2
-    : node.x + ratio * (node.width - HANDLE_SIZE);
+    ? node.screenX + (node.width - HANDLE_SIZE) / 2
+    : node.screenX + ratio * (node.width - HANDLE_SIZE);
   const hy = isVertical
-    ? node.y + (1 - ratio) * (node.height - HANDLE_SIZE)
-    : node.y + (node.height - HANDLE_SIZE) / 2;
+    ? node.screenY + (1 - ratio) * (node.height - HANDLE_SIZE)
+    : node.screenY + (node.height - HANDLE_SIZE) / 2;
 
   return (
     position.x >= hx &&

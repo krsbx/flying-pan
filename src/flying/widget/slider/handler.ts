@@ -53,7 +53,7 @@ export function createSliderBarClickHandler(
 
     const raw = pointerToValue({
       coord: isVertical ? position.y : position.x,
-      start: isVertical ? node.y : node.x,
+      start: isVertical ? node.screenY : node.screenX,
       length: isVertical ? node.height : node.width,
       flip: isVertical,
       min,

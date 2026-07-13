@@ -14,6 +14,11 @@ export interface LayoutNode extends Coordinate2D, Size {
   stableId: number;
   widget: WidgetDescriptor;
   children: LayoutNode[];
+  /** Screen-space position — x/y adjusted for ancestor scroll offsets.
+   *  Assigned by `assignScreenPositions` after layout. Use for pointer
+   *  hit-testing, clipping, and any screen-space math. */
+  screenX: number;
+  screenY: number;
 }
 
 export interface LayoutFlexOptions extends Coordinate2D {

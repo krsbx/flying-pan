@@ -223,7 +223,12 @@ export function paint(window: Window, options: PaintOptions) {
     (overflow === Overflow.Hidden || isScrollable) && children.length > 0;
 
   if (shouldClip) {
-    renderer.pushClip(window, { x, y, width, height });
+    renderer.pushClip(window, {
+      x: layout.screenX,
+      y: layout.screenY,
+      width,
+      height,
+    });
   }
 
   if (isScrollable && children.length > 0) {

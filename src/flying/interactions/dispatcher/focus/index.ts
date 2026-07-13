@@ -160,7 +160,6 @@ export class FocusDispatcher extends BaseDispatcher {
       node: layout,
       x: position.x,
       y: position.y,
-      scrollOffset: options.scrollOffset,
     });
 
     const target = hit ? this.nearestFocusableAncestor(layout, hit) : null;

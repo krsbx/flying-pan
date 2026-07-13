@@ -1,4 +1,4 @@
-import { layoutFlex } from '@flying/layout';
+import { assignScreenPositions, layoutFlex } from '@flying/layout';
 import { paint, Renderer } from '@flying/renderer';
 import { GLFW } from '@glfw';
 import {
@@ -147,6 +147,8 @@ export class App {
             ctx,
           });
 
+          assignScreenPositions(layout, this.manager.interaction.scroll.offset);
+
           this.manager.interaction.dispatch({
             stateStore: this.manager.stateStore,
             window,
@@ -155,7 +157,6 @@ export class App {
             focusableNodes: ctx.focusableNodes,
             treeChanged: this.manager.reconciler.changed,
             time: this.manager.animation.time,
-            scrollOffset: this.manager.interaction.scroll.offset,
           });
 
           paint(window, {

@@ -29,7 +29,7 @@ export function createTextInputPointerHandler(props: TextInputProps): {
     if (!style) return null;
 
     const padding = resolveSpacing(style.padding, node.width);
-    const contentX = node.x + padding.left;
+    const contentX = node.screenX + padding.left;
     const relX = position.x - contentX;
 
     const caret = fontAtlas.charIndexAtX({

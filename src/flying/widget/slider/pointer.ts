@@ -32,7 +32,7 @@ export function createSliderBarPointerHandler(props: SliderBarProps): {
 
     const raw = pointerToValue({
       coord: isVertical ? position.y : position.x,
-      start: isVertical ? node.y : node.x,
+      start: isVertical ? node.screenY : node.screenX,
       length: isVertical ? node.height : node.width,
       flip: isVertical,
       min,
@@ -205,7 +205,7 @@ export function createRangeSliderBarPointerHandler(
 
     const raw = pointerToValue({
       coord: isVertical ? position.y : position.x,
-      start: isVertical ? node.y : node.x,
+      start: isVertical ? node.screenY : node.screenX,
       length: isVertical ? node.height : node.width,
       flip: isVertical,
       min,
@@ -245,14 +245,18 @@ export function createRangeSliderBarPointerHandler(
     const endRatio = valueToRatio({ value: state.end, min, max });
 
     const startPx = isVertical
-      ? node.y +
+      ? node.screenY +
         (1 - startRatio) * (node.height - HANDLE_SIZE) +
         HANDLE_SIZE / 2
-      : node.x + startRatio * (node.width - HANDLE_SIZE) + HANDLE_SIZE / 2;
+      : node.screenX +
+        startRatio * (node.width - HANDLE_SIZE) +
+        HANDLE_SIZE / 2;
 
     const endPx = isVertical
-      ? node.y + (1 - endRatio) * (node.height - HANDLE_SIZE) + HANDLE_SIZE / 2
-      : node.x + endRatio * (node.width - HANDLE_SIZE) + HANDLE_SIZE / 2;
+      ? node.screenY +
+        (1 - endRatio) * (node.height - HANDLE_SIZE) +
+        HANDLE_SIZE / 2
+      : node.screenX + endRatio * (node.width - HANDLE_SIZE) + HANDLE_SIZE / 2;
 
     const pointerPx = isVertical ? position.y : position.x;
 
