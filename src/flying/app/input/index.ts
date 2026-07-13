@@ -6,6 +6,7 @@ import {
   GLFW_PRESS,
   GLFW_REPEAT,
 } from '@glfw/enums';
+import { platform } from 'node:os';
 import type { Window } from '../window';
 import { InputEvent } from '../window/window/constant';
 import type {
@@ -78,8 +79,8 @@ export class InputManager {
   };
 
   protected onMouseScroll: OnMouseScroll = (delta: Coordinate2D): void => {
-    this._current.scrollDelta.x += delta.x;
-    this._current.scrollDelta.y += delta.y;
+    this._current.scrollDelta.x += platform() === 'darwin' ? -delta.x : delta.x;
+    this._current.scrollDelta.y += platform() === 'darwin' ? delta.y : -delta.y;
   };
 
   public update(): void {
