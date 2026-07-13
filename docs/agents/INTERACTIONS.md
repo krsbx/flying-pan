@@ -5,10 +5,12 @@ Input → dispatch → pseudo-state flags. The interaction system routes GLFW in
 ## Frame integration
 
 ```
-layout → dispatch(layout, layoutIndex, focusableNodes) → paint → input.update()
+layout → assignScreenPositions → dispatch(layout, layoutIndex, focusableNodes) → paint → input.update()
 ```
 
-Dispatch runs **after** layout (so it has the LayoutNode tree + layoutIndex) and **before** paint (so pseudo-states are current). `input.update()` swaps the double-buffered input state at end of frame.
+Dispatch runs **after** layout + `assignScreenPositions` (so LayoutNodes carry `screenX`/`screenY`) and **before** paint (so pseudo-states are current). `input.update()` swaps the double-buffered input state at end of frame.
+
+`hitTest` uses `screenX`/`screenY` for bounds checks — pointer coordinates are screen-space, so positions must be screen-space too. No scroll-offset threading needed; the layout tree already has the accumulated scroll baked in.
 
 ## InputManager (`src/flying/app/input/`)
 
@@ -81,7 +83,7 @@ Routes pointer events and tracks hover/press state.
 - `lastClick` — for double-click detection
 
 ### Dispatch flow
-1. **Hit test** — recursive Z-order search (children first, reverse order), respecting `pointerEvents: 'none'`. Returns deepest node under cursor. (`interactions/utility/hit-test.ts`)
+1. **Hit test** — recursive Z-order search (children first, reverse order), respecting `pointerEvents: 'none'`. Plain bounds check against `node.screenX/screenY` (screen-space positions from the layout post-pass). Returns deepest node under cursor. (`interactions/utility/hit-test.ts`)
 2. **Hover enter/leave** — if `hitId !== _hoveredStableId`: fire `onPointerLeave` on old, `onPointerEnter` on new. Also cancels press when dragging off widget.
 3. **Pointer move** — route to captured widget if any, else hit target. Only fires if position changed.
 4. **Button events** — on press: fire `onPointerDown`, set `_pressedStableId`. On release: fire `onPointerUp`, then click detection (same widget + same button for down+up → `onClick`).

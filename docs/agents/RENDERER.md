@@ -18,8 +18,8 @@ Owns GL state for one window. Created per-window.
 - `resize()` — re-init viewport on window resize
 
 ### Stacks
-- **Clip stack** (`clipStack: Rect[]`) — `pushClip()` intersects with current scissor and applies `glScissor`; `popClip()` restores (or disables when empty). Coordinates converted screen→GL scissor in `applyScissor()`.
-- **Translate stack** — `pushTranslate(x,y)` = `glPushMatrix` + `glTranslatef`; `popTranslate()` = `glPopMatrix`. Used for scroll offset.
+- **Clip stack** (`clipStack: Rect[]`) — `pushClip()` intersects with current scissor and applies `glScissor`; `popClip()` restores (or disables when empty). Coordinates converted screen→GL scissor in `applyScissor()`. **Callers pass screen-space rects** (from `LayoutNode.screenX/screenY`) — `glScissor` is absolute screen-space, not affected by `glTranslatef`, so clip rects must already account for scroll.
+- **Translate stack** — `pushTranslate(x,y)` = `glPushMatrix` + `glTranslatef`; `popTranslate()` = `glPopMatrix`. Used for scroll offset. This only affects drawing commands (rects, arcs, text) — not `glScissor`.
 
 ## Paint pipeline (`src/flying/renderer/paint/index.ts`)
 
@@ -38,6 +38,8 @@ for each LayoutNode:
   4. paintShadow(), paintBorder(), paintBackground()
   5. Widget-specific paint (switch on type)
   6. Recurse children (with clip + translate for overflow/scroll)
+     - **Clip rect** uses `layout.screenX/screenY` (screen-space) so `glScissor` lands correctly even when nested inside scrollables
+     - **Translate** applies `-scrollOffset` to the modelview matrix so child drawing commands shift up by the scroll amount
 ```
 
 ### Widget paint dispatch

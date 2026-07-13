@@ -2,7 +2,7 @@
 
 ## Overview
 
-CSS-like flexbox engine. Takes a `WidgetDescriptor` tree → produces a `LayoutNode` tree with `{ x, y, width, height }` per node. Runs once per frame per window.
+CSS-like flexbox engine. Takes a `WidgetDescriptor` tree → produces a `LayoutNode` tree with `{ x, y, width, height, screenX, screenY }` per node. Runs once per frame per window.
 
 ## LayoutNode (`src/flying/layout/types.ts`)
 
@@ -11,8 +11,38 @@ interface LayoutNode extends Coordinate2D, Size {
   stableId: number;             // assigned by reconciler, persists across frames
   widget: WidgetDescriptor;     // back-reference to source descriptor
   children: LayoutNode[];       // mutable (virtual list expansion adds/removes)
+  screenX: number;              // screen-space x (content x + accumulated ancestor scroll)
+  screenY: number;              // screen-space y (content y + accumulated ancestor scroll)
 }
 ```
+
+`x`/`y` are **content-space** — positions relative to the parent, not adjusted for scroll. `screenX`/`screenY` are **screen-space** — the same positions adjusted for accumulated scroll offsets of all scrollable ancestors. These are set by `assignScreenPositions()` (see below), which runs as a post-pass after `layoutFlex`.
+
+**Who reads which:**
+- Content-space (`x`/`y`): `measureContent` in the scroll dispatcher, `listLayoutFlex` scroll math — these operate in content space because scroll offsets are defined relative to content.
+- Screen-space (`screenX`/`screenY`): `hitTest` (pointer coordinates are screen-space), `pushClip` in the renderer (`glScissor` is screen-space), slider/text-input pointer handlers (pointer math against screen-space events).
+
+## Screen-space post-pass (`src/flying/layout/screen-position.ts`)
+
+`assignScreenPositions(node, scrollOffset, accumulated?)` walks the layout tree once after `layoutFlex` returns:
+
+```ts
+node.screenX = node.x + accumulated.x;
+node.screenY = node.y + accumulated.y;
+
+// For scrollable ancestors, subtract their offset from children's accumulation
+if (isScrollable(node)) {
+  const offset = scrollOffset(node);
+  childAccumulated = {
+    x: accumulated.x - offset.x,
+    y: accumulated.y - offset.y,
+  };
+}
+```
+
+**Why a post-pass, not threaded through `layoutFlex`:** threading scroll accumulation would require adding a field to every recursive call site in `flow.ts`, `absolute.ts`, `wrap.ts`, and every option type. The post-pass touches none of them — one function, one call site in the App frame loop.
+
+**One-frame latency:** layout runs before dispatch in the frame loop, so `assignScreenPositions` reads the previous frame's committed scroll offsets (from `ScrollDispatcher.offsets`). This is the same latency the virtual list processor already has.
 
 ## layoutFlex (`src/flying/layout/layout.ts`)
 
@@ -106,7 +136,7 @@ Flex containers without explicit `width`/`height` size to their content (max chi
 
 ## Performance characteristics
 
-- **Tree walks per frame**: 3 irreducible (reconcile diffs, layout computes geometry, paint draws). Previously 5; `buildLayoutIndex` and `collectFocusable` were folded into `layoutFlex`.
+- **Tree walks per frame**: 3 irreducible (reconcile diffs, layout computes geometry, paint draws) + 1 lightweight post-pass (`assignScreenPositions` — writes 2 fields per node, no allocation). Previously 5; `buildLayoutIndex` and `collectFocusable` were folded into `layoutFlex`.
 - **parseColor cache**: 256-entry Map, cleared on overflow
 - **measureText cache**: 512-entry LRU keyed by `text|fontSize|letterSpacing|lineHeight`
 - **getQuads pooling**: `TextQuad[]` pool, zero allocation after first frame for static labels

@@ -44,7 +44,8 @@ App.run() while loop:
   reconcile(window.widget)           # diff prev vs next, assign stableIds
   animation.tick()                    # advance transition clock
   layoutFlex(widget → LayoutNode)    # geometry + layoutIndex + focusableNodes
-  interaction.dispatch(layout)        # pointer/focus/scroll routing
+  assignScreenPositions(layout)      # screenX/screenY = content pos + ancestor scroll
+  interaction.dispatch(layout)        # pointer/focus/scroll routing (uses screenX/screenY)
   paint(layout)                       # GL draw calls
   onFrame callback                    # user rebuilds widget tree
   flush()                             # swap buffers
