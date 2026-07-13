@@ -45,7 +45,12 @@ export function paintTextInput(
 
   const contentY = y + (height - measured.height) / 2;
 
-  renderer.pushClip(window, { x, y, width, height });
+  renderer.pushClip(window, {
+    x: layout.screenX,
+    y: layout.screenY,
+    width,
+    height,
+  });
 
   if (hasValue && state.caret !== state.anchor) {
     const { start, end } = selectionRange(state)!;
