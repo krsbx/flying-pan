@@ -156,7 +156,12 @@ export class FocusDispatcher extends BaseDispatcher {
     const input = this.input;
 
     const position = input.mousePosition;
-    const hit = hitTest({ node: layout, x: position.x, y: position.y });
+    const hit = hitTest({
+      node: layout,
+      x: position.x,
+      y: position.y,
+      scrollOffset: options.scrollOffset,
+    });
 
     const target = hit ? this.nearestFocusableAncestor(layout, hit) : null;
 

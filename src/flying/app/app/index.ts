@@ -155,6 +155,7 @@ export class App {
             focusableNodes: ctx.focusableNodes,
             treeChanged: this.manager.reconciler.changed,
             time: this.manager.animation.time,
+            scrollOffset: this.manager.interaction.scroll.offset,
           });
 
           paint(window, {

@@ -48,6 +48,7 @@ export class PointerDispatcher extends BaseDispatcher {
       node: layout,
       x: position.x,
       y: position.y,
+      scrollOffset: options.scrollOffset,
     });
     const hitId = hit?.stableId ?? null;
 
