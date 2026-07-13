@@ -10,18 +10,18 @@ export default {
   width: 800,
   height: 600,
   title: 'flying-pan',
-  libPath: './ffi/glfw/libglfw.3.dylib',
+  libPath: process.env.GLFW_PATH!,
   backgroundColor: '#1a1a2e',
   fonts: [
     {
       fontPath: '/System/Library/Fonts/Helvetica.ttc',
       fontSize: 24,
-      libPath: './ffi/truetype/libtruetype.dylib',
+      libPath: process.env.STB_TRUETYPE_PATH!,
       identifier: 'default',
     },
   ],
   audio: {
-    miniaudioLibPath: './ffi/miniaudio/libminiaudio.dylib',
+    miniaudioLibPath: process.env.MINI_AUDIO_PATH!,
   },
-  texture: './ffi/stb_image/libimage.dylib',
+  texture: process.env.STB_IMAGE_PATH,
 } satisfies AppConfig;

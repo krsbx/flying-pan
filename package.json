@@ -22,7 +22,7 @@
     "build:image": "bun bin/image.ts",
     "build:truetype": "bun bin/truetype.ts",
     "build:miniaudio": "bun bin/miniaudio.ts",
-    "dev": "bun src/bin/dev/cli.ts test.ts",
+    "dev": "bun src/bin/dev/cli.ts example/simple-dashboard.ts",
     "prepare": "husky"
   },
   "lint-staged": {
