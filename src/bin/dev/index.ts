@@ -1,5 +1,5 @@
 import { App, type AppConfig, type OnRenderFrame } from '@flying/app';
-import { watchFile } from 'node:fs';
+import { watch } from 'node:fs';
 import path from 'node:path';
 import { loadConfig } from '../config';
 
@@ -90,18 +90,34 @@ class DevServer {
 
   protected watchEntryModule(): void {
     let reloadTimer: NodeJS.Timeout | null = null;
+    const EXCLUDE = /(^|[/\\])(node_modules|\.git)([/\\]|$)/;
 
-    watchFile(this._entryPath, () => {
+    const schedule = (filename?: string | null) => {
+      if (filename && EXCLUDE.test(filename)) return;
       if (reloadTimer) clearTimeout(reloadTimer);
-
       reloadTimer = setTimeout(() => {
-        console.log('[DEV] entry changed — reloading');
+        console.log('[DEV] change detected — reloading');
         this.reload();
       }, 120);
-    });
+    };
+
+    const entryDir = path.dirname(this._entryPath);
+
+    try {
+      watch(entryDir, { recursive: true }, (_event, filename) =>
+        schedule(filename)
+      );
+    } catch (e) {
+      console.error(
+        `[DEV] recursive watch unavailable on this platform — ` +
+          `manual restart required for changes:`,
+        e
+      );
+    }
 
     console.log(
-      `[DEV] watching ${path.relative(process.cwd(), this._entryPath)} for changes`
+      `[DEV] watching ${path.relative(process.cwd(), entryDir)}/ recursively` +
+        ' (excl. node_modules, .git)'
     );
   }
 
