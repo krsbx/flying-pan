@@ -24,5 +24,5 @@ export default {
     miniaudioLibPath: process.env.MINI_AUDIO_PATH!,
   },
   texture: process.env.STB_IMAGE_PATH,
-  useVBO: true,
+  useRenderBatching: true,
 } satisfies AppConfig;

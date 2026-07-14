@@ -36,7 +36,7 @@ import { intersectRects } from './utility';
 export interface RendererOptions {
   gl: GLFW;
   windowManager: WindowManager;
-  useVBO?: boolean;
+  useBatching?: boolean;
 }
 
 export class Renderer {
@@ -49,7 +49,7 @@ export class Renderer {
     this.gl = options.gl;
     this.windowManager = options.windowManager;
     this.clipStack = [];
-    this.batch = options.useVBO ? new BatchManager() : null;
+    this.batch = options.useBatching ? new BatchManager() : null;
   }
 
   protected get drawCtx(): GLLike {
