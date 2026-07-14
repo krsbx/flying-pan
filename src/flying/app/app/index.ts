@@ -39,6 +39,7 @@ export class App {
     this.renderer = new Renderer({
       gl: this.gl,
       windowManager: this.manager.window,
+      useVBO: options.useVBO,
     });
 
     this.manager.window.on(WindowManagerEvent.Created, (window) => {

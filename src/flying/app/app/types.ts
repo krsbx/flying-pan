@@ -18,6 +18,8 @@ export interface AppConfig extends WindowOptions {
   audio?: AudioManagerOptions | null;
   texture?: string | null;
   vsync?: boolean;
+  /** Use VBO batching or not to improve performance. @default false */
+  useVBO?: boolean;
 }
 
 export interface OnRenderFrame {
