@@ -2,6 +2,7 @@ import type { Rect } from '@flying/widget';
 import type { GLFW } from '@glfw';
 import type { Window, WindowManager } from '../../app';
 import type { Coordinate2D, Resolution } from '../../types';
+import { BatchManager, type GLLike } from '../batch';
 import { Color, parseColor } from '../color';
 import {
   GL_BLEND,
@@ -35,17 +36,24 @@ import { intersectRects } from './utility';
 export interface RendererOptions {
   gl: GLFW;
   windowManager: WindowManager;
+  useVBO?: boolean;
 }
 
 export class Renderer {
   public readonly gl: GLFW;
   public readonly windowManager: WindowManager;
   protected clipStack: Rect[];
+  protected batch: BatchManager | null;
 
   public constructor(options: RendererOptions) {
     this.gl = options.gl;
     this.windowManager = options.windowManager;
     this.clipStack = [];
+    this.batch = options.useVBO ? new BatchManager() : null;
+  }
+
+  protected get drawCtx(): GLLike {
+    return this.batch ?? this.gl;
   }
 
   // Wrap the function to ensure the context is set correctly
@@ -119,12 +127,18 @@ export class Renderer {
   }
 
   public flush(window: Window): void {
-    this.gl.glFlush();
-    this.gl.glfwSwapBuffers({ window: window.$address });
+    this.wrap(window, () => {
+      this.batch?.flush(this.gl);
+
+      this.gl.glFlush();
+      this.gl.glfwSwapBuffers({ window: window.$address });
+    });
   }
 
   public pushClip(window: Window, rect: Rect): void {
     this.wrap(window, () => {
+      this.batch?.flush(this.gl);
+
       const current = this.clipStack[this.clipStack.length - 1];
       const intersected = current ? intersectRects(current, rect) : rect;
 
@@ -135,6 +149,8 @@ export class Renderer {
 
   public popClip(window: Window): void {
     this.wrap(window, () => {
+      this.batch?.flush(this.gl);
+
       this.clipStack.pop();
 
       const top = this.clipStack[this.clipStack.length - 1];
@@ -163,6 +179,7 @@ export class Renderer {
 
   public pushTranslate(window: Window, offset: Coordinate2D): void {
     this.wrap(window, () => {
+      this.batch?.flush(this.gl);
       this.gl.glPushMatrix();
       this.gl.glTranslatef({ x: offset.x, y: offset.y, z: 0 });
     });
@@ -170,38 +187,39 @@ export class Renderer {
 
   public popTranslate(window: Window): void {
     this.wrap(window, () => {
+      this.batch?.flush(this.gl);
       this.gl.glPopMatrix();
     });
   }
 
   public drawRect(window: Window, options: DrawRectOptions): void {
-    this.wrap(window, () => drawRect(this.gl, options));
+    this.wrap(window, () => drawRect(this.drawCtx, options));
   }
 
   public drawGradientRect(
     window: Window,
     options: DrawGradientRectOptions
   ): void {
-    this.wrap(window, () => drawGradientRect(this.gl, options));
+    this.wrap(window, () => drawGradientRect(this.drawCtx, options));
   }
 
   public drawShadow(window: Window, options: DrawShadowOptions): void {
-    this.wrap(window, () => drawShadow(this.gl, options));
+    this.wrap(window, () => drawShadow(this.drawCtx, options));
   }
 
   public drawRing(window: Window, options: DrawRingOptions): void {
-    this.wrap(window, () => drawRing(this.gl, options));
+    this.wrap(window, () => drawRing(this.drawCtx, options));
   }
 
   public drawArc(window: Window, options: DrawArcOptions): void {
-    this.wrap(window, () => drawArc(this.gl, options));
+    this.wrap(window, () => drawArc(this.drawCtx, options));
   }
 
   public drawText(window: Window, options: DrawTextOptions): void {
-    this.wrap(window, () => drawText(this.gl, options));
+    this.wrap(window, () => drawText(this.drawCtx, options));
   }
 
   public drawTexture(window: Window, options: DrawTextureOptions): void {
-    this.wrap(window, () => drawTexture(this.gl, options));
+    this.wrap(window, () => drawTexture(this.drawCtx, options));
   }
 }
