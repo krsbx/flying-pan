@@ -31,6 +31,11 @@ export const GL_BLEND = 0x0be2;
 export const GL_DEPTH_TEST = 0x0b71;
 export const GL_SCISSOR_TEST = 0x0c11;
 
+// Client state arrays (for vertex arrays / VBO batching)
+export const GL_VERTEX_ARRAY = 0x8074;
+export const GL_COLOR_ARRAY = 0x8076;
+export const GL_TEXTURE_COORD_ARRAY = 0x8078;
+
 // Blend factors
 export const GL_SRC_ALPHA = 0x0302;
 export const GL_ONE_MINUS_SRC_ALPHA = 0x0303;

@@ -20,3 +20,8 @@ export interface BatchData {
   texCoords: number[];
   vertexCount: number;
 }
+
+export interface BatchEntry {
+  textureId: number;
+  data: BatchData;
+}
