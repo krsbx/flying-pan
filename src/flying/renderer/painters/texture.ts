@@ -1,8 +1,8 @@
-import type { GLFW } from '@glfw';
+import type { GLLike } from '../batch';
 import { GL_QUADS, GL_TEXTURE_2D } from '../constant';
 import type { DrawTextureOptions } from '../renderer/types';
 
-export function drawTexture(gl: GLFW, options: DrawTextureOptions): void {
+export function drawTexture(gl: GLLike, options: DrawTextureOptions): void {
   const { texture, x, y, width, height, opacity } = options;
 
   // Enable texturing

@@ -1,5 +1,5 @@
 import type { RGBA } from '@flying/types';
-import type { GLFW } from '@glfw';
+import type { GLLike } from '../../batch';
 import { parseColor } from '../../color';
 import { GL_TRIANGLES } from '../../constant';
 import type {
@@ -12,7 +12,7 @@ import type {
 import { createGradientCtx } from '../gradient';
 import { drawArcGL, drawRectGL, drawRoundedRectGL } from './gl';
 
-export function drawRect(gl: GLFW, options: DrawRectOptions): void {
+export function drawRect(gl: GLLike, options: DrawRectOptions): void {
   const rgba = parseColor(options.color);
 
   if (options.borderRadius && options.borderRadius > 0) {
@@ -26,7 +26,7 @@ export function drawRect(gl: GLFW, options: DrawRectOptions): void {
   }
 }
 
-export function drawShadow(gl: GLFW, options: DrawShadowOptions): void {
+export function drawShadow(gl: GLLike, options: DrawShadowOptions): void {
   const { x, y, width, height, shadow, borderRadius } = options;
 
   const baseRgba = parseColor(shadow.color);
@@ -68,7 +68,7 @@ export function drawShadow(gl: GLFW, options: DrawShadowOptions): void {
   }
 }
 
-export function drawRing(gl: GLFW, options: DrawRingOptions): void {
+export function drawRing(gl: GLLike, options: DrawRingOptions): void {
   const { cx, cy, outerRadius, innerRadius } = options;
 
   const rgba = { ...parseColor(options.color) };
@@ -113,7 +113,7 @@ export function drawRing(gl: GLFW, options: DrawRingOptions): void {
   gl.glEnd();
 }
 
-export function drawArc(gl: GLFW, options: DrawArcOptions): void {
+export function drawArc(gl: GLLike, options: DrawArcOptions): void {
   const { cx, cy, radius } = options;
 
   const rgba = parseColor(options.color);
@@ -130,7 +130,7 @@ export function drawArc(gl: GLFW, options: DrawArcOptions): void {
 }
 
 export function drawGradientRect(
-  gl: GLFW,
+  gl: GLLike,
   options: DrawGradientRectOptions
 ): void {
   const { x, y, width, height, gradient, opacity } = options;

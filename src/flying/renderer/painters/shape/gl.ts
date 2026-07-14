@@ -1,4 +1,4 @@
-import type { GLFW } from '@glfw';
+import type { GLLike } from '../../batch';
 import { drawQuads, drawTriangles } from '../drawer';
 import type {
   DrawArcGLOptions,
@@ -9,7 +9,7 @@ import type {
 import { emitArcVertices, emitRectVertices } from './emitter';
 
 export function drawRoundedRectGL(
-  gl: GLFW,
+  gl: GLLike,
   options: DrawRoundedGLRectOptions
 ): void {
   const {
@@ -66,7 +66,7 @@ export function drawRoundedRectGL(
 }
 
 function drawRoundedRectGLCorner(
-  gl: GLFW,
+  gl: GLLike,
   options: DrawRoundedRectGLCornerOptions
 ): void {
   const {
@@ -139,10 +139,10 @@ function drawRoundedRectGLCorner(
   });
 }
 
-export function drawArcGL(gl: GLFW, options: DrawArcGLOptions): void {
+export function drawArcGL(gl: GLLike, options: DrawArcGLOptions): void {
   drawTriangles(gl, () => emitArcVertices(gl, options));
 }
 
-export function drawRectGL(gl: GLFW, options: DrawRectGLOptions): void {
+export function drawRectGL(gl: GLLike, options: DrawRectGLOptions): void {
   drawQuads(gl, () => emitRectVertices(gl, options));
 }

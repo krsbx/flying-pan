@@ -1,9 +1,9 @@
-import type { GLFW } from '@glfw';
+import type { GLLike } from '../batch';
 import { parseColor } from '../color';
 import { GL_QUADS, GL_TEXTURE_2D } from '../constant';
 import type { DrawTextOptions } from '../renderer/types';
 
-export function drawText(gl: GLFW, options: DrawTextOptions): void {
+export function drawText(gl: GLLike, options: DrawTextOptions): void {
   const rgba = { ...parseColor(options.color) };
 
   if (options.opacity !== undefined) {

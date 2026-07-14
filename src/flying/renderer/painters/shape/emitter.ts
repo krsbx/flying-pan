@@ -1,8 +1,8 @@
-import type { GLFW } from '@glfw';
+import type { GLLike } from '../../batch';
 import { getGradientColor } from '../gradient';
 import type { DrawArcGLOptions, DrawRectGLOptions } from '../types';
 
-export function emitRectVertices(gl: GLFW, options: DrawRectGLOptions): void {
+export function emitRectVertices(gl: GLLike, options: DrawRectGLOptions): void {
   const { x, y, width, height, rgba, gradientCtx, opacity = 1 } = options;
 
   const emitColor = (px: number, py: number) => {
@@ -38,7 +38,7 @@ export function emitRectVertices(gl: GLFW, options: DrawRectGLOptions): void {
   gl.glVertex2f({ x: x, y: y + height });
 }
 
-export function emitArcVertices(gl: GLFW, options: DrawArcGLOptions): void {
+export function emitArcVertices(gl: GLLike, options: DrawArcGLOptions): void {
   const {
     cx,
     cy,
