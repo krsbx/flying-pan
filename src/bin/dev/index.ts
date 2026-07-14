@@ -1,4 +1,9 @@
-import { App, type AppConfig, type OnRenderFrame } from '@flying/app';
+import {
+  App,
+  WindowEvent,
+  type AppConfig,
+  type OnRenderFrame,
+} from '@flying/app';
 import { watch } from 'node:fs';
 import path from 'node:path';
 import { loadConfig } from '../config';
@@ -79,6 +84,11 @@ class DevServer {
     this._config = config;
 
     this.app = new App(config);
+
+    this.app.root.on(WindowEvent.Close, () => {
+      process.exit(0);
+    });
+
     this.app.onFrame((app) => this._frameFn(app));
 
     await this.reload();
