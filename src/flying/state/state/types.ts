@@ -38,7 +38,7 @@ export interface StoreSetStateByNameFn<T = any> {
   (options: SetStateByNameOptions<T>): void;
 }
 
-export interface StoreFor {
+export interface IStateStore {
   stateFor: StoreForFn;
   setState: StoreSetStateFn;
   stateForByName: StoreForByNameFn;

@@ -28,6 +28,6 @@ export interface GetStableIdFn {
   (widget: WidgetDescriptor): number;
 }
 
-export interface GetStableId {
+export interface IReconciler {
   getStableId: GetStableIdFn;
 }

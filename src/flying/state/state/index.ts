@@ -1,12 +1,12 @@
 import type {
+  IStateStore,
   SetStateByNameOptions,
   SetStateOptions,
   StateForByNameOptions,
   StateForOptions,
-  StoreFor,
 } from './types';
 
-export class StateStore implements StoreFor {
+export class StateStore implements IStateStore {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   protected store: Map<number, any>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

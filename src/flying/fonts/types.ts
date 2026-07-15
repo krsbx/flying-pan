@@ -58,4 +58,4 @@ export interface GetQuads {
   getQuads(options: GetQuadsOptions): TextQuad[];
 }
 
-export type FontAtlasContract = TextMeasurer & GetQuads & CharIndexResolver;
+export type IFontAtlas = TextMeasurer & GetQuads & CharIndexResolver;

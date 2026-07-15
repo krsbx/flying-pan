@@ -2,14 +2,14 @@ import type { StateStore } from '@flying/state';
 import type { WidgetDescriptor } from '@flying/widget';
 import type { Key, ReconciledNode } from '../types.ts';
 import type {
-  GetStableId,
+  IReconciler,
   ReconcileChildrenOptions,
   ReconcileNodeOptions,
   UnmountNodeOptions,
 } from './types';
 import type { ReconcileOptions } from './types.ts';
 
-export class Reconciler implements GetStableId {
+export class Reconciler implements IReconciler {
   protected readonly stateStore: StateStore;
   protected prevTree: ReconciledNode | null;
   protected nextId; // 0 reserved for "not reconciled"

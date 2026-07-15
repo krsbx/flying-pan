@@ -49,5 +49,6 @@
       "@vectors": ["./src/utility/vectors/index.ts"],
       "@vectors/*": ["./src/utility/vectors/*"],
     },
-  }
+  },
+  "exclude": ["./ffi"],
 }

@@ -19,8 +19,8 @@ import {
 } from './constant';
 import type {
   CharIndexAtXOptions,
-  FontAtlasContract,
   GetQuadsOptions,
+  IFontAtlas,
   MeasureTextOptions,
   MeasureTextResult,
   TextQuad,
@@ -33,7 +33,7 @@ export interface FontAtlasOptions {
   gl: GLFW;
 }
 
-export abstract class BaseFontAtlas implements FontAtlasContract {
+export abstract class BaseFontAtlas implements IFontAtlas {
   public readonly fontPath: string;
   public readonly fontSize: number;
   protected truetype: StbTrueType;
