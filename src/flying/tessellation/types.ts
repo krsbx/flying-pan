@@ -1,5 +1,5 @@
 import type { Coordinate2D } from '../types';
-import type { PathCommandType } from './constant';
+import type { FillRule, PathCommandType } from './constant';
 
 export interface MovePathCommand {
   type: typeof PathCommandType.Move;
@@ -49,6 +49,11 @@ export interface TriangleList {
   positions: number[]; // flat [x,y, x,y, ...]
   colors?: number[]; // optional flat [r,g,b,a, ...] — length = vertexCount * 4
   vertexCount: number;
+}
+
+export interface TessellateOptions {
+  fillRule?: FillRule; // default FillRule.NONZERO
+  tolerance?: number; // default 0.5 — max px deviation for curve flattening
 }
 
 export interface Polygon {
