@@ -7,6 +7,7 @@ import {
   type ViewStyle,
 } from '@flying/widget';
 import { paintCheckbox } from './checkbox';
+import { paintCustom } from './custom';
 import { paintImage } from './image';
 import { paintMeter } from './meter';
 import { paintCircularProgress, paintProgressBar } from './progress';
@@ -213,6 +214,14 @@ export function paint(window: Window, options: PaintOptions) {
         renderer,
       });
       break;
+    }
+
+    case WidgetType.Custom: {
+      paintCustom(window, {
+        ctx,
+        layout,
+        renderer,
+      });
     }
   }
 

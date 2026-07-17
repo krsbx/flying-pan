@@ -65,6 +65,7 @@ export const WidgetType = {
   RangeSlider: 'RangeSlider',
   Meter: 'Meter',
   List: 'List',
+  Custom: 'Custom',
 } as const;
 
 export type WidgetType = (typeof WidgetType)[keyof typeof WidgetType];

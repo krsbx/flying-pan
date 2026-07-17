@@ -1,5 +1,5 @@
 import type { AnimationManager } from '@flying/animation';
-import type { FontManager } from '@flying/app';
+import type { FontManager, Window } from '@flying/app';
 import type { InteractionManager } from '@flying/interactions';
 import type { LayoutNode } from '@flying/layout';
 import type { GetStableIdFn } from '@flying/reconcile';
@@ -54,4 +54,13 @@ export interface PaintBackgroundOptions extends Resolution, Coordinate2D {
   style: ViewStyle;
   renderer: Renderer;
   colorOverride?: string;
+}
+
+export interface CustomPaintOptions {
+  window: Window;
+  renderer: Renderer;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
 }
