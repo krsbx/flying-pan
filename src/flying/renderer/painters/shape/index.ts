@@ -12,6 +12,8 @@ import type {
 import { createGradientCtx } from '../gradient';
 import { drawArcGL, drawRectGL, drawRoundedRectGL } from './gl';
 
+export { drawTriangles } from './triangles';
+
 export function drawRect(gl: GLLike, options: DrawRectOptions): void {
   const rgba = parseColor(options.color);
 

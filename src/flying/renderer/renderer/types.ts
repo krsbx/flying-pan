@@ -1,4 +1,5 @@
 import type { BaseFontAtlas } from '@flying/fonts';
+import type { TriangleList } from '@flying/tessellation';
 import type { Coordinate2D, Size, ValidColor } from '@flying/types';
 import type { BoxShadow, LinearGradient } from '@flying/widget';
 import type { Texture } from '../texture/texture';
@@ -71,5 +72,13 @@ export interface DrawTextOptions extends Coordinate2D {
 
 export interface DrawTextureOptions extends Coordinate2D, Size {
   texture: Texture;
+  opacity?: number;
+}
+
+export interface DrawTrianglesOptions {
+  triangles: TriangleList;
+  /** Solid fill color. Used when `triangles.colors` is absent. */
+  color: ValidColor;
+  /** Multiplies the alpha of every emitted vertex. Default `1`. */
   opacity?: number;
 }

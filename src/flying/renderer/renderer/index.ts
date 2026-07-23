@@ -21,6 +21,7 @@ import {
   drawShadow,
   drawText,
   drawTexture,
+  drawTriangles,
 } from '../painters';
 import type {
   DrawArcOptions,
@@ -30,6 +31,7 @@ import type {
   DrawShadowOptions,
   DrawTextOptions,
   DrawTextureOptions,
+  DrawTrianglesOptions,
 } from './types';
 import { intersectRects } from './utility';
 
@@ -221,5 +223,9 @@ export class Renderer {
 
   public drawTexture(window: Window, options: DrawTextureOptions): void {
     this.wrap(window, () => drawTexture(this.drawCtx, options));
+  }
+
+  public drawTriangles(window: Window, options: DrawTrianglesOptions): void {
+    this.wrap(window, () => drawTriangles(this.drawCtx, options));
   }
 }
