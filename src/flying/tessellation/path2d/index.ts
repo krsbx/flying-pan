@@ -102,7 +102,7 @@ export class Path2D {
     const len2 = Math.hypot(d2x, d2y);
 
     if (len1 === 0 || len2 === 0) {
-      return this.moveTo(to);
+      return this.lineTo(to);
     }
 
     const dot = (d1x * d2x + d1y * d2y) / (len1 * len2);
