@@ -60,7 +60,7 @@ export function flattenArc(options: FlattenArcOptions): Coordinate2D[] {
 
   let segments: number = 1;
 
-  if (radius > tolerance || absDelta !== 0) {
+  if (radius > tolerance && absDelta !== 0) {
     const denom =
       2 * Math.acos(Math.max(-1, Math.min(1, 1 - tolerance / radius)));
     segments = Math.max(1, Math.ceil(absDelta / denom));
