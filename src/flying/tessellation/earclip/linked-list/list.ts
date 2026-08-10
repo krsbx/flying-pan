@@ -136,8 +136,8 @@ export class EarclipLinkedList extends LinkedList<Coordinate2D, false> {
     let guard = 0;
     let advanced = false;
 
-    const start = this.head;
-    let curr: EarclipLinkedListNode = start;
+    let curr: EarclipLinkedListNode = this.head;
+    let lapStart: EarclipLinkedListNode = this.head;
 
     while (remaining > 3 && guard < maxIterations) {
       guard++;
@@ -150,18 +150,23 @@ export class EarclipLinkedList extends LinkedList<Coordinate2D, false> {
         curr.next.prev = curr.prev;
         remaining--;
         advanced = true;
+
+        // Advance lap sentinel if it was just clipped
+        if (curr === lapStart) {
+          lapStart = next;
+        }
       }
 
       curr = next;
 
-      if (curr === start) {
+      if (curr === lapStart) {
         if (!advanced) break;
         advanced = false;
       }
     }
 
     if (remaining === 3) {
-      start.emit(result);
+      curr.emit(result);
     }
   }
 }
