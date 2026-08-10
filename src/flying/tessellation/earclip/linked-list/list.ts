@@ -24,6 +24,7 @@ export class EarclipLinkedList extends LinkedList<Coordinate2D, false> {
 
       const node = new EarclipLinkedListNode(coord);
 
+      node.prev = prev;
       prev.next = node;
       prev = node;
     }
