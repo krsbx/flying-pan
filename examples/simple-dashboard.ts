@@ -1,8 +1,14 @@
 import type { App, Window } from '@flying';
 import {
+  Path2D,
+  tessellatePath,
+  type TriangleList,
+} from '@flying/tessellation';
+import {
   Button,
   Checkbox,
   CircularProgress,
+  Custom,
   Flex,
   Label,
   List,
@@ -94,6 +100,63 @@ const SURFACE_HOVER = '#1a4a7a';
 const TEXT = '#ffffff';
 const MUTED = '#888888';
 const DIVIDER = '#333333';
+
+// ---------------------------------------------------------------------------
+// Tessellated shapes — built once at module load, rendered every frame.
+// Both are centered at (0, 0); the paint callback translates to the widget's
+// center before drawing.
+// ---------------------------------------------------------------------------
+
+function buildStar(
+  outerRadius: number,
+  innerRadius: number,
+  points = 5
+): ReturnType<typeof tessellatePath> {
+  const path = new Path2D();
+  const total = points * 2;
+
+  for (let i = 0; i < total; i++) {
+    const angle = (i / total) * Math.PI * 2 - Math.PI / 2; // start at top
+    const r = i % 2 === 0 ? outerRadius : innerRadius;
+    const x = Math.cos(angle) * r;
+    const y = Math.sin(angle) * r;
+
+    if (i === 0) {
+      path.moveTo({ x, y });
+    } else {
+      path.lineTo({ x, y });
+    }
+  }
+
+  path.closePath();
+  return tessellatePath(path);
+}
+
+function buildDonut(outerRadius: number, innerRadius: number): TriangleList {
+  const path = new Path2D();
+
+  // Outer circle
+  path.arc({
+    center: { x: 0, y: 0 },
+    radius: outerRadius,
+    startAngle: 0,
+    endAngle: Math.PI * 2,
+  });
+
+  // Inner hole — separate subpath, tessellate groups it as a hole by containment
+  path.moveTo({ x: innerRadius, y: 0 });
+  path.arc({
+    center: { x: 0, y: 0 },
+    radius: innerRadius,
+    startAngle: 0,
+    endAngle: Math.PI * 2,
+  });
+
+  return tessellatePath(path);
+}
+
+const starTriangles = buildStar(40, 16);
+const donutTriangles = buildDonut(40, 20);
 
 function divider() {
   return View({
@@ -281,6 +344,58 @@ function buildDashboard(app: App): ReturnType<typeof Flex> {
         thickness: 0.15,
         label: `${state.sliderValue}%`,
         labelStyle: { textAlign: 'center' },
+      }),
+
+      // Tessellation --------------------------------------------------------
+      divider(),
+      sectionTitle('Tessellation'),
+
+      Flex({
+        direction: 'row',
+        gap: 24,
+        style: {
+          width: '100%',
+          height: 100,
+          alignItems: 'center',
+          justifyContent: 'center',
+        },
+        children: [
+          Custom({
+            style: { width: 100, height: 100 },
+            paint: ({ window, renderer, x, y, width, height }) => {
+              renderer.pushTranslate(window, {
+                x: x + width / 2,
+                y: y + height / 2,
+              });
+              renderer.drawTriangles(window, {
+                triangles: starTriangles,
+                color: ACCENT,
+              });
+              renderer.popTranslate(window);
+            },
+          }),
+
+          Custom({
+            style: { width: 100, height: 100 },
+            paint: ({ window, renderer, x, y, width, height }) => {
+              renderer.pushTranslate(window, {
+                x: x + width / 2,
+                y: y + height / 2,
+              });
+              renderer.drawTriangles(window, {
+                triangles: donutTriangles,
+                color: SURFACE,
+              });
+              renderer.popTranslate(window);
+            },
+          }),
+        ],
+      }),
+
+      Label({
+        text: 'Star (earclip) + donut (hole bridging) — tessellated once, rendered via Custom widget',
+        font: 'default',
+        style: { color: MUTED, fontSize: 12, width: '100%' },
       }),
 
       // Virtual List --------------------------------------------------------
