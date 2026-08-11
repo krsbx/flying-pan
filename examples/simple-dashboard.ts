@@ -6,6 +6,7 @@ import {
 } from '@flying/tessellation';
 import {
   Button,
+  Canvas,
   Checkbox,
   CircularProgress,
   Custom,
@@ -394,6 +395,144 @@ function buildDashboard(app: App): ReturnType<typeof Flex> {
 
       Label({
         text: 'Star (earclip) + donut (hole bridging) — tessellated once, rendered via Custom widget',
+        font: 'default',
+        style: { color: MUTED, fontSize: 12, width: '100%' },
+      }),
+
+      // Canvas 2D -----------------------------------------------------------
+      divider(),
+      sectionTitle('Canvas 2D'),
+
+      Canvas({
+        font: 'default',
+        style: {
+          width: '100%',
+          height: 160,
+          backgroundColor: '#0a1628',
+          borderRadius: 8,
+        },
+        draw: ({ ctx }) => {
+          // Filled circle (arc + fill)
+          ctx.fillStyle = ACCENT;
+          ctx.beginPath();
+          ctx.arc(40, 40, 30, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Filled rectangle
+          ctx.fillStyle = '#4ecca3';
+          ctx.fillRect(90, 10, 60, 60);
+
+          // Rotated square (save / translate / rotate / fill / restore)
+          ctx.save();
+          ctx.translate(200, 40);
+          ctx.rotate(Math.PI / 4);
+          ctx.fillStyle = '#f9ca24';
+          ctx.fillRect(-25, -25, 50, 50);
+          ctx.restore();
+
+          // Stroked rectangle
+          ctx.strokeStyle = '#6c5ce7';
+          ctx.lineWidth = 3;
+          ctx.strokeRect(260, 10, 60, 60);
+
+          // Filled triangle (path + fill)
+          ctx.fillStyle = '#e17055';
+          ctx.beginPath();
+          ctx.moveTo(370, 70);
+          ctx.lineTo(400, 10);
+          ctx.lineTo(430, 70);
+          ctx.closePath();
+          ctx.fill();
+
+          // Text
+          ctx.fillStyle = TEXT;
+          ctx.fontSize = 14;
+          ctx.fillText('Canvas 2D rendering', 10, 100);
+
+          // Scaled circle (save / scale / fill / restore)
+          ctx.save();
+          ctx.translate(200, 130);
+          ctx.scale(1.5, 0.75);
+          ctx.fillStyle = '#a29bfe';
+          ctx.beginPath();
+          ctx.arc(0, 0, 25, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+
+          // Bezier curve path (filled)
+          ctx.fillStyle = SURFACE;
+          ctx.beginPath();
+          ctx.moveTo(300, 130);
+          ctx.bezierCurveTo(320, 90, 380, 170, 420, 130);
+          ctx.lineTo(420, 150);
+          ctx.lineTo(300, 150);
+          ctx.closePath();
+          ctx.fill();
+        },
+      }),
+
+      Label({
+        text: 'Circle, rect, rotated square, stroke, triangle, text, scaled ellipse, bezier — all via Canvas 2D API',
+        font: 'default',
+        style: { color: MUTED, fontSize: 12, width: '100%' },
+      }),
+
+      Canvas({
+        font: 'default',
+        style: {
+          width: '100%',
+          height: 140,
+          backgroundColor: '#0a1628',
+          borderRadius: 8,
+        },
+        draw: ({ ctx }) => {
+          // Stroked circle — miter joins around a flattened arc
+          ctx.strokeStyle = ACCENT;
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.arc(40, 50, 30, 0, Math.PI * 2);
+          ctx.stroke();
+
+          // Stroked triangle — sharp miter at the corners
+          ctx.strokeStyle = '#4ecca3';
+          ctx.lineWidth = 4;
+          ctx.beginPath();
+          ctx.moveTo(100, 80);
+          ctx.lineTo(130, 20);
+          ctx.lineTo(160, 80);
+          ctx.closePath();
+          ctx.stroke();
+
+          // Stroked open polyline — butt caps at the endpoints
+          ctx.strokeStyle = '#f9ca24';
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.moveTo(190, 20);
+          ctx.lineTo(220, 80);
+          ctx.lineTo(250, 20);
+          ctx.lineTo(280, 80);
+          ctx.stroke();
+
+          // Stroked quadratic curve
+          ctx.strokeStyle = '#a29bfe';
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.moveTo(310, 80);
+          ctx.quadraticCurveTo(360, 0, 410, 80);
+          ctx.stroke();
+
+          // Thick stroked bezier with miter at the join
+          ctx.strokeStyle = SURFACE;
+          ctx.lineWidth = 6;
+          ctx.beginPath();
+          ctx.moveTo(50, 110);
+          ctx.bezierCurveTo(120, 140, 200, 80, 280, 120);
+          ctx.stroke();
+        },
+      }),
+
+      Label({
+        text: 'Stroked paths: circle, triangle (miter joins), open polyline (butt caps), quadratic, thick bezier',
         font: 'default',
         style: { color: MUTED, fontSize: 12, width: '100%' },
       }),
