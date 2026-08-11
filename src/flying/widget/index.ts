@@ -1,4 +1,5 @@
 export * from './button';
+export * from './canvas';
 export * from './checkbox';
 export * from './constant';
 export * from './custom';

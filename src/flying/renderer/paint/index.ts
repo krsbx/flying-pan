@@ -6,6 +6,7 @@ import {
   type TextStyle,
   type ViewStyle,
 } from '@flying/widget';
+import { paintCanvas } from './canvas';
 import { paintCheckbox } from './checkbox';
 import { paintCustom } from './custom';
 import { paintImage } from './image';
@@ -222,6 +223,16 @@ export function paint(window: Window, options: PaintOptions) {
         layout,
         renderer,
       });
+      break;
+    }
+
+    case WidgetType.Canvas: {
+      paintCanvas(window, {
+        ctx,
+        layout,
+        renderer,
+      });
+      break;
     }
   }
 

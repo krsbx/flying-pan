@@ -65,6 +65,7 @@ export const WidgetType = {
   RangeSlider: 'RangeSlider',
   Meter: 'Meter',
   List: 'List',
+  Canvas: 'Canvas',
   Custom: 'Custom',
 } as const;
 
