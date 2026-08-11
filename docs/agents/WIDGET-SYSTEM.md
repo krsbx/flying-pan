@@ -24,7 +24,7 @@ View, Flex, Label, Button, Image, TextInput,
 Checkbox, Radio, Toggle,
 ProgressBar, CircularProgress,
 SliderBar, CircularSlider, RangeSlider,
-Meter, List
+Meter, List, Canvas, Custom
 ```
 
 ## Factory pattern
@@ -68,6 +68,8 @@ function View(props: ViewProps): WidgetDescriptor {
 | `RangeSlider` | `slider/range.ts` | Dual-handle `[start, end]` range |
 | `Meter` | `meter.ts` | Read-only gauge with `low`/`high`/`optimum` zones |
 | `List` | `list.ts` | Virtualized list — `itemCount`, `itemSize`, `renderItem` |
+| `Canvas` | `canvas.ts` | Leaf widget; `draw(ctx)` callback receives a browser-parity `CanvasContext` (see [RENDERER.md](./RENDERER.md)) |
+| `Custom` | `custom.ts` | Leaf widget; raw `paint({ window, renderer, x, y, width, height })` callback for direct renderer access |
 
 ## Style system (`src/flying/widget/styles/`)
 

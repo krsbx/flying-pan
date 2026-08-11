@@ -21,6 +21,15 @@ Owns GL state for one window. Created per-window.
 - **Clip stack** (`clipStack: Rect[]`) — `pushClip()` intersects with current scissor and applies `glScissor`; `popClip()` restores (or disables when empty). Coordinates converted screen→GL scissor in `applyScissor()`. **Callers pass screen-space rects** (from `LayoutNode.screenX/screenY`) — `glScissor` is absolute screen-space, not affected by `glTranslatef`, so clip rects must already account for scroll.
 - **Translate stack** — `pushTranslate(x,y)` = `glPushMatrix` + `glTranslatef`; `popTranslate()` = `glPopMatrix`. Used for scroll offset. This only affects drawing commands (rects, arcs, text) — not `glScissor`.
 
+### Generic GL matrix methods
+Alongside the scroll-specific `pushTranslate`/`popTranslate`, the renderer exposes five thin matrix primitives (used by `CanvasContext` and any painter needing transforms):
+- `pushMatrix(window)` / `popMatrix(window)` — `glPushMatrix` / `glPopMatrix` (flushes the batch first when batching is on)
+- `translate(window, { x, y })` — `glTranslatef`
+- `rotate(window, angleRadians)` — converts to degrees and calls `glRotatef({ angle, x: 0, y: 0, z: 1 })` (Z-axis rotation)
+- `scale(window, { x, y })` — `glScalef`
+
+All follow the same `wrap(window, ...)` pattern as the other renderer methods and flush the batch before issuing GL state calls.
+
 ## Paint pipeline (`src/flying/renderer/paint/index.ts`)
 
 `paint(window, { renderer, ctx, layout })` walks the tree recursively:
@@ -59,6 +68,8 @@ for each LayoutNode:
 | ProgressBar | `paintProgressBar()` | `paint/progress/bar.ts` |
 | CircularProgress | `paintCircularProgress()` | `paint/progress/circular.ts` |
 | Meter | `paintMeter()` | `paint/meter/index.ts` |
+| Custom | `paintCustom()` | `paint/custom.ts` — raw paint callback (user issues renderer calls directly) |
+| Canvas | `paintCanvas()` | `paint/canvas.ts` — constructs `CanvasContext`, invokes user `draw(ctx)` |
 
 ## Drawing primitives (`src/flying/renderer/painters/`)
 
@@ -80,6 +91,9 @@ for each LayoutNode:
 
 ### Texture (`painters/texture.ts`)
 - `drawTexture()` — `glEnable(GL_TEXTURE_2D)` + bind + quad with UV `(0,0)→(1,1)`
+
+### Tessellated geometry (`painters/shape/triangles.ts`)
+- `drawTriangles({ triangles, color, opacity })` — `glBegin(GL_TRIANGLES)` walk over `TriangleList.positions` (flat `[x,y, x,y, ...]`). Used by `CanvasContext.fill`/`stroke` and the `Custom` widget for tessellated shapes. Works with both immediate-mode and batched `GLLike`.
 
 ## Color (`src/flying/renderer/color.ts`)
 
@@ -157,3 +171,47 @@ base → _hover → _focus → _active → _checked → _disabled
 - **Reconciler map** — `.clear()` per pass, not `new Map()`
 - **Immediate-mode ceiling** — each rect/arc/text quad = separate `glBegin/glEnd`. VBO batching is the known long-term optimization.
 - **Shadow cost** — 1–12 draw calls per shadow (blur-radius layers)
+
+## Canvas 2D widget (`src/flying/renderer/context/canvas/`)
+
+Browser-compatible Canvas 2D API layered on top of the GL renderer + tessellation pipeline. The `Canvas` widget factory (`src/flying/widget/canvas.ts`) takes a `draw(ctx)` callback; `paintCanvas` (`paint/canvas.ts`) wires it up each frame.
+
+### Lifecycle per frame
+1. `pushClip(widget bounds)` — canvas can't draw outside itself
+2. `pushTranslate(layout.x, layout.y)` — ctx coords start at `(0,0)` = widget top-left
+3. Construct a fresh `CanvasContext`
+4. Invoke `props.draw({ ctx })` — user issues browser Canvas 2D calls
+5. `popTranslate` + `popClip`
+
+### `CanvasContext` class (`context/canvas/index.ts`)
+Implements the familiar Canvas 2D surface. **Positional params are intentional** — the whole point is browser-API parity; changing signatures would defeat the goal. This is the documented exception to flying-pan's single-object-param convention.
+
+**Style state (settable properties):** `fillStyle`, `strokeStyle`, `lineWidth`, `globalAlpha`, `font`, `fontSize`.
+
+**Path building** — delegates to an internal `Path2D` instance, translating positional params to Path2D's single-object params:
+- `beginPath`, `moveTo`, `lineTo`, `arc`, `arcTo`, `rect`, `quadraticCurveTo`, `bezierCurveTo`, `closePath`
+
+**Fill:**
+- `fill()` — `tessellatePath(path)` → `TriangleList` → `drawTriangles({ color: fillStyle })`
+- `fillRect(x, y, w, h)` — `drawRect` shortcut (no path needed)
+- `fillText(text, x, y)` — `drawText` with font atlas resolved from `fontManager`
+
+**Stroke:**
+- `strokeRect(x, y, w, h)` — four thin `drawRect` calls (top/bottom/left/right)
+- `stroke()` — `flattenPath(path)` → polylines with open/closed state → miter-join offset geometry → 2 triangles per segment. Miter joins at interior vertices, butt caps on open-path endpoints, anti-parallel foldback fallback (bevel).
+
+**Transforms** — multiply the current modelview matrix (no implicit push):
+- `translate(x, y)`, `rotate(angleRadians)`, `scale(x, y)`
+
+**State stack** — `save()` / `restore()`:
+- `pushMatrix` / `popMatrix` for the GL transform
+- Snapshot of all style properties (`CanvasStateNode` from `@flying/state/canvas`)
+
+### Deferred (not yet implemented)
+- `clip()` — currently only `glScissor` rect clipping is available via `pushClip`
+- `clearRect()` — needs transparent-clear semantics
+- `drawImage()` — needs texture-on-canvas API
+- `createLinearGradient` / `createRadialGradient` — needs per-vertex color arrays on `TriangleList`
+- `globalCompositeOperation` — needs GL blend mode switching
+- `measureText()` — text measurement without rendering
+- `setTransform` / `transform` / `resetTransform` — can be added via `glMultMatrixf`

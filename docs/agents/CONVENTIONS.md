@@ -52,6 +52,10 @@ This applies to:
 - Generated FFI wrappers (codegen emits single-object signatures)
 - Event handlers (`onClick(event: ClickEvent)` where `event` carries `{ node, stateStore, ... }`)
 
+**Documented exception — web-compat adapter layers.** Code whose explicit purpose is to mirror a browser API uses positional params to match that API exactly. The prime example: `CanvasContext` (`src/flying/renderer/context/canvas/`) implements the browser Canvas 2D API, so `ctx.arc(x, y, radius, startAngle, endAngle)` and `ctx.fillRect(x, y, w, h)` are positional. Internally those calls adapt to single-object `Path2D` params. Changing the signatures would defeat the whole point of the adapter.
+
+The underlying `Path2D` builder is *not* a browser-mirror — it's an internal flying-pan type — so it keeps single-object params (`path.moveTo({ x, y })`, `path.arc({ center, radius, ... })`).
+
 ## Fail loud
 
 In render/FFI/stateful paths, prefer **crashes over defensive recovery**:

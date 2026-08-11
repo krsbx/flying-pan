@@ -24,10 +24,14 @@ src/
     widget/         # Widget factories, style types, constants
     layout/         # Flexbox engine, measurement, processor/ (virtualization)
     renderer/       # GL renderer, paint pipeline, textures, fonts
+      painters/     # Low-level draw primitives (drawRect, drawTriangles, ...)
+      paint/        # Per-widget paint dispatch (paintText, paintCanvas, ...)
+      context/      # CanvasContext — browser Canvas 2D API on top of the GL renderer
+    tessellation/   # Path2D, curve flattening, earclip triangulation (shared by Canvas 2D + future SVG)
     interactions/   # Pointer, focus, scroll dispatchers
     reconcile/      # Reconciler (diffs widget trees across frames)
     animation/      # AnimationManager (transitions, easing)
-    state/          # StateStore (widget-local state by stableId)
+    state/          # StateStore (widget-local state by stableId) + CanvasStateNode
     fonts/          # FontAtlas (stb_truetype baking + measuring)
     types.ts        # Shared types (Coordinate2D, Size, Resolution)
 ffi/                # Pre-built .dylib files (gitignored at root)
@@ -73,5 +77,6 @@ App.run() while loop:
 - **Declarative rebuild model** — The user rebuilds the widget tree each frame in `onFrame`. The reconciler diffs prev vs next and preserves stableIds/state. No virtual DOM diffing overhead on static subtrees (descriptor identity short-circuits reconcile).
 - **Identity by stableId, not reference** — Hover, focus, scroll, state all key off `stableId: number` assigned by the reconciler. LayoutNodes are recreated each frame; stableIds persist.
 - **Immediate-mode OpenGL** — No VBOs or batching (yet). Each rect/arc/text quad is a separate `glBegin/glEnd` call. This is the ceiling on renderer throughput; VBO batching is a known long-term item.
-- **Single-object params** — All functions use a single options object parameter, never positional args.
+- **Single-object params** — All functions use a single options object parameter, never positional args. **Exception:** web-compatibility adapter layers (e.g. `CanvasContext`) intentionally use positional params to match the browser API exactly — the whole point is familiarity.
+- **Tessellation is pure geometry** — `Path2D` → flatten → earclip → `TriangleList` is pure TS with no GL imports. Multiple consumers (Canvas 2D `fill`, future SVG widget) feed the same `TriangleList` into GL via `drawTriangles`.
 - **Fail loud** — In render/FFI/stateful paths, prefer crashes over defensive recovery.
