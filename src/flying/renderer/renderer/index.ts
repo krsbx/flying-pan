@@ -194,6 +194,46 @@ export class Renderer {
     });
   }
 
+  public pushMatrix(window: Window): void {
+    this.wrap(window, () => {
+      this.batch?.flush(this.gl);
+      this.gl.glPushMatrix();
+    });
+  }
+
+  public popMatrix(window: Window): void {
+    this.wrap(window, () => {
+      this.batch?.flush(this.gl);
+      this.gl.glPopMatrix();
+    });
+  }
+
+  public translate(window: Window, offset: Coordinate2D): void {
+    this.wrap(window, () => {
+      this.batch?.flush(this.gl);
+      this.gl.glTranslatef({ x: offset.x, y: offset.y, z: 0 });
+    });
+  }
+
+  public rotate(window: Window, angleRadians: number): void {
+    this.wrap(window, () => {
+      this.batch?.flush(this.gl);
+      this.gl.glRotatef({
+        angle: (angleRadians * 180) / Math.PI,
+        x: 0,
+        y: 0,
+        z: 1,
+      });
+    });
+  }
+
+  public scale(window: Window, factors: Coordinate2D): void {
+    this.wrap(window, () => {
+      this.batch?.flush(this.gl);
+      this.gl.glScalef({ x: factors.x, y: factors.y, z: 1 });
+    });
+  }
+
   public drawRect(window: Window, options: DrawRectOptions): void {
     this.wrap(window, () => drawRect(this.drawCtx, options));
   }
