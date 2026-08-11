@@ -1,6 +1,11 @@
 import { earclip } from '../earclip';
 import type { Path2D } from '../path2d';
-import type { Polygon, TessellateOptions, TriangleList } from '../types';
+import type {
+  Polygon,
+  Polyline,
+  TessellateOptions,
+  TriangleList,
+} from '../types';
 import { Path2DContour } from './contour';
 import { fanTriangulate, isConvex } from './utils';
 
@@ -34,4 +39,18 @@ export function tessellatePath(
     positions,
     vertexCount: positions.length / 2,
   };
+}
+
+/**
+ * Flatten a path into polyline contours with open/closed state — the
+ * stroke-side analog of {@link tessellatePath}. Curves are converted to
+ * line segments within `tolerance` pixels of deviation. Each `closePath`
+ * marks its contour as closed; unclosed contours retain their endpoints
+ * (butt caps on stroke).
+ */
+export function flattenPath(
+  path: Path2D,
+  tolerance: number = 0.5
+): readonly Polyline[] {
+  return new Path2DContour(path.commands, tolerance).flatten().polylines;
 }

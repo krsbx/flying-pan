@@ -1,15 +1,16 @@
 import type { Coordinate2D } from '@flying/types';
 import { PathCommandType } from '../constant';
 import { flattenArc, flattenCubic, flattenQuadratic } from '../flatten';
-import type { PathCommand, Polygon } from '../types';
+import type { PathCommand, Polygon, Polyline } from '../types';
 import { contains, signedArea } from './utils';
 
 export class Path2DContour {
   public readonly commands: readonly PathCommand[] | PathCommand[];
   public readonly tolerance: number;
 
-  protected current: Coordinate2D[] | null;
+  protected current: Polyline | null;
   protected coord: Coordinate2D | null;
+  protected _polylines: Polyline[];
   protected _contours: Coordinate2D[][];
   protected _groups: Polygon[];
 
@@ -21,21 +22,33 @@ export class Path2DContour {
     this.tolerance = tolerance;
     this.current = null;
     this.coord = null;
+    this._polylines = [];
     this._contours = [];
     this._groups = [];
   }
 
   protected flush(): void {
-    if (this.current && this.current.length >= 3) {
-      const last = this.current[this.current.length - 1]!;
-      const first = this.current[0]!;
+    if (this.current && this.current.points.length >= 2) {
+      // Raw polyline view — consumed by stroke. Preserves 2-point contours
+      // (single segments) and the open/closed distinction.
+      this._polylines.push(this.current);
 
-      if (last.x === first.x && last.y === first.y) {
-        this.current.pop();
-      }
+      // Fill-friendly view — dedup the implicit closing point and require
+      // enough vertices to form a polygon. Consumed by group().
+      const points = this.current.points;
 
-      if (this.current.length >= 3) {
-        this._contours.push(this.current);
+      if (points.length >= 3) {
+        const last = points[points.length - 1]!;
+        const first = points[0]!;
+
+        const deduped =
+          last.x === first.x && last.y === first.y
+            ? points.slice(0, -1)
+            : points;
+
+        if (deduped.length >= 3) {
+          this._contours.push(deduped);
+        }
       }
     }
 
@@ -48,21 +61,21 @@ export class Path2DContour {
       switch (cmd.type) {
         case PathCommandType.Move: {
           this.flush();
-          this.current = [cmd.to];
+          this.current = { points: [cmd.to], closed: false };
           this.coord = cmd.to;
           break;
         }
 
         case PathCommandType.Line: {
-          this.current ||= [];
-          this.current.push(cmd.to);
+          this.current ||= { points: [], closed: false };
+          this.current.points.push(cmd.to);
           this.coord = cmd.to;
           break;
         }
 
         case PathCommandType.Quadratic: {
           if (!this.current || !this.coord) {
-            this.current = [cmd.to];
+            this.current = { points: [cmd.to], closed: false };
             this.coord = cmd.to;
             break;
           }
@@ -74,14 +87,14 @@ export class Path2DContour {
             tolerance: tolerance,
           });
 
-          this.current.push(...pts);
+          this.current.points.push(...pts);
           this.coord = cmd.to;
           break;
         }
 
         case PathCommandType.Cubic: {
           if (!this.current || !this.coord) {
-            this.current = [cmd.to];
+            this.current = { points: [cmd.to], closed: false };
             this.coord = cmd.to;
             break;
           }
@@ -94,7 +107,7 @@ export class Path2DContour {
             tolerance: tolerance,
           });
 
-          this.current.push(...pts);
+          this.current.points.push(...pts);
           this.coord = cmd.to;
           break;
         }
@@ -108,7 +121,7 @@ export class Path2DContour {
               y: cmd.center.y + Math.sin(cmd.startAngle) * cmd.radius,
             };
 
-            this.current = [start];
+            this.current = { points: [start], closed: false };
             this.coord = start;
           }
 
@@ -121,7 +134,7 @@ export class Path2DContour {
             tolerance: tolerance,
           });
 
-          this.current.push(...pts);
+          this.current.points.push(...pts);
 
           if (pts.length > 0) {
             this.coord = pts[pts.length - 1]!;
@@ -131,6 +144,7 @@ export class Path2DContour {
         }
 
         case PathCommandType.Close: {
+          if (this.current) this.current.closed = true;
           this.flush();
           break;
         }
@@ -148,11 +162,24 @@ export class Path2DContour {
     return this;
   }
 
-  public get contours(): Coordinate2D[][] {
+  /**
+   * Raw flattened polylines with open/closed state — the stroke-side output.
+   * Preserves 2-point contours (single segments) and reports whether each
+   * contour was explicitly closed via `closePath()`.
+   */
+  public get polylines(): readonly Polyline[] {
+    return this._polylines;
+  }
+
+  /**
+   * Fill-friendly contours — closing point deduplicated, degenerate
+   * (< 3 point) contours dropped. Used by {@link group}.
+   */
+  public get contours(): readonly Coordinate2D[][] {
     return this._contours;
   }
 
-  public get groups(): Polygon[] {
+  public get groups(): readonly Polygon[] {
     return this._groups;
   }
 

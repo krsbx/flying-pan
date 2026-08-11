@@ -1,8 +1,13 @@
 import type { FontManager, Window } from '@flying/app';
 import { CanvasStateNode } from '@flying/state';
 import type { CanvasStateNodeValue } from '@flying/state/canvas/types';
-import { Path2D, tessellatePath } from '@flying/tessellation';
-import type { ValidColor } from '@flying/types';
+import {
+  flattenPath,
+  Path2D,
+  tessellatePath,
+  type TriangleList,
+} from '@flying/tessellation';
+import type { Coordinate2D, ValidColor } from '@flying/types';
 import { ROOT_FONT_SIZE } from '@flying/widget';
 import { Color } from '../../color';
 import type { Renderer } from '../../renderer';
@@ -192,7 +197,7 @@ export class CanvasContext implements CanvasStateNodeValue {
   }
 
   // -------------------------------------------------------------------------
-  // Stroke (rectangular only — arbitrary path strokes need outline expansion)
+  // Stroke
   // -------------------------------------------------------------------------
 
   public strokeRect(x: number, y: number, width: number, height: number): this {
@@ -241,6 +246,151 @@ export class CanvasContext implements CanvasStateNodeValue {
     });
 
     return this;
+  }
+
+  /**
+   * Stroke the current path by expanding it into quad geometry (miter joins,
+   * butt caps). Each input segment becomes 2 triangles.
+   */
+  public stroke(): this {
+    const halfWidth = this.lineWidth / 2;
+    const polylines = flattenPath(this.path2d);
+    const positions: number[] = [];
+
+    for (const polyline of polylines) {
+      const { points, closed } = polyline;
+      const n = points.length;
+      if (n < 2) continue;
+
+      const offsets = this.computeStrokeOffsets(points, closed, halfWidth);
+      const segmentCount = closed ? n : n - 1;
+
+      for (let i = 0; i < segmentCount; i++) {
+        const j = (i + 1) % n;
+        const p1 = points[i]!;
+        const p2 = points[j]!;
+        const o1 = offsets[i]!;
+        const o2 = offsets[j]!;
+
+        // Left / right side vertices at each endpoint
+        const l1x = p1.x + o1.x;
+        const l1y = p1.y + o1.y;
+        const r1x = p1.x - o1.x;
+        const r1y = p1.y - o1.y;
+        const l2x = p2.x + o2.x;
+        const l2y = p2.y + o2.y;
+        const r2x = p2.x - o2.x;
+        const r2y = p2.y - o2.y;
+
+        positions.push(
+          l1x,
+          l1y,
+          r1x,
+          r1y,
+          l2x,
+          l2y,
+          r1x,
+          r1y,
+          r2x,
+          r2y,
+          l2x,
+          l2y
+        );
+      }
+    }
+
+    const triangles: TriangleList = {
+      positions,
+      vertexCount: positions.length / 2,
+    };
+
+    this.renderer.drawTriangles(this.window, {
+      triangles,
+      color: this.strokeStyle,
+      opacity: this.globalAlpha,
+    });
+
+    return this;
+  }
+
+  /**
+   * Compute the miter offset vector at each polyline vertex. The offset is
+   * perpendicular to the stroke's local direction; adding it to the vertex
+   * gives the left side, subtracting gives the right side.
+   *
+   * - Interior vertices: miter along the bisector of incoming + outgoing dirs.
+   * - Open-path endpoints: perpendicular to the single adjacent segment.
+   * - Anti-parallel foldback (180°): falls back to the incoming normal (bevel).
+   */
+  protected computeStrokeOffsets(
+    points: Coordinate2D[],
+    closed: boolean,
+    halfWidth: number
+  ): Coordinate2D[] {
+    const n = points.length;
+    const offsets: Coordinate2D[] = new Array(n);
+
+    for (let i = 0; i < n; i++) {
+      const cur = points[i]!;
+      const prev = closed
+        ? points[(i - 1 + n) % n]!
+        : points[Math.max(0, i - 1)]!;
+      const next = closed
+        ? points[(i + 1) % n]!
+        : points[Math.min(n - 1, i + 1)]!;
+
+      const dInX = cur.x - prev.x;
+      const dInY = cur.y - prev.y;
+      const dOutX = next.x - cur.x;
+      const dOutY = next.y - cur.y;
+
+      const lenIn = Math.hypot(dInX, dInY);
+      const lenOut = Math.hypot(dOutX, dOutY);
+
+      // Perpendicular of the incoming direction (unit). Used both for the
+      // miter projection denominator and as the anti-parallel fallback.
+      let perpInX = 0;
+      let perpInY = 0;
+      if (lenIn > 0) {
+        perpInX = -dInY / lenIn;
+        perpInY = dInX / lenIn;
+      }
+
+      // Sum of unit incoming + outgoing directions → tangent bisector.
+      let bisectX = 0;
+      let bisectY = 0;
+      if (lenIn > 0) {
+        bisectX += dInX / lenIn;
+        bisectY += dInY / lenIn;
+      }
+      if (lenOut > 0) {
+        bisectX += dOutX / lenOut;
+        bisectY += dOutY / lenOut;
+      }
+
+      const bisectLen = Math.hypot(bisectX, bisectY);
+
+      if (bisectLen < 1e-6) {
+        // Anti-parallel reversal — use incoming normal (bevel).
+        offsets[i] = { x: perpInX * halfWidth, y: perpInY * halfWidth };
+        continue;
+      }
+
+      // Miter normal = perpendicular of the tangent bisector.
+      const miterX = -bisectY / bisectLen;
+      const miterY = bisectX / bisectLen;
+
+      // Scale miter so its projection onto perpIn equals halfWidth.
+      const proj = miterX * perpInX + miterY * perpInY;
+      if (Math.abs(proj) < 1e-6) {
+        offsets[i] = { x: perpInX * halfWidth, y: perpInY * halfWidth };
+      } else {
+        const scale = halfWidth / proj;
+        offsets[i] = { x: miterX * scale, y: miterY * scale };
+      }
+    }
+
+    return offsets;
   }
 
   // -------------------------------------------------------------------------

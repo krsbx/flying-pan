@@ -60,3 +60,13 @@ export interface Polygon {
   outer: Coordinate2D[];
   holes: Coordinate2D[][];
 }
+
+/**
+ * A flattened polyline contour — the stroke-side analog of {@link Polygon}.
+ * `closed` is true when the path emitted a `closePath` command for this
+ * contour; open contours get butt caps at their endpoints.
+ */
+export interface Polyline {
+  points: Coordinate2D[];
+  closed: boolean;
+}
