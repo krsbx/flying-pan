@@ -1,24 +1,12 @@
-import type {
-  ArcOptions,
-  ArcToOptions,
-  BezierCurveToOptions,
-  QuadraticCurveToOptions,
-  RectOptions,
-} from '@/flying/tessellation/path2d/types';
 import type { FontManager, Window } from '@flying/app';
 import { CanvasStateNode } from '@flying/state';
 import type { CanvasStateNodeValue } from '@flying/state/canvas/types';
 import { Path2D, tessellatePath } from '@flying/tessellation';
-import type { Coordinate2D, ValidColor } from '@flying/types';
+import type { ValidColor } from '@flying/types';
 import { ROOT_FONT_SIZE } from '@flying/widget';
 import { Color } from '../../color';
 import type { Renderer } from '../../renderer';
-import type {
-  CanvasContextOptions,
-  FillRectOptions,
-  FillTextOptions,
-  StrokeRectOptions,
-} from './types';
+import type { CanvasContextOptions } from './types';
 
 export class CanvasContext implements CanvasStateNodeValue {
   public fillStyle: ValidColor;
@@ -61,44 +49,89 @@ export class CanvasContext implements CanvasStateNodeValue {
     return this;
   }
 
-  public moveTo(to: Coordinate2D): this {
-    this.path2d.moveTo(to);
+  public moveTo(x: number, y: number): this {
+    this.path2d.moveTo({ x, y });
 
     return this;
   }
 
-  public lineTo(to: Coordinate2D): this {
-    this.path2d.lineTo(to);
+  public lineTo(x: number, y: number): this {
+    this.path2d.lineTo({ x, y });
 
     return this;
   }
 
-  public arc(options: ArcOptions): this {
-    this.path2d.arc(options);
+  public arc(
+    x: number,
+    y: number,
+    radius: number,
+    startAngle: number,
+    endAngle: number,
+    anticlockwise = false
+  ): this {
+    this.path2d.arc({
+      center: { x, y },
+      radius,
+      startAngle,
+      endAngle,
+      anticlockwise,
+    });
 
     return this;
   }
 
-  public arcTo(options: ArcToOptions): this {
-    this.path2d.arcTo(options);
+  public arcTo(
+    x1: number,
+    y1: number,
+    x2: number,
+    y2: number,
+    radius: number
+  ): this {
+    const from = this.path2d.current ?? { x: 0, y: 0 };
+
+    this.path2d.arcTo({
+      from,
+      via: { x: x1, y: y1 },
+      to: { x: x2, y: y2 },
+      radius,
+    });
 
     return this;
   }
 
-  public rect(options: RectOptions): this {
-    this.path2d.rect(options);
+  public rect(x: number, y: number, width: number, height: number): this {
+    this.path2d.rect({ x, y, width, height });
 
     return this;
   }
 
-  public quadraticCurveTo(options: QuadraticCurveToOptions): this {
-    this.path2d.quadraticCurveTo(options);
+  public quadraticCurveTo(
+    cpx: number,
+    cpy: number,
+    x: number,
+    y: number
+  ): this {
+    this.path2d.quadraticCurveTo({
+      control: { x: cpx, y: cpy },
+      to: { x, y },
+    });
 
     return this;
   }
 
-  public bezierCurveTo(options: BezierCurveToOptions): this {
-    this.path2d.bezierCurveTo(options);
+  public bezierCurveTo(
+    cp1x: number,
+    cp1y: number,
+    cp2x: number,
+    cp2y: number,
+    x: number,
+    y: number
+  ): this {
+    this.path2d.bezierCurveTo({
+      control1: { x: cp1x, y: cp1y },
+      control2: { x: cp2x, y: cp2y },
+      to: { x, y },
+    });
 
     return this;
   }
@@ -125,9 +158,12 @@ export class CanvasContext implements CanvasStateNodeValue {
     return this;
   }
 
-  public fillRect(options: FillRectOptions): this {
+  public fillRect(x: number, y: number, width: number, height: number): this {
     this.renderer.drawRect(this.window, {
-      ...options,
+      x,
+      y,
+      width,
+      height,
       color: this.fillStyle,
       opacity: this.globalAlpha,
     });
@@ -135,7 +171,7 @@ export class CanvasContext implements CanvasStateNodeValue {
     return this;
   }
 
-  public fillText(options: FillTextOptions): this {
+  public fillText(text: string, x: number, y: number): this {
     if (!this.font) {
       throw new Error('[CanvasContext] No font set');
     }
@@ -143,10 +179,13 @@ export class CanvasContext implements CanvasStateNodeValue {
     const atlas = this.fontManager.get(this.font);
 
     this.renderer.drawText(this.window, {
-      ...options,
+      text,
+      x,
+      y,
       atlas,
       color: this.fillStyle,
       opacity: this.globalAlpha,
+      fontSize: this.fontSize,
     });
 
     return this;
@@ -156,9 +195,7 @@ export class CanvasContext implements CanvasStateNodeValue {
   // Stroke (rectangular only — arbitrary path strokes need outline expansion)
   // -------------------------------------------------------------------------
 
-  public strokeRect(options: StrokeRectOptions): this {
-    const { x, y, height, width } = options;
-
+  public strokeRect(x: number, y: number, width: number, height: number): this {
     const lw = this.lineWidth;
     const color = this.strokeStyle;
     const opacity = this.globalAlpha;
@@ -210,8 +247,8 @@ export class CanvasContext implements CanvasStateNodeValue {
   // Transforms — multiply current matrix (no push/pop)
   // -------------------------------------------------------------------------
 
-  public translate(offset: Coordinate2D): this {
-    this.renderer.translate(this.window, offset);
+  public translate(x: number, y: number): this {
+    this.renderer.translate(this.window, { x, y });
 
     return this;
   }
@@ -222,8 +259,8 @@ export class CanvasContext implements CanvasStateNodeValue {
     return this;
   }
 
-  public scale(scales: Coordinate2D): this {
-    this.renderer.scale(this.window, scales);
+  public scale(x: number, y: number): this {
+    this.renderer.scale(this.window, { x, y });
 
     return this;
   }
